@@ -1,0 +1,286 @@
+{
+  "repository": "romulorjr/Engenharia-de-Sistemas",
+  "labels": [
+    {
+      "name": "tipo:feature",
+      "color": "1D76DB",
+      "description": "Classificação: tipo:feature"
+    },
+    {
+      "name": "tipo:bug",
+      "color": "D73A4A",
+      "description": "Classificação: tipo:bug"
+    },
+    {
+      "name": "tipo:docs",
+      "color": "0075CA",
+      "description": "Classificação: tipo:docs"
+    },
+    {
+      "name": "tipo:test",
+      "color": "5319E7",
+      "description": "Classificação: tipo:test"
+    },
+    {
+      "name": "prioridade:alta",
+      "color": "B60205",
+      "description": "Classificação: prioridade:alta"
+    },
+    {
+      "name": "prioridade:média",
+      "color": "FBCA04",
+      "description": "Classificação: prioridade:média"
+    },
+    {
+      "name": "prioridade:baixa",
+      "color": "0E8A16",
+      "description": "Classificação: prioridade:baixa"
+    },
+    {
+      "name": "status:bloqueado",
+      "color": "D93F0B",
+      "description": "Classificação: status:bloqueado"
+    },
+    {
+      "name": "status:em-andamento",
+      "color": "C2E0C6",
+      "description": "Classificação: status:em-andamento"
+    },
+    {
+      "name": "status:revisão",
+      "color": "BFD4F2",
+      "description": "Classificação: status:revisão"
+    }
+  ],
+  "milestones": [
+    {
+      "title": "Fase 1 – Infra",
+      "due_on": "2026-10-25T23:59:59-03:00",
+      "description": "Documentação, ambiente, CI e persistência inicial."
+    },
+    {
+      "title": "Fase 2 – Cardápio/Estoque/Crédito",
+      "due_on": "2026-11-01T23:59:59-03:00",
+      "description": "Cardápio, estoque, crédito, troco e autenticação básica."
+    },
+    {
+      "title": "Fase 3 – Pedidos/Transações",
+      "due_on": "2026-11-18T23:59:59-03:00",
+      "description": "Pedidos atômicos, preparo, cancelamento e checkpoint em 18/11."
+    },
+    {
+      "title": "Fase 4 – Operador/Manutenção",
+      "due_on": "2026-11-29T23:59:59-03:00",
+      "description": "Limpeza, reposição, manutenção, preços e relatórios."
+    },
+    {
+      "title": "Fase 5 – Testes/Qualidade",
+      "due_on": "2026-12-02T23:59:59-03:00",
+      "description": "Consolidação; testes são desenvolvidos desde a infraestrutura."
+    },
+    {
+      "title": "Fase 6 – Documentação/Vídeo",
+      "due_on": "2026-12-08T23:59:59-03:00",
+      "description": "Documentação contínua, relatórios, declarações e vídeo."
+    },
+    {
+      "title": "Entrega Final",
+      "due_on": "2026-12-09T23:59:59-03:00",
+      "description": "Entrega dos sete artefatos revisados."
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "milestone": "Fase 1 – Infra",
+      "labels": [
+        "tipo:docs",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 2,
+      "milestone": "Fase 1 – Infra",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 3,
+      "milestone": "Fase 1 – Infra",
+      "labels": [
+        "tipo:test",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 4,
+      "milestone": "Fase 1 – Infra",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 5,
+      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 6,
+      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 7,
+      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 8,
+      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 9,
+      "milestone": "Fase 3 – Pedidos/Transações",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 10,
+      "milestone": "Fase 3 – Pedidos/Transações",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 11,
+      "milestone": "Fase 3 – Pedidos/Transações",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 12,
+      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 13,
+      "milestone": "Fase 4 – Operador/Manutenção",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 14,
+      "milestone": "Fase 4 – Operador/Manutenção",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 15,
+      "milestone": "Fase 4 – Operador/Manutenção",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 16,
+      "milestone": "Fase 4 – Operador/Manutenção",
+      "labels": [
+        "tipo:feature",
+        "prioridade:média"
+      ]
+    },
+    {
+      "number": 17,
+      "milestone": "Fase 4 – Operador/Manutenção",
+      "labels": [
+        "tipo:feature",
+        "prioridade:média"
+      ]
+    },
+    {
+      "number": 18,
+      "milestone": "Fase 3 – Pedidos/Transações",
+      "labels": [
+        "tipo:feature",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 19,
+      "milestone": "Fase 5 – Testes/Qualidade",
+      "labels": [
+        "tipo:test",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 20,
+      "milestone": "Fase 5 – Testes/Qualidade",
+      "labels": [
+        "tipo:test",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 21,
+      "milestone": "Fase 6 – Documentação/Vídeo",
+      "labels": [
+        "tipo:docs",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 22,
+      "milestone": "Fase 3 – Pedidos/Transações",
+      "labels": [
+        "tipo:docs",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 23,
+      "milestone": "Fase 6 – Documentação/Vídeo",
+      "labels": [
+        "tipo:docs",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 24,
+      "milestone": "Entrega Final",
+      "labels": [
+        "tipo:docs",
+        "prioridade:alta"
+      ]
+    }
+  ]
+}
