@@ -43,6 +43,20 @@ Reservatórios cheios apenas na primeira inicialização.
 
 Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA, MANUTENCAO. Apenas pedidos concluídos incrementam contador de limpeza.
 
+## Decisões de interpretação (25/11/2026)
+Decididas pelo responsável (romulorjr) em 25/11/2026. Complementam o PDF onde ele é omisso; não o substituem. Mapeamento HTTP completo no [ADR 0003](adr/0003-modelo-de-erros.md).
+
+| Id | Tema | Decisão | Justificativa | Registro | Issues |
+|---|---|---|---|---|---|
+| D-4a | Crédito fora de PRONTA | Crédito só é aceito em PRONTA. Em PREPARANDO: 409 `MAQUINA_OCUPADA`. Em MANUTENCAO ou AGUARDANDO_LIMPEZA: 503 (`MAQUINA_EM_MANUTENCAO` / `LIMPEZA_PENDENTE`), os mesmos códigos de `POST /pedidos` no mesmo estado. O troco (RN06) continua permitido em qualquer estado. | "PRONTA: aceita crédito e pedidos" é o único estado que aceita crédito explicitamente; os demais recusam ou bloqueiam pedidos, e receber dinheiro sem poder servir prejudica o cliente. | ADR 0003 | #7 |
+| D-4b | Restituição acima de R$ 50 | Não ocorre. Uma inserção que levaria o saldo acima de R$ 50,00 é rejeitada inteira, sem aceitação parcial, e o saldo não muda. | Pela D-4a, o saldo só cresce em PRONTA e sempre ≤ R$ 50. Entre a aceitação e o cancelamento a máquina está PREPARANDO, então o saldo só pode diminuir (troco). A restituição (RN05) devolve o preço cobrado no pedido, que saiu desse mesmo saldo: saldo final ≤ (saldo anterior − preço) + preço ≤ R$ 50. A restituição usa o preço gravado no pedido, não o preço atual. | ADR 0003 | #7, #11 |
+| D-4c | Período do relatório | `GET /operador/relatorio?from=...&to=...`. Os dois parâmetros são obrigatórios, em ISO 8601 (ex.: `2026-11-01T00:00:00`), ambos inclusivos. Ausente ou inválido: 400 `DADOS_INVALIDOS`. Documentado no OpenAPI e na descrição do endpoint. | Decisão do responsável. | ADR 0003 | #17, #21 |
+| D-4d | Token do operador | JWT HS256 com validade de 1 hora; segredo e credenciais em variáveis de ambiente. Token ausente, inválido ou expirado: 401 `NAO_AUTORIZADO`. | Atende RN11 sem estado no servidor. | [ADR 0004](adr/0004-autenticacao-operador-jwt.md) | #12 |
+| D-4e | Dinheiro no JSON | Reais com duas casas decimais nos corpos de requisição e resposta (ex.: `4.50`); centavos inteiros em toda a aritmética interna. Mais de duas casas: 400. | Segue os exemplos do PDF e evita erros de ponto flutuante. | [ADR 0005](adr/0005-representacao-monetaria.md) | #18, #7, #16, #17 |
+| D-4f | Operador no estado errado | 409 `ESTADO_INVALIDO` (ex.: reabastecer ou limpar fora de MANUTENCAO; entrar em manutenção fora de PRONTA/AGUARDANDO_LIMPEZA; sair sem estar em MANUTENCAO). 503 fica reservado às chamadas do cliente com a máquina indisponível. A alteração de preço não tem restrição de estado, porque RN10 não define nenhuma. | Decisão do responsável. | ADR 0003 | #13, #14, #15, #16 |
+
+Escolha feita pelo agente dentro da D-4a, que admitia "409 ou o mesmo código do cliente": usar os códigos de `POST /pedidos` por estado. Pode ser revertida para 409 em todos os estados se o responsável preferir.
+
 ## Engenharia
 - ENG-INFRA: aplicação reproduzível e versionada.
 - ENG-PERSIST: estoque, crédito, estado e pedidos persistem entre reinicializações.
@@ -51,15 +65,23 @@ Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA, MANUTENCAO. Apenas pedidos conc
 - ENG-DOC: API documentada; separação de responsabilidades; decisão sobre padrão e diagrama de até uma página.
 
 ## Questões a resolver antes das respectivas implementações
-Não são requisitos adicionais confirmados. As propostas de 25/11/2026 aguardam decisão do responsável; a resposta será registrada aqui e em [CONTEXT](CONTEXT.md#decisões).
-1. RN01 não explicita inserção de crédito fora de PRONTA, enquanto a descrição de PRONTA associa esse estado à aceitação de crédito. Definir antes de #7/#11, inclusive interação entre restituição e limite de R$ 50.
-   - Opção A: aceitar crédito em qualquer estado; as descrições de PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO bloqueiam apenas pedidos, e RN06 permite reaver o saldo a qualquer momento.
-   - Opção B: aceitar crédito somente em PRONTA; nos demais estados, responder com o código do estado (409 ou 503).
-   - Restituição (RN05): proposta de que o limite de R$ 50 se aplique só a inserções e que o cancelamento sempre devolva o preço integral, mesmo que o saldo passe de R$ 50.
-2. RN12 não especifica limites inclusivos/exclusivos do período, fuso, data de referência ou vendas em preparo. Definir antes de #17; proposta: parâmetros `inicio` e `fim` em data (AAAA-MM-DD), ambos inclusivos, no fuso America/Sao_Paulo; contar apenas pedidos CONCLUIDO pelo instante de conclusão, com o preço cobrado no pedido.
-3. Disponibilidade no cardápio não recebe açúcar escolhido; proposta: receita base e copo, com validação completa do açúcar no pedido (#5/#9). Disponibilidade considera só estoque, como define RN10; o estado da máquina aparece em `/status`.
-4. Definir expiração do token (#12), precisão monetária e representação JSON (#16/#18), sem tratar propostas como exigências do PDF. Proposta: token assinado (HMAC) com validade de 60 minutos e segredo em variável de ambiente; valores em reais no JSON com duas casas, como nos exemplos do PDF (`{"valor": 10.00}`), convertidos para centavos inteiros na entrada e rejeitados se tiverem mais de duas casas.
-5. O PDF não define o código HTTP para operações do operador no estado errado (reabastecer ou limpar fora de MANUTENCAO, entrar em manutenção durante PREPARANDO, sair sem estar em manutenção). Proposta: 409 Conflict com `erro` específico, documentado no OpenAPI (#13/#14/#15/#18).
+Não são requisitos adicionais confirmados. Respostas são registradas na seção anterior e em [CONTEXT](CONTEXT.md#decisões).
+
+**Resolvidas em 25/11/2026**
+- **Q1** Crédito fora de PRONTA e restituição acima de R$ 50 → D-4a e D-4b.
+- **Q2** Período do relatório → D-4c (parâmetros, formato, inclusividade). Detalhes restantes na Q6.
+- **Q4** Expiração do token e representação monetária → D-4d e D-4e.
+- **Q5** Código HTTP do operador no estado errado → D-4f.
+
+**Em aberto** (propostas do agente; não bloqueiam M1)
+- **Q3** Disponibilidade no cardápio não recebe açúcar escolhido. Proposta: receita base e copo, com validação completa do açúcar no pedido (#5/#9). Disponibilidade considera só estoque, como define RN10; o estado da máquina aparece em `/status`. Necessária antes de #5 (M2).
+- **Q6** Detalhes do relatório não cobertos pela D-4c. Necessária antes de #17 (M3). Propostas:
+  - valor sem fuso (`2026-11-01T00:00:00`) interpretado em America/Sao_Paulo; valor com fuso (`...-03:00`, `...Z`) aceito e convertido;
+  - data sem hora (`2026-11-01`) rejeitada com 400, para que `to` inclusivo não exclua o próprio dia por engano;
+  - `from` posterior a `to`: 400 `DADOS_INVALIDOS`;
+  - contam apenas pedidos CONCLUIDO, pelo instante de conclusão e pelo preço cobrado. Pedidos EM_PREPARO ainda podem ser cancelados e ficam de fora.
+- **Q7** Código para inserção que excede R$ 50,00 (D-4b não definiu). Proposta: 400 `LIMITE_CREDITO_EXCEDIDO`, pela linha "valor de crédito não aceito → 400" do PDF. Necessária antes de #7 (M2).
+- **Q8** Código para cancelar pedido que não está EM_PREPARO (já CONCLUIDO ou CANCELADO). Proposta: 409 `PEDIDO_NAO_CANCELAVEL`. Necessária antes de #11 (M2).
 
 ## Entregas
 E01 repositório e README; E02 API executável/documentada; E03 relatório de qualidade de 1–2 páginas; E04 documento de projeto e diagrama de até uma página; E05 histórico de contribuições; E06 declarações individuais; E07 vídeo (10–15 min sugeridos). Datas confirmadas: checkpoint 18/11/2026 e final 09/12/2026.
