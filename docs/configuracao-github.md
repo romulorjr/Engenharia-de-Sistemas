@@ -1,28 +1,51 @@
 # Configuração administrativa do GitHub
 
-## Estado desta entrega
-As 24 issues foram criadas via conector. A branch de documentação e develop foram criadas para iniciar o fluxo. Labels, milestones e proteção **não foram aplicados**: o conector desta sessão não expõe as operações administrativas necessárias e o GitHub CLI não está instalado no ambiente. A permissão informada pelo repositório não significa que todas as operações estejam disponíveis pela ferramenta.
+## Estado em 25/11/2026
+| Item | Situação | Como foi feito |
+|---|---|---|
+| Issues #1–#24 | Criadas em 14/10/2026 | Conector |
+| Milestones M1–M5 | **Criados** em 25/11/2026 (números 1–5 no GitHub) | `gh api` pelo agente |
+| Vínculo issue → milestone | **Aplicado** em 25/11/2026 para #1–#21, #23, #24 e #27; #22 sem milestone | `gh api` pelo agente |
+| Branch `develop` | **Arquivada** como tag `archive/develop` (ce5eca4) e removida em 25/11/2026 | `git push` pelo agente |
+| Proteção de `main` | **Pendente.** HTTP 403 em `PUT /branches/main/protection` e em `POST /rulesets`: a integração do agente não tem permissão de administração | Manual, [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) |
+| CI obrigatória | Pendente: não existe workflow | Após a #3 (passo 2 da #27) |
+| Labels do plano | Não aplicadas; não solicitadas na decisão de 25/11 | Script opcional abaixo |
 
-## Configuração reproduzível
-[repository-setup.json](../.github/repository-setup.json) define dez labels, sete milestones com datas e vínculos das 24 issues. [configure-github.ps1](../scripts/configure-github.ps1) aplica a configuração com PowerShell 7 e GitHub CLI autenticado por conta autorizada. Não colocar tokens nos arquivos.
+Vencimentos no GitHub: M1 27/11, M2 01/12, M3 03/12, M4 06/12, M5 09/12/2026. O GitHub guarda só a data (`T00:00:00Z`); o prazo vale até o fim do dia no horário de Brasília.
 
-Na raiz de um checkout do PR:
+## Proteção de `main` (decisão de 25/11/2026)
+Configuração versionada em [branch-protection-main.json](../.github/branch-protection-main.json):
+- PR obrigatório com 1 aprovação de outro integrante; aprovações descartadas após novo push;
+- conversas resolvidas antes do merge;
+- regras valendo também para administradores (`enforce_admins`);
+- sem force push e sem exclusão;
+- `required_status_checks: null` até existir o workflow da #3.
+
+Aplicar com uma conta administradora e GitHub CLI autenticado, na raiz do repositório:
+
+```bash
+gh api -X PUT repos/romulorjr/Engenharia-de-Sistemas/branches/main/protection --input .github/branch-protection-main.json
+gh api repos/romulorjr/Engenharia-de-Sistemas/branches/main/protection --jq '{admins: .enforce_admins.enabled, aprovacoes: .required_pull_request_reviews.required_approving_review_count, conversas: .required_conversation_resolution.enabled, force_push: .allow_force_pushes.enabled}'
+```
+
+Resultado esperado: `{"admins":true,"aprovacoes":1,"conversas":true,"force_push":false}`.
+
+Quando o workflow da #3 passar, trocar `required_status_checks` por `{"strict": true, "contexts": ["<nome do job>"]}` e repetir o comando. Não cadastrar checks que ainda não existem: isso bloquearia todos os merges.
+
+## Script completo (labels, milestones, proteção)
+[repository-setup.json](../.github/repository-setup.json) define dez labels, os milestones M1–M5 e o vínculo de cada issue. [configure-github.ps1](../scripts/configure-github.ps1) aplica a configuração com PowerShell 7 e GitHub CLI autenticado por conta autorizada. Não colocar tokens nos arquivos.
 
 ```powershell
 # Apenas mostra o plano; não precisa de autenticação.
 pwsh -File scripts/configure-github.ps1
-# Aplicar labels, milestones e vínculos.
+# Aplicar labels e milestones (preserva milestones já criados e vínculos existentes).
 pwsh -File scripts/configure-github.ps1 -Apply
-# Aplicar também proteção de main e develop.
+# Aplicar também proteção de main.
 pwsh -File scripts/configure-github.ps1 -Apply -ProtectBranches
 ```
 
-O script pode ser retomado: preserva labels e milestones existentes, adiciona labels às issues sem remover outras, não troca milestone já atribuído e não substitui proteções existentes. Falhas interrompem a execução. Confira avisos de divergência e configuração existente manualmente. Milestones internos podem ser ajustados pelo grupo; datas do checkpoint e entrega final permanecem conforme o PDF.
+O script pode ser retomado: preserva labels e milestones existentes, adiciona labels às issues sem remover outras, não troca milestone já atribuído, ignora issues sem milestone planejado e não substitui proteções existentes. Falhas interrompem a execução.
 
-Proteção proposta: uma aprovação, resolução de conversas, descarte de aprovações desatualizadas, aplicação a administradores e bloqueio de force push/exclusão. Requer outro integrante com acesso para revisar.
-
-## Checks obrigatórios
-Ainda não há workflow de aplicação. A #3 deve criá-lo, executá-lo com sucesso e então configurar os nomes reais dos checks como obrigatórios, por exemplo pela tela de proteção do GitHub. Não cadastrar checks imaginários que bloqueiem todos os merges. O parâmetro RequiredChecks permite fornecê-los ao criar uma proteção nova; se a proteção já existir, o script a preserva e será necessário atualizá-la pelo GitHub.
-
-## Verificação após aplicação
-Conferir labels, sete milestones e seus vencimentos; vínculos nas issues #1–#24; main/develop protegidas; PR exige aprovação e, após #3, CI verde. O script foi validado localmente quanto à sintaxe e modo de planejamento; as escritas administrativas remotas permanecem não executadas nesta entrega.
+## Histórico
+- 14/10/2026: issues criadas; labels, milestones (Fases 1–6) e proteção de `main`/`develop` planejados, não aplicados.
+- 25/11/2026: Fases 1–6 substituídas por M1–M5; `develop` abandonada; milestones e vínculos aplicados; proteção pendente na #27.

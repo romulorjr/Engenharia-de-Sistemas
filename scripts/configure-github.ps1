@@ -10,7 +10,7 @@ $configPath = Join-Path $PSScriptRoot '../.github/repository-setup.json'
 $config = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
 if (-not $Apply) {
     Write-Output ("Plano para {0}: {1} labels, {2} milestones, {3} issues." -f $config.repository, $config.labels.Count, $config.milestones.Count, $config.issues.Count)
-    Write-Output 'Use -Apply para aplicar labels e milestones. Acrescente -ProtectBranches para proteger main/develop.'
+    Write-Output 'Use -Apply para aplicar labels e milestones. Acrescente -ProtectBranches para proteger main (develop foi abandonada em 25/11/2026).'
     Write-Output 'Proteções existentes serão preservadas. RequiredChecks só deve conter nomes reais de checks já executados.'
     exit 0
 }
@@ -76,6 +76,7 @@ foreach ($milestone in $config.milestones) {
 foreach ($item in $config.issues) {
     $issue = Invoke-GitHub GET "$prefix/issues/$($item.number)"
     Invoke-GitHub POST "$prefix/issues/$($item.number)/labels" @{ labels = @($item.labels) } | Out-Null
+    if (-not $item.milestone) { continue } # Issue sem milestone planejado (ex.: #22).
     $target = $milestoneNumbers[$item.milestone]
     if ($null -eq $issue.milestone) {
         Invoke-GitHub PATCH "$prefix/issues/$($item.number)" @{ milestone = $target } | Out-Null
@@ -84,7 +85,7 @@ foreach ($item in $config.issues) {
     }
 }
 if ($ProtectBranches) {
-    foreach ($branchName in @('main', 'develop')) {
+    foreach ($branchName in @('main')) {
         $branch = Invoke-GitHub GET "$prefix/branches/$branchName"
         if ($branch.protected) {
             Write-Warning "Proteção de $branchName já existe; preservada. Revise manualmente checks e regras."
