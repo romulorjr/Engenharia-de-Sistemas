@@ -51,11 +51,15 @@ Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA, MANUTENCAO. Apenas pedidos conc
 - ENG-DOC: API documentada; separação de responsabilidades; decisão sobre padrão e diagrama de até uma página.
 
 ## Questões a resolver antes das respectivas implementações
-Não são requisitos adicionais confirmados:
+Não são requisitos adicionais confirmados. As propostas de 25/11/2026 aguardam decisão do responsável; a resposta será registrada aqui e em [CONTEXT](CONTEXT.md#decisões).
 1. RN01 não explicita inserção de crédito fora de PRONTA, enquanto a descrição de PRONTA associa esse estado à aceitação de crédito. Definir antes de #7/#11, inclusive interação entre restituição e limite de R$ 50.
-2. RN12 não especifica limites inclusivos/exclusivos do período, fuso, data de referência ou vendas em preparo. Definir antes de #17; proposta: contar concluídos pelo instante de conclusão e preço cobrado.
-3. Disponibilidade no cardápio não recebe açúcar escolhido; proposta: receita base e copo, com validação completa do açúcar no pedido (#5/#9).
-4. Definir expiração do token (#12), precisão monetária e representação JSON (#16/#18), sem tratar propostas como exigências do PDF.
+   - Opção A: aceitar crédito em qualquer estado; as descrições de PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO bloqueiam apenas pedidos, e RN06 permite reaver o saldo a qualquer momento.
+   - Opção B: aceitar crédito somente em PRONTA; nos demais estados, responder com o código do estado (409 ou 503).
+   - Restituição (RN05): proposta de que o limite de R$ 50 se aplique só a inserções e que o cancelamento sempre devolva o preço integral, mesmo que o saldo passe de R$ 50.
+2. RN12 não especifica limites inclusivos/exclusivos do período, fuso, data de referência ou vendas em preparo. Definir antes de #17; proposta: parâmetros `inicio` e `fim` em data (AAAA-MM-DD), ambos inclusivos, no fuso America/Sao_Paulo; contar apenas pedidos CONCLUIDO pelo instante de conclusão, com o preço cobrado no pedido.
+3. Disponibilidade no cardápio não recebe açúcar escolhido; proposta: receita base e copo, com validação completa do açúcar no pedido (#5/#9). Disponibilidade considera só estoque, como define RN10; o estado da máquina aparece em `/status`.
+4. Definir expiração do token (#12), precisão monetária e representação JSON (#16/#18), sem tratar propostas como exigências do PDF. Proposta: token assinado (HMAC) com validade de 60 minutos e segredo em variável de ambiente; valores em reais no JSON com duas casas, como nos exemplos do PDF (`{"valor": 10.00}`), convertidos para centavos inteiros na entrada e rejeitados se tiverem mais de duas casas.
+5. O PDF não define o código HTTP para operações do operador no estado errado (reabastecer ou limpar fora de MANUTENCAO, entrar em manutenção durante PREPARANDO, sair sem estar em manutenção). Proposta: 409 Conflict com `erro` específico, documentado no OpenAPI (#13/#14/#15/#18).
 
 ## Entregas
 E01 repositório e README; E02 API executável/documentada; E03 relatório de qualidade de 1–2 páginas; E04 documento de projeto e diagrama de até uma página; E05 histórico de contribuições; E06 declarações individuais; E07 vídeo (10–15 min sugeridos). Datas confirmadas: checkpoint 18/11/2026 e final 09/12/2026.

@@ -1,6 +1,6 @@
 # Plano de projeto
 
-Base: [contexto](CONTEXT.md), [especificação](../ESI%20-%20projeto%20maquina-cafe.pdf), [requisitos](requisitos.md) e [ADR](adr/0001-escolha-da-stack.md). Atualizado em 14/10/2026.
+Base: [contexto](CONTEXT.md), [especificação](../ESI%20-%20projeto%20maquina-cafe.pdf), [requisitos](requisitos.md) e [ADR](adr/0001-escolha-da-stack.md). Criado em 14/10/2026; atualizado em 25/11/2026 com o [replanejamento proposto](#replanejamento-proposto-em-25112026).
 
 ## Objetivo e estratégia
 Entregar um MVP de uma máquina de café como API REST persistente, cobrindo RN01–RN12, com testes e documentação. Começar por um fluxo vertical: cardápio → crédito → pedido → preparo → troco. Acrescentar operador e relatórios sem concentrar regras nos controllers. Nenhuma funcionalidade está implementada nesta base.
@@ -19,6 +19,34 @@ Datas em 2026, America/Sao_Paulo. O PDF define grupos 12–16/10, infraestrutura
 | Entrega Final | 09/12 | 2026-12-09 | Entrega dos sete artefatos revisados. |
 
 Até 16/10: confirmar papéis e usuários GitHub. Até 18/11: demonstrar o fluxo vertical, apresentar testes disponíveis e riscos. As sete entregas são artefatos, não fases.
+
+Situação em 25/11/2026: nenhum milestone foi criado no GitHub e nenhuma issue de código foi iniciada. As Fases 1–3 venceram sem entregas e o checkpoint de 18/11 passou. O cronograma acima fica como registro histórico; a proposta abaixo o substitui após confirmação.
+
+## Replanejamento proposto em 25/11/2026
+**Status: proposta, aguardando confirmação do responsável.** Faltam 14 dias para 09/12. Cada milestone termina com um resultado verificável por teste ou demonstração. As datas são planejamento interno; checkpoint e entrega final continuam conforme o PDF.
+
+| Milestone proposto | Período | Vencimento | Issues | Resultado verificável |
+|---|---|---|---|---|
+| M1 – Base técnica | 26–27/11 | 2026-11-27 | #2, #3, #4, contrato de erro de #18 | Aplicação inicia; CI executa pytest com cobertura ≥75%, Ruff e Radon; banco inicializa cheio uma única vez |
+| M2 – Fluxo do cliente | 28/11–01/12 | 2026-12-01 | #5, #7, #8, #9, #10, #11 | Exemplo da seção 2 do PDF (cappuccino, R$ 10,00, troco R$ 3,50) reproduzido em teste de integração e no Swagger |
+| M3 – Operador e manutenção | 02–03/12 | 2026-12-03 | #12, #6, #13, #15, #14, #16, #17, #19 | Rotas `/operador/*` com token; ciclo de 30 preparos e limpeza; reinício preserva estoque, crédito, estado e pedidos |
+| M4 – Qualidade e documentação | 04–06/12 | 2026-12-06 | #20, #21, #23 (declarações) | Relatório de qualidade, documento de projeto com diagrama, OpenAPI exportado e coleção Postman, declarações |
+| M5 – Entrega | 07–09/12 | 2026-12-09 | #23 (vídeo), #24 | Ensaio em ambiente limpo, vídeo de 10–15 min, tag de release |
+
+Congelamento de funcionalidades em 03/12. O período de 04 a 06/12 fica reservado para correções, documentação e ensaio.
+
+**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
+
+**Linha de corte.** O PDF permite selecionar as regras viáveis no prazo. Se M2 atrasar, a prioridade é:
+1. Obrigatório: RN01–RN06, RN11, persistência, contrato de erros, Swagger e testes com cobertura ≥75%.
+2. Em seguida: RN07, RN08, RN09 e consulta de estoque (#6, #13, #14, #15).
+3. Por último: RN10 alteração de preço (#16) e RN12 relatório (#17).
+
+Qualquer corte será registrado no README, no relatório de qualidade e no vídeo, sem apresentar regra não implementada como entregue.
+
+**Issues fora do novo cronograma.** #1 é concluída pelo PR de governança de 25/11. #22 (checkpoint de 18/11) aguarda informação sobre o que foi apresentado para ser fechada com registro.
+
+**Distribuição.** Cada integrante deve assumir ao menos uma issue de código e revisar ao menos um PR de outra pessoa, para que E05 e E06 reflitam a participação real. A distribuição será registrada nas issues e em [contribuições](contributions.md).
 
 ## Backlog inicial
 Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda serão distribuídos pelo grupo. Milestones/labels estão previstos na configuração administrativa, ainda não aplicados.
@@ -197,12 +225,14 @@ Evidência planejada: checklist de evidências.
 Evidência planejada: ensaio final em ambiente limpo.
 
 ## Definition of Done
-- Requisito e issue identificados; critérios de aceite demonstrados.
+- Requisito e issue identificados; critérios de aceite demonstrados. Funcionalidades e refatorações têm spec em `.kiro/specs/<issue>-<resumo>/`.
+- Código nas camadas corretas: controllers sem regra de negócio; regras em serviços/domínio; SQL apenas na persistência.
 - Testes unitários e de integração pertinentes, incluindo limites e erros; cobertura global da aplicação >=75%. Não excluir módulos para atingir artificialmente a meta.
-- CI executa testes, cobertura, lint e verificação de formatação; métricas de complexidade registradas. Aplicável a PRs de código após #3.
+- CI executa testes, cobertura, lint e verificação de formatação; métricas de complexidade registradas; nenhum problema crítico novo. Aplicável a PRs de código após #3.
 - Mudanças monetárias/estoque com atomicidade, persistência e concorrência verificadas quando relevantes.
 - Outro integrante revisa o PR; comentários relevantes resolvidos.
-- README, OpenAPI, ADR e matriz atualizados quando afetados.
+- OpenAPI/Postman atualizados quando a API muda, com exemplos e códigos de erro.
+- README, [CONTEXT](CONTEXT.md), [CHANGELOG](../CHANGELOG.md), ADR (se aplicável), diagrama, [matriz](rastreabilidade.md), [relatório de qualidade](quality-report.md) e [contribuições](contributions.md) atualizados quando afetados.
 - Evidências reais e autoria preservadas; nenhum segredo ou banco local versionado.
 - PR somente documental: links, consistência e revisão substituem testes de aplicação que ainda não existem; não declarar cobertura fictícia.
 
@@ -212,6 +242,8 @@ main mantém a versão revisada para demonstração. develop integra funcionalid
 Usar Conventional Commits: feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validar denominacoes aceitas; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
 
 PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir uma issue por PR. Exigir uma aprovação de outro integrante e checks verdes; evitar push direto em main/develop. Bloquear force push e exclusão. Os checks obrigatórios só serão nomeados na proteção depois que o workflow real existir e passar (#3).
+
+Situação em 25/11/2026: `develop` não foi sincronizada após o PR #25 e não contém a documentação. Até a decisão do responsável, branches partem de `main` e os PRs miram `main`, como no PR #25. Decisão pendente: sincronizar `develop` e manter o fluxo acima, ou usar apenas `feature/*` → `main` até a entrega.
 
 ## Testes e rastreabilidade
 [Matriz requisito → issue → teste](rastreabilidade.md). Usar partição de equivalência, valores-limite e transições de estado. Ex.: crédito 49,50 + 0,50 aceito versus 50 + 0,50 rejeitado; alerta exatamente no limite não aciona; açúcar -1/0/3/4; conclusões 29/30; reposição no limite e acima. Testar falha de transação, cancelamento repetido, corrida pedido/troco e reinício. Relógio controlado evita sleeps. Testes previstos ainda não existem.
@@ -241,4 +273,4 @@ PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir
 | E07 | Vídeo de demonstração; 10–15 minutos sugeridos | #23 |
 
 ## Próximas ações
-Revisar PR inicial; aplicar configuração GitHub; distribuir responsáveis; iniciar #2, #3 e #4. Confirmar licença antes de adicionar LICENSE. Criar a aplicação e fixar dependências antes de prometer comandos funcionais.
+Atualizado em 25/11/2026. Revisar o PR de governança (#1); confirmar o replanejamento e criar os milestones M1–M5; decidir o fluxo de branches e a persistência; responder às questões de [requisitos](requisitos.md#questões-a-resolver-antes-das-respectivas-implementações); distribuir responsáveis; iniciar #2, #3 e #4. Confirmar licença antes de adicionar LICENSE. Criar a aplicação e fixar dependências antes de prometer comandos funcionais.

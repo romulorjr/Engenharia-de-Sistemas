@@ -2,16 +2,18 @@
 
 Back-end de uma máquina de café automática para a disciplina Engenharia de Sistemas de Informação. O objetivo é entregar software funcional, testado e documentado, com evidências de participação de todos os integrantes.
 
-**Status: planejamento e estrutura inicial. A API ainda não está implementada.** A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
+**Status em 25/11/2026: planejamento, governança e estrutura inicial. A API ainda não está implementada.** Situação detalhada em [CONTEXT](docs/CONTEXT.md#estado-atual-25112026) e mudanças no [CHANGELOG](CHANGELOG.md). A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
 
 ## Equipe
-| Integrante (ordem alfabética) | Papel | GitHub |
+| Integrante (ordem alfabética) | Papel | GitHub (a confirmar) |
 |---|---|---|
-| Bruno de Andrade Gama Kraker | A definir | A informar |
-| Pedro Henryk Bezerra Souza | A definir | A informar |
-| Rodrigo Franco de Moraes | A definir | A informar |
-| Rômulo Maurício Fonseca Júnior | A definir | A informar |
-| Thales Iamamura | A definir | A informar |
+| Bruno de Andrade Gama Kraker | A definir | BrunoKraker |
+| Pedro Henryk Bezerra Souza | A definir | pedro-henryk |
+| Rodrigo Franco de Moraes | A definir | rodr1gofm |
+| Rômulo Maurício Fonseca Júnior | A definir | romulorjr |
+| Thales Iamamura | A definir | t-iamamura |
+
+As contas são as colaboradoras do repositório; a correspondência com os nomes foi inferida e cada integrante deve confirmá-la em [contribuições](docs/contributions.md).
 
 ## Escopo
 Cinco bebidas com receitas, preços e preparo simulado; estoque e alertas; crédito e troco; pedidos e cancelamento; operador autenticado, limpeza, reposição e relatórios. Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO. Banco preserva estoque, crédito, estado e pedidos após reiniciar.
@@ -24,27 +26,34 @@ Controllers recebem entradas e produzem respostas; serviços/domínio coordenam 
 ## Estrutura
 ```text
 src/maquina_cafe/
-  api/
-  services/
-  domain/
-  persistence/
+  api/                  controllers HTTP (vazio)
+  services/             regras de negócio e transações (vazio)
+  domain/               entidades, receitas, estados (vazio)
+  persistence/          repositories e banco (vazio)
 tests/
   unit/
   integration/
 docs/
-  CONTEXT.md
-  plano-de-projeto.md
-  requisitos.md
-  rastreabilidade.md
-  arquitetura.md
+  CONTEXT.md            estado atual, próximos passos, decisões, bloqueios
+  plano-de-projeto.md   milestones, backlog, Definition of Done
+  requisitos.md         transcrição do PDF e questões em aberto
+  rastreabilidade.md    requisito → issue → implementação → teste → documentação
+  arquitetura.md        diagrama de componentes (planejado)
+  quality-report.md     cobertura, análise estática, code smells
+  contributions.md      histórico de contribuições e declarações
   configuracao-github.md
-  adr/0001-escolha-da-stack.md
+  adr/                  README (índice), 0000-modelo, 0001-escolha-da-stack
+.kiro/
+  steering/project.md   regras do projeto para o Kiro e para a equipe
+  hooks/                docs-guard, quality-on-save, quality-on-stop
 .github/
   ISSUE_TEMPLATE/
   PULL_REQUEST_TEMPLATE.md
   repository-setup.json
 scripts/
   configure-github.ps1
+  kiro/                 docs_guard.py, quality_check.py
+CHANGELOG.md
 ```
 
 ## Executar localmente
@@ -105,10 +114,26 @@ Tabelas de receitas, capacidades, erros e questões em aberto: [requisitos](docs
 
 **Checkpoint: 18/11/2026. Entrega final: 09/12/2026.** O [plano](docs/plano-de-projeto.md) detalha backlog, critérios de aceite, riscos e as sete entregas: repositório, API, relatório de qualidade, documento de projeto, histórico de contribuições, declarações individuais e vídeo.
 
+Em 25/11/2026 as Fases 1–3 estão vencidas sem código. Um [replanejamento](docs/plano-de-projeto.md#replanejamento-proposto-em-25112026) com milestones M1–M5 até 09/12 aguarda confirmação do grupo.
+
 ## Contribuir
 Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe em branch vinculada à issue, com Conventional Commits e PR revisado por outro integrante. main é a versão revisada; develop integra trabalho; feature/*, docs/*, fix/* e hotfix/* seguem o plano. Vincule requisito → issue → teste. Testes, cobertura e análise estática serão executados a cada PR de código após configuração da CI.
 
 [Configuração do GitHub](docs/configuracao-github.md): labels, milestones e proteção planejados; script separado para aplicação administrativa. Não considerar proteções ativas antes da verificação.
+
+### Documentação obrigatória em cada PR
+Regras completas em [.kiro/steering/project.md](.kiro/steering/project.md). Todo PR atualiza, quando afetados: este README, [CONTEXT](docs/CONTEXT.md), [plano](docs/plano-de-projeto.md) e [matriz](docs/rastreabilidade.md), [CHANGELOG](CHANGELOG.md), [ADRs](docs/adr/README.md), OpenAPI/Postman, testes, [diagrama](docs/arquitetura.md), [relatório de qualidade](docs/quality-report.md) e [contribuições](docs/contributions.md). Funcionalidades e refatorações têm spec em `.kiro/specs/<issue>-<resumo>/` (requirements, design, tasks).
+
+### Hooks do Kiro
+Versionados em `.kiro/hooks/` e ativados ao abrir a pasta do repositório como raiz do workspace no Kiro. Os comandos rodam na raiz do repositório e também podem ser executados à mão:
+
+| Hook | Gatilho | Comando | Efeito |
+|---|---|---|---|
+| docs-guard | fim do turno do agente (Stop) | `python scripts/kiro/docs_guard.py` | Falha se `src/` ou `tests/` mudaram na branch sem `CHANGELOG.md` e `docs/CONTEXT.md` |
+| quality-on-save | arquivo `.py` salvo em `src/` ou `tests/` (Kiro IDE/CLI) | `python scripts/kiro/quality_check.py --lint-only` | Ruff check e format check |
+| quality-on-stop | fim do turno do agente (Stop) | `python scripts/kiro/quality_check.py --if-changed` | Ruff e pytest se houver código alterado |
+
+Enquanto não houver `pyproject.toml` (#2), `quality_check.py` não executa nada. Gatilhos de arquivo não rodam no Kiro Web; os gatilhos Stop rodam no IDE, CLI e Web.
 
 ## Licença
 Ainda não definida pelo grupo. Nenhum arquivo LICENSE foi adicionado; repositório público não implica concessão de licença de uso.
