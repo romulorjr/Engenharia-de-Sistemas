@@ -42,7 +42,7 @@ Se o PDF for ambíguo, registrar a dúvida em `docs/requisitos.md` e perguntar a
 Sempre atualizar a documentação junto com a mudança, no mesmo PR. Não declarar como implementado, testado ou medido o que não foi.
 
 ## Branches, commits e PRs
-- `main` é a única branch de longa duração e é protegida; nunca commitar direto nela. Não existe `develop` (arquivada como tag `archive/develop`).
+- `main` é a única branch de longa duração; nunca commitar direto nela (proteção no GitHub: issue #27). Não existe `develop` (arquivada como tag `archive/develop`).
 - Branches partem de `main`: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>`, `test/<issue>-<resumo>`. PR sempre para `main`.
 - Milestones M1–M5 são fixos: re-escopo exige issue nova, nunca mover issues de milestone silenciosamente.
 - Conventional Commits em português, sem acentos no assunto: `feat(credito): validar denominacoes aceitas`, rodapé `Refs #7`. Tipos: feat, fix, docs, test, refactor, chore, ci.

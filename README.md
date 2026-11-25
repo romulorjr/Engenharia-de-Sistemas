@@ -132,7 +132,7 @@ Replanejamento aprovado em 25/11/2026; milestones no GitHub. As Fases 1–6 de o
 
 | Milestone | Vencimento | Issues | Resultado |
 |---|---|---|---|
-| M1 – Base técnica | 27/11/2026 | #1, #2, #3, #4, #18 | Aplicação inicia; CI com testes, cobertura, Ruff e Radon; banco inicializado; contrato de erro |
+| M1 – Base técnica | 27/11/2026 | #1, #2, #3, #4, #18, #27 | Aplicação inicia; CI com testes, cobertura, Ruff e Radon; banco inicializado; contrato de erro |
 | M2 – Fluxo do cliente | 01/12/2026 | #5, #7, #8, #9, #10, #11 | Exemplo do PDF (cappuccino, R$ 10,00, troco R$ 3,50) em teste e no Swagger |
 | M3 – Operador e manutenção | 03/12/2026 | #6, #12, #13, #14, #15, #16, #17, #19 | Rotas do operador com JWT, limpeza, reposição, relatório, recuperação após reinício; congelamento de funcionalidades |
 | M4 – Qualidade e documentação | 06/12/2026 | #20, #21 | Relatório de qualidade, documento de projeto, OpenAPI e Postman |
@@ -146,10 +146,10 @@ Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe e
 ### Branching
 - `main` é a única branch de longa duração. Não há `develop` (arquivada em 25/11/2026 como a tag `archive/develop`).
 - Crie a branch a partir de `main` atualizada: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>` ou `test/<issue>-<resumo>`. Exemplo: `git switch main && git pull && git switch -c feature/7-inserir-credito`.
-- Abra PR para `main` usando o template. `main` é protegida: sem push direto, PR com 1 aprovação de outro integrante, conversas resolvidas, sem force push. A CI verde passa a ser obrigatória quando o workflow da #3 existir.
+- Abra PR para `main` usando o template. Regras de `main`: sem push direto, PR com 1 aprovação de outro integrante, conversas resolvidas, sem force push; CI verde obrigatória quando o workflow da #3 existir. A proteção no GitHub ainda precisa ser aplicada por um administrador ([#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27)); até lá, vale por acordo.
 - Commits no padrão Conventional Commits, com `Refs #n` no rodapé.
 
-[Configuração do GitHub](docs/configuracao-github.md): milestones e proteção aplicados em 25/11/2026; labels ainda não aplicadas.
+[Configuração do GitHub](docs/configuracao-github.md): milestones M1–M5 aplicados em 25/11/2026; proteção de `main` pendente (#27); labels ainda não aplicadas.
 
 ### Documentação obrigatória em cada PR
 Regras completas em [.kiro/steering/project.md](.kiro/steering/project.md). Todo PR atualiza, quando afetados: este README, [CONTEXT](docs/CONTEXT.md), [plano](docs/plano-de-projeto.md) e [matriz](docs/rastreabilidade.md), [CHANGELOG](CHANGELOG.md), [ADRs](docs/adr/README.md), OpenAPI/Postman, testes, [diagrama](docs/arquitetura.md), [relatório de qualidade](docs/quality-report.md) e [contribuições](docs/contributions.md). Funcionalidades e refatorações têm spec em `.kiro/specs/<issue>-<resumo>/` (requirements, design, tasks).

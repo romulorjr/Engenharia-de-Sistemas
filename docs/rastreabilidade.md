@@ -9,27 +9,27 @@ Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado,
 | ENG-DOC | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) | PR #25; [PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | revisão documental; `scripts/kiro/docs_guard.py` | README, CONTEXT, CHANGELOG, steering, ADR README | Em revisão |
 | ENG-INFRA | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) | — | test_app_startup | — | Planejado |
 | ENG-QUAL | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) | — | validação do workflow em PR | — | Planejado |
-| ENG-PERSIST | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) | — | test_initialization_idempotent | — | Planejado |
+| ENG-PERSIST | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) | — | test_initialization_idempotent | ADR 0002 (proposto) | Planejado |
 | RN10 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) | — | test_menu_recipes_and_availability | — | Planejado |
 | CAT01 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) | — | test_menu_recipes_and_availability | — | Planejado |
 | EST01 | [#6](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/6) | — | test_stock_alert_boundaries | — | Planejado |
-| RN11 | [#6](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/6) | — | test_stock_alert_boundaries | — | Planejado |
-| RN01 | [#7](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/7) | — | test_credit_denominations_and_limit | — | Planejado |
-| RN06 | [#8](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/8) | — | test_change_all_states_and_concurrency | — | Planejado |
-| RN02 | [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) | — | test_order_atomicity_and_concurrency | — | Planejado |
-| RN03 | [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) | — | test_order_atomicity_and_concurrency | — | Planejado |
+| RN11 | [#6](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/6) | — | test_stock_alert_boundaries | ADR 0004 (D-4d) | Planejado |
+| RN01 | [#7](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/7) | — | test_credit_denominations_and_limit | requisitos D-4a, D-4b; ADR 0003, 0005 | Planejado |
+| RN06 | [#8](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/8) | — | test_change_all_states_and_concurrency | ADR 0002 | Planejado |
+| RN02 | [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) | — | test_order_atomicity_and_concurrency | ADR 0002, 0003 | Planejado |
+| RN03 | [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) | — | test_order_atomicity_and_concurrency; test_order_rollback_on_midway_failure | ADR 0002, 0005 | Planejado |
 | RN04 | [#10](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/10) | — | test_preparation_deadline_and_30th_completion | — | Planejado |
 | RN07 | [#10](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/10) | — | test_preparation_deadline_and_30th_completion | — | Planejado |
-| RN05 | [#11](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/11) | — | test_cancel_refund_and_consumption | — | Planejado |
-| RN11 | [#12](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/12) | — | test_operator_authentication | — | Planejado |
-| RN08 | [#13](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/13) | — | test_maintenance_transitions | — | Planejado |
-| RN09 | [#14](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/14) | — | test_refill_capacity_and_state | — | Planejado |
-| RN07 | [#15](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/15) | — | test_cleaning_cycle | — | Planejado |
-| RN10 | [#16](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/16) | — | test_price_update_and_snapshot | — | Planejado |
-| RN12 | [#17](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/17) | — | test_sales_report_period_and_cancellations | — | Planejado |
-| ENG-API | [#18](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/18) | — | test_error_contract | — | Planejado |
-| ENG-PERSIST | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) | — | test_restart_recovery | — | Planejado |
-| RN03 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) | — | test_restart_recovery | — | Planejado |
+| RN05 | [#11](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/11) | — | test_cancel_refund_and_consumption; test_cancel_rollback_on_midway_failure | ADR 0002; requisitos D-4b | Planejado |
+| RN11 | [#12](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/12) | — | test_operator_authentication | ADR 0004 (D-4d) | Planejado |
+| RN08 | [#13](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/13) | — | test_maintenance_transitions | ADR 0003 (D-4f) | Planejado |
+| RN09 | [#14](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/14) | — | test_refill_capacity_and_state | ADR 0003 (D-4f) | Planejado |
+| RN07 | [#15](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/15) | — | test_cleaning_cycle | ADR 0003 (D-4f) | Planejado |
+| RN10 | [#16](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/16) | — | test_price_update_and_snapshot | ADR 0005; requisitos D-4f (sem restrição de estado) | Planejado |
+| RN12 | [#17](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/17) | — | test_sales_report_period_and_cancellations | requisitos D-4c, Q6; ADR 0003 | Planejado |
+| ENG-API | [#18](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/18) | — | test_error_contract | ADR 0003, 0005 | Planejado |
+| ENG-PERSIST | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) | — | test_restart_recovery | ADR 0002 (proposto) | Planejado |
+| RN03 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) | — | test_restart_recovery | ADR 0002, 0005 | Planejado |
 | RN04 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) | — | test_restart_recovery | — | Planejado |
 | ENG-QUAL | [#20](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/20) | — | suite completa e relatório de cobertura | — | Planejado |
 | E03 | [#20](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/20) | — | suite completa e relatório de cobertura | — | Planejado |
@@ -47,5 +47,6 @@ Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado,
 | E05 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) | — | ensaio final em ambiente limpo | — | Planejado |
 | E06 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) | — | ensaio final em ambiente limpo | — | Planejado |
 | E07 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) | — | ensaio final em ambiente limpo | — | Planejado |
+| ENG-QUAL | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) | `.github/branch-protection-main.json` | verificação da proteção via `gh api` | configuracao-github.md | Bloqueado: requer administrador |
 
 RN01–RN12 estão cobertas no planejamento. Aprovação desta matriz não significa aprovação da implementação. ENG-* e E01–E07 foram definidos pelo plano para rastrear engenharia e entregas.

@@ -27,7 +27,7 @@ Situação em 25/11/2026: nenhum milestone foi criado no GitHub e nenhuma issue 
 
 | Milestone | Período | Vencimento | Issues | Resultado verificável |
 |---|---|---|---|---|
-| M1 – Base técnica | 26–27/11 | 2026-11-27 | #1, #2, #3, #4, #18 (contrato de erro) | Aplicação inicia; CI executa pytest com cobertura ≥75%, Ruff e Radon; banco inicializa cheio uma única vez |
+| M1 – Base técnica | 26–27/11 | 2026-11-27 | #1, #2, #3, #4, #18 (contrato de erro), #27 (proteção de `main`) | Aplicação inicia; CI executa pytest com cobertura ≥75%, Ruff e Radon; banco inicializa cheio uma única vez |
 | M2 – Fluxo do cliente | 28/11–01/12 | 2026-12-01 | #5, #7, #8, #9, #10, #11 | Exemplo da seção 2 do PDF (cappuccino, R$ 10,00, troco R$ 3,50) reproduzido em teste de integração e no Swagger |
 | M3 – Operador e manutenção | 02–03/12 | 2026-12-03 | #12, #6, #13, #15, #14, #16, #17, #19 | Rotas `/operador/*` com token; ciclo de 30 preparos e limpeza; reinício preserva estoque, crédito, estado e pedidos |
 | M4 – Qualidade e documentação | 04–06/12 | 2026-12-06 | #20, #21 | Relatório de qualidade, documento de projeto com diagrama, OpenAPI exportado e coleção Postman, declarações |
@@ -40,6 +40,7 @@ Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estad
 - #18 entra em M1 porque o envelope e o mapeamento de erros ([ADR 0003](adr/0003-modelo-de-erros.md)) são base para todas as rotas. A validação de cada rota é feita na issue da rota e verificada por `test_error_contract` ao longo de M2–M3.
 - #23 entra em M5 (vídeo). As declarações individuais de #23 têm meta interna de 06/12.
 - #22 fica sem milestone até se saber se o checkpoint de 18/11 aconteceu.
+- #27 foi criada em 25/11 para a proteção de `main`, que o agente não conseguiu aplicar (HTTP 403), e entrou em M1.
 
 **Regra de re-escopo.** Depois de criados os milestones, nenhuma issue muda de milestone silenciosamente. Se um milestone precisar de re-escopo, abrir uma issue nova descrevendo o que sai, o que entra e o motivo, e registrá-la aqui e no [CONTEXT](CONTEXT.md).
 
@@ -85,6 +86,7 @@ Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda 
 | P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | — (sem milestone) | alta | P08, P10, P11 |
 | P23 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) Reunir contribuições, declarações e vídeo | E05; E06; E07 | M5 – Entrega | alta | P20, P21 |
 | P24 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) Auditar e entregar os sete artefatos | E01; E02; E03; E04; E05; E06; E07 | M5 – Entrega | alta | P20, P21, P23 |
+| P25 | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) Aplicar proteção da branch main | ENG-QUAL | M1 – Base técnica | alta | — (passo 2 depende de P03) |
 
 ## Critérios de aceite por issue
 
@@ -250,6 +252,12 @@ Evidência planejada: checklist de evidências.
 
 Evidência planejada: ensaio final em ambiente limpo.
 
+### [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) — Aplicar proteção da branch main
+- [ ] Proteção de `.github/branch-protection-main.json` aplicada por administrador e verificada; push direto em `main` recusado.
+- [ ] Após a #3, check da CI exigido na proteção.
+
+Evidência planejada: saída do comando de verificação registrada em configuracao-github.md.
+
 ## Definition of Done
 - Requisito e issue identificados; critérios de aceite demonstrados. Funcionalidades e refatorações têm spec em `.kiro/specs/<issue>-<resumo>/`.
 - Código nas camadas corretas: controllers sem regra de negócio; regras em serviços/domínio; SQL apenas na persistência.
@@ -268,8 +276,8 @@ Decisão do responsável em 25/11/2026 (decisão 2): `develop` foi abandonada.
 - `main` é a única branch de longa duração e contém a versão revisada.
 - Branches de trabalho partem de `main`: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>`, `test/<issue>-<resumo>`.
 - Todo PR mira `main`, segue o [template](../.github/PULL_REQUEST_TEMPLATE.md) e precisa de aprovação de outro integrante.
-- Proteção de `main` aplicada em 25/11/2026: PR obrigatório com 1 aprovação, aprovações descartadas após novo push, conversas resolvidas, regras valendo também para administradores, sem force push e sem exclusão. Detalhes e verificação em [configuração do GitHub](configuracao-github.md).
-- CI verde obrigatória: o check será exigido assim que o workflow da #3 existir e passar uma vez. Antes disso não há nome de check para cadastrar.
+- Proteção de `main` decidida: PR obrigatório com 1 aprovação, aprovações descartadas após novo push, conversas resolvidas, regras valendo também para administradores, sem force push e sem exclusão. Configuração em `.github/branch-protection-main.json`. **Ainda não aplicada:** a integração do agente recebeu HTTP 403 (sem permissão de administração). Aplicação manual pelo administrador na [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) (M1). Até lá, a regra vale por acordo da equipe.
+- CI verde obrigatória: o check será exigido assim que o workflow da #3 existir e passar uma vez (passo 2 da #27). Antes disso não há nome de check para cadastrar.
 - `develop` estava atrás de `main` (seu único commit, ce5eca4, já está em `main`). Foi arquivada como a tag `archive/develop` e a branch remota foi removida. Para consultar: `git checkout archive/develop`.
 
 Usar Conventional Commits: feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validar denominacoes aceitas; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
