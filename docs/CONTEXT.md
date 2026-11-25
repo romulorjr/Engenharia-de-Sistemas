@@ -16,7 +16,7 @@ Relatório de estado produzido nesta data.
 **Feito**
 - Documentação de planejamento: README, requisitos, plano, rastreabilidade, arquitetura planejada, ADR 0001 (stack), configuração GitHub, templates de issue/PR, `.gitignore` e pastas vazias em `src/` e `tests/`.
 - Issues #1–#24 criadas em 14/10, todas abertas, sem responsável, label ou milestone. PR #25 (planejamento) mesclado em `main` em 14/10.
-- Nesta sessão: steering e hooks do Kiro, CHANGELOG, índice e modelo de ADR, esqueletos de relatório de qualidade e contribuições, checklist de documentação no template de PR (branch `docs/governanca-documentacao-kiro`, issue #1).
+- Nesta sessão: steering e hooks do Kiro, CHANGELOG, índice e modelo de ADR, esqueletos de relatório de qualidade e contribuições, checklist de documentação no template de PR ([PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26), issue #1).
 
 **Não existe ainda**
 - Código de aplicação, `pyproject.toml`/dependências, banco e migrações, testes, CI, configuração de Ruff/Radon, OpenAPI exportado ou coleção Postman.
@@ -48,7 +48,7 @@ Relatório de estado produzido nesta data.
 
 ## Próximos passos
 Dependem da confirmação do responsável sobre o [replanejamento proposto](plano-de-projeto.md#replanejamento-proposto-em-25112026).
-1. Revisar e mesclar o PR desta sessão (#1).
+1. Revisar e mesclar o [PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) (#1), com aprovação de outro integrante.
 2. Responder às questões de requisitos e às decisões pendentes listadas abaixo.
 3. Base técnica: #2 (aplicação e dependências), #3 (CI, cobertura e Ruff/Radon), #4 (banco e inicialização idempotente), modelo de erros de #18.
 4. Fluxo do cliente do exemplo do PDF: #5, #7, #8, #9, #10, #11.

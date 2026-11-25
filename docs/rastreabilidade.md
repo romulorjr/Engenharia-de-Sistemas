@@ -6,7 +6,7 @@ Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado,
 
 | Requisito | Issue | Implementação | Teste/evidência planejado | Documentação | Estado |
 |---|---|---|---|---|---|
-| ENG-DOC | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) | PR #25; branch `docs/governanca-documentacao-kiro` | revisão documental; `scripts/kiro/docs_guard.py` | README, CONTEXT, CHANGELOG, steering, ADR README | Em revisão |
+| ENG-DOC | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) | PR #25; [PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | revisão documental; `scripts/kiro/docs_guard.py` | README, CONTEXT, CHANGELOG, steering, ADR README | Em revisão |
 | ENG-INFRA | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) | — | test_app_startup | — | Planejado |
 | ENG-QUAL | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) | — | validação do workflow em PR | — | Planejado |
 | ENG-PERSIST | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) | — | test_initialization_idempotent | — | Planejado |

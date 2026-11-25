@@ -22,7 +22,7 @@ Uma linha por PR ou mudança relevante. Manter em ordem cronológica.
 | Data | PR / branch | Issue | Mudança | Autor dos commits | Solicitado por | Revisor |
 |---|---|---|---|---|---|---|
 | 14/10/2026 | #25 | #1 | Planejamento, requisitos, ADR 0001, templates e estrutura inicial | romulorjr | romulorjr | — |
-| 25/11/2026 | `docs/governanca-documentacao-kiro` | #1 | Relatório de estado, replanejamento proposto, steering/hooks do Kiro, CHANGELOG, índice de ADR, relatórios de qualidade e contribuições | Kiro Agent | romulorjr | Pendente |
+| 25/11/2026 | [#26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | #1 | Relatório de estado, replanejamento proposto, steering/hooks do Kiro, CHANGELOG, índice de ADR, relatórios de qualidade e contribuições | Kiro Agent | romulorjr | Pendente |
 
 ## Declarações individuais (E06)
 Cada integrante preenche a própria seção com poucas linhas: módulos, testes e revisões, com links para PRs.
