@@ -19,8 +19,11 @@ Se o PDF for ambíguo, registrar a dúvida em `docs/requisitos.md` e perguntar a
 ## Arquitetura
 - Camadas em `src/maquina_cafe/`: `api/` (controllers: recebem requisição, validam formato, chamam serviço, produzem resposta HTTP), `services/` (coordenam regras RN01–RN12 e transações), `domain/` (entidades, receitas, estados, transições, valores), `persistence/` (repositories e acesso ao banco).
 - Regras de negócio nunca ficam em controllers nem em SQL/repositories.
-- Dinheiro em centavos inteiros internamente. Relógio injetável; testes sem `sleep`.
-- Operações que alteram crédito, estoque, pedido e estado são atômicas (uma transação).
+- Dinheiro em centavos inteiros internamente; reais com duas casas no JSON (`docs/adr/0005-representacao-monetaria.md`). Relógio injetável; testes sem `sleep`.
+- Operações que alteram crédito, estoque, pedido e estado são atômicas (uma transação), com as fronteiras do `docs/adr/0002-persistencia-e-atomicidade.md`. Repositories não fazem commit.
+- Erros no envelope `{"erro", "mensagem"}` e mapeamento HTTP do `docs/adr/0003-modelo-de-erros.md`; serviços lançam exceções de domínio, só `api/` conhece HTTP.
+- Operador autenticado por JWT de 1 hora (`docs/adr/0004-autenticacao-operador-jwt.md`).
+- Decisões de interpretação do PDF (D-4a a D-4f) em `docs/requisitos.md` valem como requisito.
 - Padrões de projeto só com problema real, justificados em ADR e no documento de projeto.
 - Mudança de stack, banco ou arquitetura exige ADR com status Proposto e confirmação do responsável antes de implementar.
 
@@ -39,7 +42,9 @@ Se o PDF for ambíguo, registrar a dúvida em `docs/requisitos.md` e perguntar a
 Sempre atualizar a documentação junto com a mudança, no mesmo PR. Não declarar como implementado, testado ou medido o que não foi.
 
 ## Branches, commits e PRs
-- Nunca commitar direto em `main` ou `develop`. Branches: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>`, `test/<issue>-<resumo>`, `ci/<resumo>`.
+- `main` é a única branch de longa duração e é protegida; nunca commitar direto nela. Não existe `develop` (arquivada como tag `archive/develop`).
+- Branches partem de `main`: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>`, `test/<issue>-<resumo>`. PR sempre para `main`.
+- Milestones M1–M5 são fixos: re-escopo exige issue nova, nunca mover issues de milestone silenciosamente.
 - Conventional Commits em português, sem acentos no assunto: `feat(credito): validar denominacoes aceitas`, rodapé `Refs #7`. Tipos: feat, fix, docs, test, refactor, chore, ci.
 - Commits pequenos e atômicos. Um PR por issue quando possível, usando `.github/PULL_REQUEST_TEMPLATE.md`.
 - PR revisado por outro integrante e com CI verde antes do merge.

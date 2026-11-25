@@ -19,7 +19,12 @@ As contas são as colaboradoras do repositório; a correspondência com os nomes
 Cinco bebidas com receitas, preços e preparo simulado; estoque e alertas; crédito e troco; pedidos e cancelamento; operador autenticado, limpeza, reposição e relatórios. Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO. Banco preserva estoque, crédito, estado e pedidos após reiniciar.
 
 ## Stack e arquitetura
-Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md).
+Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). A forma de acesso ao SQLite (manter SQLAlchemy + Alembic ou usar `sqlite3`) aguarda decisão no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md).
+
+Convenções da API, decididas em 25/11/2026:
+- Dinheiro: reais com duas casas no JSON (`4.50`), centavos inteiros internamente ([ADR 0005](docs/adr/0005-representacao-monetaria.md)).
+- Erros: `{"erro": "CODIGO", "mensagem": "..."}` com o mapeamento HTTP da seção [Códigos de erro](#códigos-de-erro) ([ADR 0003](docs/adr/0003-modelo-de-erros.md)).
+- Operações que alteram crédito, estoque, pedido e estado são atômicas, com as fronteiras de transação do [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md).
 
 Controllers recebem entradas e produzem respostas; serviços/domínio coordenam regras; persistência consulta e grava em transações. Ver [arquitetura](docs/arquitetura.md). Repository e State serão avaliados por necessidade real; o documento final justificará o padrão aplicado ou uma alternativa simples.
 
@@ -42,7 +47,7 @@ docs/
   quality-report.md     cobertura, análise estática, code smells
   contributions.md      histórico de contribuições e declarações
   configuracao-github.md
-  adr/                  README (índice), 0000-modelo, 0001-escolha-da-stack
+  adr/                  README (índice), 0000-modelo, 0001–0005
 .kiro/
   steering/project.md   regras do projeto para o Kiro e para a equipe
   hooks/                docs-guard, quality-on-save, quality-on-stop
@@ -54,6 +59,7 @@ scripts/
   configure-github.ps1
   kiro/                 docs_guard.py, quality_check.py
 CHANGELOG.md
+LICENSE                 MIT
 ```
 
 ## Executar localmente
@@ -66,7 +72,7 @@ Ainda não existem testes executáveis. A #3 configurará a execução; a meta �
 Configurada na #3, consolidada na #20. Comandos **planejados, ainda não disponíveis**: `ruff check .`, `ruff format --check .` e `radon cc src -s -a`. O relatório final de 1–2 páginas reunirá cobertura, resultados da análise e métricas reais.
 
 ## Endpoints principais planejados
-Rotas sugeridas pelo PDF; nenhuma está implementada. Operações /operador/* exigem token, exceto login, que recebe as credenciais. OpenAPI será publicado com a aplicação.
+Rotas sugeridas pelo PDF; nenhuma está implementada. Operações `/operador/*` exigem `Authorization: Bearer <token>`, exceto login, que recebe as credenciais e devolve um JWT válido por 1 hora. Valores monetários em reais com duas casas. OpenAPI será publicado com a aplicação.
 
 | Método | Rota | Finalidade |
 |---|---|---|
@@ -83,12 +89,12 @@ Rotas sugeridas pelo PDF; nenhuma está implementada. Operações /operador/* ex
 | PUT | `/operador/produtos/{id}/preco` | Alterar preço |
 | POST | `/operador/manutencao` | Entrar/sair da manutenção |
 | POST | `/operador/limpeza` | Registrar limpeza |
-| GET | `/operador/relatorio` | Vendas e faturamento por período |
+| GET | `/operador/relatorio?from=...&to=...` | Vendas e faturamento por período; `from` e `to` obrigatórios, ISO 8601 (`2026-11-01T00:00:00`), inclusivos |
 
 ## Regras de negócio
 | Regra | Resumo |
 |---|---|
-| RN01 | Crédito com denominações aceitas; saldo máximo de R$ 50 |
+| RN01 | Crédito com denominações aceitas, só em PRONTA; saldo máximo de R$ 50, inserção que excede é rejeitada inteira |
 | RN02 | Pedido somente PRONTA, com crédito e insumos suficientes |
 | RN03 | Debitar preço e insumos na aceitação; conservar saldo restante |
 | RN04 | Preparar pelo tempo da receita; concluir e atualizar estado |
@@ -98,28 +104,52 @@ Rotas sugeridas pelo PDF; nenhuma está implementada. Operações /operador/* ex
 | RN08 | Controlar entrada/saída de manutenção e limpeza pendente |
 | RN09 | Reabastecer apenas em manutenção, respeitando capacidades |
 | RN10 | Alterar preço positivo; informar disponibilidade no cardápio |
-| RN11 | Autenticar operador por token, com credenciais em ambiente |
-| RN12 | Relatório por período, total e por bebida; excluir cancelados |
+| RN11 | Autenticar operador por JWT de 1 hora, com credenciais e segredo em ambiente |
+| RN12 | Relatório por período (`from`/`to` inclusivos), total e por bebida; excluir cancelados |
 
-Tabelas de receitas, capacidades, erros e questões em aberto: [requisitos](docs/requisitos.md).
+Tabelas de receitas, capacidades, [decisões de interpretação](docs/requisitos.md#decisões-de-interpretação-25112026) e questões em aberto: [requisitos](docs/requisitos.md).
+
+## Códigos de erro
+Contrato planejado ([ADR 0003](docs/adr/0003-modelo-de-erros.md)); será implementado na #18 e documentado por rota no OpenAPI. Todo erro tem o corpo `{"erro": "CODIGO", "mensagem": "..."}`. 503 é usado só para chamadas do cliente com a máquina indisponível; o operador no estado errado recebe 409.
+
+| HTTP | `erro` | Quando |
+|---|---|---|
+| 400 | `DADOS_INVALIDOS` | Açúcar fora de 0–3, valor de crédito não aceito, mais de duas casas decimais, preço ≤ 0, campo ausente, `from`/`to` ausente ou inválido |
+| 400 | `LIMITE_CREDITO_EXCEDIDO` (proposto) | Inserção levaria o crédito acima de R$ 50,00 |
+| 401 | `NAO_AUTORIZADO` | Token do operador ausente, inválido ou expirado |
+| 401 | `CREDENCIAIS_INVALIDAS` | Login com usuário ou senha errados |
+| 402 | `CREDITO_INSUFICIENTE` | Crédito não cobre o preço |
+| 404 | `PRODUTO_NAO_ENCONTRADO` / `PEDIDO_NAO_ENCONTRADO` | Bebida ou pedido inexistente |
+| 409 | `MAQUINA_OCUPADA` | Pedido ou crédito com a máquina PREPARANDO |
+| 409 | `ESTOQUE_INSUFICIENTE` | Falta ingrediente, açúcar ou copo |
+| 409 | `ESTADO_INVALIDO` | Operador: reabastecer ou limpar fora de MANUTENCAO; entrar em manutenção fora de PRONTA/AGUARDANDO_LIMPEZA; sair sem estar em MANUTENCAO |
+| 409 | `PEDIDO_NAO_CANCELAVEL` (proposto) | Cancelar pedido que não está EM_PREPARO |
+| 422 | `CAPACIDADE_EXCEDIDA` | Reabastecimento acima da capacidade |
+| 503 | `MAQUINA_EM_MANUTENCAO` / `LIMPEZA_PENDENTE` | Pedido ou crédito com a máquina em MANUTENCAO ou AGUARDANDO_LIMPEZA |
 
 ## Cronograma e entregas
-- **Fase 1 – Infra:** 19–25/10/2026 — Documentação, ambiente, CI e persistência inicial.
-- **Fase 2 – Cardápio/Estoque/Crédito:** 26/10–01/11/2026 — Cardápio, estoque, crédito, troco e autenticação básica.
-- **Fase 3 – Pedidos/Transações:** 02–18/11/2026 — Pedidos atômicos, preparo, cancelamento e checkpoint em 18/11.
-- **Fase 4 – Operador/Manutenção:** 19–29/11/2026 — Limpeza, reposição, manutenção, preços e relatórios.
-- **Fase 5 – Testes/Qualidade:** 30/11–02/12/2026 — Consolidação; testes são desenvolvidos desde a infraestrutura.
-- **Fase 6 – Documentação/Vídeo:** 03/11–08/12/2026 — Documentação contínua, relatórios, declarações e vídeo.
-- **Entrega Final:** 09/12/2026 — Entrega dos sete artefatos revisados.
+Replanejamento aprovado em 25/11/2026; milestones no GitHub. As Fases 1–6 de outubro ficam como registro histórico no [plano](docs/plano-de-projeto.md).
 
-**Checkpoint: 18/11/2026. Entrega final: 09/12/2026.** O [plano](docs/plano-de-projeto.md) detalha backlog, critérios de aceite, riscos e as sete entregas: repositório, API, relatório de qualidade, documento de projeto, histórico de contribuições, declarações individuais e vídeo.
+| Milestone | Vencimento | Issues | Resultado |
+|---|---|---|---|
+| M1 – Base técnica | 27/11/2026 | #1, #2, #3, #4, #18 | Aplicação inicia; CI com testes, cobertura, Ruff e Radon; banco inicializado; contrato de erro |
+| M2 – Fluxo do cliente | 01/12/2026 | #5, #7, #8, #9, #10, #11 | Exemplo do PDF (cappuccino, R$ 10,00, troco R$ 3,50) em teste e no Swagger |
+| M3 – Operador e manutenção | 03/12/2026 | #6, #12, #13, #14, #15, #16, #17, #19 | Rotas do operador com JWT, limpeza, reposição, relatório, recuperação após reinício; congelamento de funcionalidades |
+| M4 – Qualidade e documentação | 06/12/2026 | #20, #21 | Relatório de qualidade, documento de projeto, OpenAPI e Postman |
+| M5 – Entrega | 09/12/2026 | #23, #24 | Declarações, vídeo, ensaio em ambiente limpo e release |
 
-Em 25/11/2026 as Fases 1–3 estão vencidas sem código. Um [replanejamento](docs/plano-de-projeto.md#replanejamento-proposto-em-25112026) com milestones M1–M5 até 09/12 aguarda confirmação do grupo.
+**Checkpoint: 18/11/2026 (situação a confirmar, #22). Entrega final: 09/12/2026.** O [plano](docs/plano-de-projeto.md) detalha backlog, critérios de aceite, linha de corte, riscos e as sete entregas: repositório, API, relatório de qualidade, documento de projeto, histórico de contribuições, declarações individuais e vídeo. Re-escopo de milestone exige uma issue nova.
 
 ## Contribuir
-Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe em branch vinculada à issue, com Conventional Commits e PR revisado por outro integrante. main é a versão revisada; develop integra trabalho; feature/*, docs/*, fix/* e hotfix/* seguem o plano. Vincule requisito → issue → teste. Testes, cobertura e análise estática serão executados a cada PR de código após configuração da CI.
+Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe em branch vinculada à issue, com Conventional Commits e PR revisado por outro integrante. Vincule requisito → issue → teste. Testes, cobertura e análise estática serão executados a cada PR de código após configuração da CI (#3).
 
-[Configuração do GitHub](docs/configuracao-github.md): labels, milestones e proteção planejados; script separado para aplicação administrativa. Não considerar proteções ativas antes da verificação.
+### Branching
+- `main` é a única branch de longa duração. Não há `develop` (arquivada em 25/11/2026 como a tag `archive/develop`).
+- Crie a branch a partir de `main` atualizada: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>` ou `test/<issue>-<resumo>`. Exemplo: `git switch main && git pull && git switch -c feature/7-inserir-credito`.
+- Abra PR para `main` usando o template. `main` é protegida: sem push direto, PR com 1 aprovação de outro integrante, conversas resolvidas, sem force push. A CI verde passa a ser obrigatória quando o workflow da #3 existir.
+- Commits no padrão Conventional Commits, com `Refs #n` no rodapé.
+
+[Configuração do GitHub](docs/configuracao-github.md): milestones e proteção aplicados em 25/11/2026; labels ainda não aplicadas.
 
 ### Documentação obrigatória em cada PR
 Regras completas em [.kiro/steering/project.md](.kiro/steering/project.md). Todo PR atualiza, quando afetados: este README, [CONTEXT](docs/CONTEXT.md), [plano](docs/plano-de-projeto.md) e [matriz](docs/rastreabilidade.md), [CHANGELOG](CHANGELOG.md), [ADRs](docs/adr/README.md), OpenAPI/Postman, testes, [diagrama](docs/arquitetura.md), [relatório de qualidade](docs/quality-report.md) e [contribuições](docs/contributions.md). Funcionalidades e refatorações têm spec em `.kiro/specs/<issue>-<resumo>/` (requirements, design, tasks).
@@ -136,4 +166,4 @@ Versionados em `.kiro/hooks/` e ativados ao abrir a pasta do repositório como r
 Enquanto não houver `pyproject.toml` (#2), `quality_check.py` não executa nada. Gatilhos de arquivo não rodam no Kiro Web; os gatilhos Stop rodam no IDE, CLI e Web.
 
 ## Licença
-Ainda não definida pelo grupo. Nenhum arquivo LICENSE foi adicionado; repositório público não implica concessão de licença de uso.
+[MIT](LICENSE), © 2026 os cinco integrantes do grupo. A licença cobre o código e a documentação produzidos pelo grupo. O arquivo `ESI - projeto maquina-cafe.pdf` é material da disciplina, de autoria dos docentes, e não é licenciado pelo grupo.

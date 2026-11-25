@@ -1,6 +1,6 @@
 # Plano de projeto
 
-Base: [contexto](CONTEXT.md), [especificação](../ESI%20-%20projeto%20maquina-cafe.pdf), [requisitos](requisitos.md) e [ADR](adr/0001-escolha-da-stack.md). Criado em 14/10/2026; atualizado em 25/11/2026 com o [replanejamento proposto](#replanejamento-proposto-em-25112026).
+Base: [contexto](CONTEXT.md), [especificação](../ESI%20-%20projeto%20maquina-cafe.pdf), [requisitos](requisitos.md) e [ADR](adr/0001-escolha-da-stack.md). Criado em 14/10/2026; atualizado em 25/11/2026 com o [replanejamento aprovado](#replanejamento-aprovado-em-25112026) e o novo [fluxo de branches](#branches-commits-e-prs).
 
 ## Objetivo e estratégia
 Entregar um MVP de uma máquina de café como API REST persistente, cobrindo RN01–RN12, com testes e documentação. Começar por um fluxo vertical: cardápio → crédito → pedido → preparo → troco. Acrescentar operador e relatórios sem concentrar regras nos controllers. Nenhuma funcionalidade está implementada nesta base.
@@ -20,22 +20,30 @@ Datas em 2026, America/Sao_Paulo. O PDF define grupos 12–16/10, infraestrutura
 
 Até 16/10: confirmar papéis e usuários GitHub. Até 18/11: demonstrar o fluxo vertical, apresentar testes disponíveis e riscos. As sete entregas são artefatos, não fases.
 
-Situação em 25/11/2026: nenhum milestone foi criado no GitHub e nenhuma issue de código foi iniciada. As Fases 1–3 venceram sem entregas e o checkpoint de 18/11 passou. O cronograma acima fica como registro histórico; a proposta abaixo o substitui após confirmação.
+Situação em 25/11/2026: nenhum milestone foi criado no GitHub e nenhuma issue de código foi iniciada. As Fases 1–3 venceram sem entregas e o checkpoint de 18/11 passou. O cronograma acima fica como registro histórico, substituído pelo replanejamento abaixo.
 
-## Replanejamento proposto em 25/11/2026
-**Status: proposta, aguardando confirmação do responsável.** Faltam 14 dias para 09/12. Cada milestone termina com um resultado verificável por teste ou demonstração. As datas são planejamento interno; checkpoint e entrega final continuam conforme o PDF.
+## Replanejamento aprovado em 25/11/2026
+**Status: aprovado pelo responsável em 25/11/2026 (decisão 1).** Faltam 14 dias para 09/12. Cada milestone termina com um resultado verificável por teste ou demonstração. As datas são planejamento interno; checkpoint e entrega final continuam conforme o PDF.
 
-| Milestone proposto | Período | Vencimento | Issues | Resultado verificável |
+| Milestone | Período | Vencimento | Issues | Resultado verificável |
 |---|---|---|---|---|
-| M1 – Base técnica | 26–27/11 | 2026-11-27 | #2, #3, #4, contrato de erro de #18 | Aplicação inicia; CI executa pytest com cobertura ≥75%, Ruff e Radon; banco inicializa cheio uma única vez |
+| M1 – Base técnica | 26–27/11 | 2026-11-27 | #1, #2, #3, #4, #18 (contrato de erro) | Aplicação inicia; CI executa pytest com cobertura ≥75%, Ruff e Radon; banco inicializa cheio uma única vez |
 | M2 – Fluxo do cliente | 28/11–01/12 | 2026-12-01 | #5, #7, #8, #9, #10, #11 | Exemplo da seção 2 do PDF (cappuccino, R$ 10,00, troco R$ 3,50) reproduzido em teste de integração e no Swagger |
 | M3 – Operador e manutenção | 02–03/12 | 2026-12-03 | #12, #6, #13, #15, #14, #16, #17, #19 | Rotas `/operador/*` com token; ciclo de 30 preparos e limpeza; reinício preserva estoque, crédito, estado e pedidos |
-| M4 – Qualidade e documentação | 04–06/12 | 2026-12-06 | #20, #21, #23 (declarações) | Relatório de qualidade, documento de projeto com diagrama, OpenAPI exportado e coleção Postman, declarações |
-| M5 – Entrega | 07–09/12 | 2026-12-09 | #23 (vídeo), #24 | Ensaio em ambiente limpo, vídeo de 10–15 min, tag de release |
+| M4 – Qualidade e documentação | 04–06/12 | 2026-12-06 | #20, #21 | Relatório de qualidade, documento de projeto com diagrama, OpenAPI exportado e coleção Postman, declarações |
+| M5 – Entrega | 07–09/12 | 2026-12-09 | #23, #24 | Ensaio em ambiente limpo, vídeo de 10–15 min, tag de release |
 
 Congelamento de funcionalidades em 03/12. O período de 04 a 06/12 fica reservado para correções, documentação e ensaio.
 
-**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
+Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estado-em-25112026). Uma issue só pode ter um milestone:
+- #1 (governança) entra em M1 e fecha com o PR #26.
+- #18 entra em M1 porque o envelope e o mapeamento de erros ([ADR 0003](adr/0003-modelo-de-erros.md)) são base para todas as rotas. A validação de cada rota é feita na issue da rota e verificada por `test_error_contract` ao longo de M2–M3.
+- #23 entra em M5 (vídeo). As declarações individuais de #23 têm meta interna de 06/12.
+- #22 fica sem milestone até se saber se o checkpoint de 18/11 aconteceu.
+
+**Regra de re-escopo.** Depois de criados os milestones, nenhuma issue muda de milestone silenciosamente. Se um milestone precisar de re-escopo, abrir uma issue nova descrevendo o que sai, o que entra e o motivo, e registrá-la aqui e no [CONTEXT](CONTEXT.md).
+
+**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). #4 depende da escolha de persistência ([ADR 0002](adr/0002-persistencia-e-atomicidade.md), pendente). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
 
 **Linha de corte.** O PDF permite selecionar as regras viáveis no prazo. Se M2 atrasar, a prioridade é:
 1. Obrigatório: RN01–RN06, RN11, persistência, contrato de erros, Swagger e testes com cobertura ≥75%.
@@ -44,39 +52,39 @@ Congelamento de funcionalidades em 03/12. O período de 04 a 06/12 fica reservad
 
 Qualquer corte será registrado no README, no relatório de qualidade e no vídeo, sem apresentar regra não implementada como entregue.
 
-**Issues fora do novo cronograma.** #1 é concluída pelo PR de governança de 25/11. #22 (checkpoint de 18/11) aguarda informação sobre o que foi apresentado para ser fechada com registro.
+**Issue fora do novo cronograma.** #22 (checkpoint de 18/11) aguarda informação sobre o que foi apresentado para ser fechada com registro em `docs/checkpoint-18-11.md`, ou mantida aberta com nota se não aconteceu.
 
 **Distribuição.** Cada integrante deve assumir ao menos uma issue de código e revisar ao menos um PR de outra pessoa, para que E05 e E06 reflitam a participação real. A distribuição será registrada nas issues e em [contribuições](contributions.md).
 
 ## Backlog inicial
-Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda serão distribuídos pelo grupo. Milestones/labels estão previstos na configuração administrativa, ainda não aplicados.
+Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda serão distribuídos pelo grupo. Milestones M1–M5 aplicados no GitHub em 25/11/2026; labels ainda não aplicadas.
 
 | Plano | Issue | Requisito | Milestone | Prioridade | Dependências |
 |---|---|---|---|---|---|
-| P01 | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) Organizar documentação e governança | ENG-DOC | Fase 1 – Infra | alta | — |
-| P02 | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) Preparar aplicação e dependências reproduzíveis | ENG-INFRA | Fase 1 – Infra | alta | P01 |
-| P03 | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) Configurar CI, testes e análise estática | ENG-QUAL | Fase 1 – Infra | alta | P02 |
-| P04 | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) Criar banco, migrações e inicialização idempotente | ENG-PERSIST | Fase 1 – Infra | alta | P02 |
-| P05 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) Implementar cardápio e disponibilidade | RN10; CAT01 | Fase 2 – Cardápio/Estoque/Crédito | alta | P04 |
-| P06 | [#6](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/6) Consultar estoque e alertas | EST01; RN11 | Fase 2 – Cardápio/Estoque/Crédito | alta | P04, P12 |
-| P07 | [#7](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/7) Inserir crédito e validar limites | RN01 | Fase 2 – Cardápio/Estoque/Crédito | alta | P04 |
-| P08 | [#8](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/8) Devolver troco | RN06 | Fase 2 – Cardápio/Estoque/Crédito | alta | P07 |
-| P09 | [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) Aceitar pedido e debitar atomicamente | RN02; RN03 | Fase 3 – Pedidos/Transações | alta | P05, P07 |
-| P10 | [#10](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/10) Concluir preparo e controlar estados | RN04; RN07 | Fase 3 – Pedidos/Transações | alta | P09 |
-| P11 | [#11](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/11) Cancelar pedido sem repor ingredientes | RN05 | Fase 3 – Pedidos/Transações | alta | P10 |
-| P12 | [#12](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/12) Autenticar e autorizar operador | RN11 | Fase 2 – Cardápio/Estoque/Crédito | alta | P02 |
-| P13 | [#13](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/13) Entrar e sair da manutenção | RN08 | Fase 4 – Operador/Manutenção | alta | P10, P12 |
-| P14 | [#14](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/14) Reabastecer reservatórios | RN09 | Fase 4 – Operador/Manutenção | alta | P06, P13 |
-| P15 | [#15](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/15) Registrar limpeza obrigatória | RN07 | Fase 4 – Operador/Manutenção | alta | P13 |
-| P16 | [#16](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/16) Alterar preço de bebida | RN10 | Fase 4 – Operador/Manutenção | média | P05, P12 |
-| P17 | [#17](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/17) Consultar relatório por período | RN12 | Fase 4 – Operador/Manutenção | média | P10, P11, P12, P16 |
-| P18 | [#18](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/18) Padronizar validação e erros da API | ENG-API | Fase 3 – Pedidos/Transações | alta | P02, P09 |
-| P19 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) Validar persistência e recuperação | ENG-PERSIST; RN03; RN04 | Fase 5 – Testes/Qualidade | alta | P10, P11, P15 |
-| P20 | [#20](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/20) Consolidar testes de caixa-preta e relatório de qualidade | ENG-QUAL; E03 | Fase 5 – Testes/Qualidade | alta | P03, P17, P18, P19 |
-| P21 | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) Documentar API, arquitetura e padrões | ENG-DOC; E02; E04 | Fase 6 – Documentação/Vídeo | alta | P17, P18 |
-| P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | Fase 3 – Pedidos/Transações | alta | P08, P10, P11 |
-| P23 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) Reunir contribuições, declarações e vídeo | E05; E06; E07 | Fase 6 – Documentação/Vídeo | alta | P20, P21 |
-| P24 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) Auditar e entregar os sete artefatos | E01; E02; E03; E04; E05; E06; E07 | Entrega Final | alta | P20, P21, P23 |
+| P01 | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) Organizar documentação e governança | ENG-DOC | M1 – Base técnica | alta | — |
+| P02 | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) Preparar aplicação e dependências reproduzíveis | ENG-INFRA | M1 – Base técnica | alta | P01 |
+| P03 | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) Configurar CI, testes e análise estática | ENG-QUAL | M1 – Base técnica | alta | P02 |
+| P04 | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) Criar banco, migrações e inicialização idempotente | ENG-PERSIST | M1 – Base técnica | alta | P02 |
+| P05 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) Implementar cardápio e disponibilidade | RN10; CAT01 | M2 – Fluxo do cliente | alta | P04 |
+| P06 | [#6](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/6) Consultar estoque e alertas | EST01; RN11 | M3 – Operador e manutenção | alta | P04, P12 |
+| P07 | [#7](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/7) Inserir crédito e validar limites | RN01 | M2 – Fluxo do cliente | alta | P04 |
+| P08 | [#8](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/8) Devolver troco | RN06 | M2 – Fluxo do cliente | alta | P07 |
+| P09 | [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) Aceitar pedido e debitar atomicamente | RN02; RN03 | M2 – Fluxo do cliente | alta | P05, P07 |
+| P10 | [#10](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/10) Concluir preparo e controlar estados | RN04; RN07 | M2 – Fluxo do cliente | alta | P09 |
+| P11 | [#11](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/11) Cancelar pedido sem repor ingredientes | RN05 | M2 – Fluxo do cliente | alta | P10 |
+| P12 | [#12](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/12) Autenticar e autorizar operador | RN11 | M3 – Operador e manutenção | alta | P02 |
+| P13 | [#13](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/13) Entrar e sair da manutenção | RN08 | M3 – Operador e manutenção | alta | P10, P12 |
+| P14 | [#14](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/14) Reabastecer reservatórios | RN09 | M3 – Operador e manutenção | alta | P06, P13 |
+| P15 | [#15](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/15) Registrar limpeza obrigatória | RN07 | M3 – Operador e manutenção | alta | P13 |
+| P16 | [#16](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/16) Alterar preço de bebida | RN10 | M3 – Operador e manutenção | média | P05, P12 |
+| P17 | [#17](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/17) Consultar relatório por período | RN12 | M3 – Operador e manutenção | média | P10, P11, P12, P16 |
+| P18 | [#18](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/18) Padronizar validação e erros da API | ENG-API | M1 – Base técnica | alta | P02 (contrato); validação por rota acompanha P05–P17 |
+| P19 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) Validar persistência e recuperação | ENG-PERSIST; RN03; RN04 | M3 – Operador e manutenção | alta | P10, P11, P15 |
+| P20 | [#20](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/20) Consolidar testes de caixa-preta e relatório de qualidade | ENG-QUAL; E03 | M4 – Qualidade e documentação | alta | P03, P17, P18, P19 |
+| P21 | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) Documentar API, arquitetura e padrões | ENG-DOC; E02; E04 | M4 – Qualidade e documentação | alta | P17, P18 |
+| P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | — (sem milestone) | alta | P08, P10, P11 |
+| P23 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) Reunir contribuições, declarações e vídeo | E05; E06; E07 | M5 – Entrega | alta | P20, P21 |
+| P24 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) Auditar e entregar os sete artefatos | E01; E02; E03; E04; E05; E06; E07 | M5 – Entrega | alta | P20, P21, P23 |
 
 ## Critérios de aceite por issue
 
@@ -99,6 +107,8 @@ Evidência planejada: test_app_startup.
 Evidência planejada: validação do workflow em PR.
 
 ### [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) — Criar banco, migrações e inicialização idempotente
+- [ ] Opção de persistência do [ADR 0002](adr/0002-persistencia-e-atomicidade.md) escolhida e ADR aceito antes do código.
+- [ ] Transações de escrita com `BEGIN IMMEDIATE`; repositories não fazem commit.
 - [ ] Estoque inicial cheio apenas na primeira inicialização.
 - [ ] Migrações reproduzíveis; reiniciar não restaura crédito, estoque ou estado indevidamente.
 
@@ -117,6 +127,9 @@ Evidência planejada: test_menu_recipes_and_availability.
 Evidência planejada: test_stock_alert_boundaries.
 
 ### [#7](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/7) — Inserir crédito e validar limites
+- [ ] Crédito só em PRONTA: PREPARANDO → 409 `MAQUINA_OCUPADA`; MANUTENCAO/AGUARDANDO_LIMPEZA → 503 (D-4a).
+- [ ] Inserção que excederia R$ 50,00 é rejeitada inteira, sem aceitação parcial (D-4b).
+- [ ] Valores em reais com até duas casas; mais casas → 400 (D-4e).
 - [ ] Aceita apenas 50, 100, 200, 500, 1000 e 2000 centavos.
 - [ ] Acúmulo máximo de 5000 centavos; entrada rejeitada não altera saldo.
 
@@ -129,6 +142,7 @@ Evidência planejada: test_credit_denominations_and_limit.
 Evidência planejada: test_change_all_states_and_concurrency.
 
 ### [#9](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/9) — Aceitar pedido e debitar atomicamente
+- [ ] `test_order_rollback_on_midway_failure`: falha injetada após o débito deixa saldo, estoque, estado e pedidos inalterados (ADR 0002).
 - [ ] Exige PRONTA, crédito e estoque inclusive açúcar de 0 a 3 porções e um copo.
 - [ ] Debita e cria pedido em uma transação; falha reverte tudo; dois pedidos concorrentes não são aceitos juntos.
 
@@ -141,48 +155,59 @@ Evidência planejada: test_order_atomicity_and_concurrency.
 Evidência planejada: test_preparation_deadline_and_30th_completion.
 
 ### [#11](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/11) — Cancelar pedido sem repor ingredientes
+- [ ] `test_cancel_rollback_on_midway_failure`: falha injetada após a restituição deixa pedido EM_PREPARO e saldo inalterado (ADR 0002).
+- [ ] Restituição usa o preço cobrado no pedido; saldo nunca passa de R$ 50,00 (D-4b).
 - [ ] Só EM_PREPARO cancela; preço cobrado retorna uma única vez ao saldo.
 - [ ] Ingredientes não retornam; cancelamento não conta como conclusão; corrida com término é testada.
 
 Evidência planejada: test_cancel_refund_and_consumption.
 
 ### [#12](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/12) — Autenticar e autorizar operador
+- [ ] JWT HS256 com validade de 1 hora; `OPERADOR_USUARIO`, `OPERADOR_SENHA` e `JWT_SECRET` por ambiente (D-4d, [ADR 0004](adr/0004-autenticacao-operador-jwt.md)).
+- [ ] Token ausente, inválido ou expirado → 401 `NAO_AUTORIZADO`; credenciais erradas → 401 `CREDENCIAIS_INVALIDAS`.
 - [ ] Credenciais por ambiente, sem valores reais no repositório.
 - [ ] Login emite token; operações de operador rejeitam token ausente/inválido; política de expiração documentada.
 
 Evidência planejada: test_operator_authentication.
 
 ### [#13](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/13) — Entrar e sair da manutenção
+- [ ] Transição inválida → 409 `ESTADO_INVALIDO` (D-4f).
 - [ ] Entrada somente em PRONTA ou AGUARDANDO_LIMPEZA.
 - [ ] Saída preserva limpeza pendente; transições inválidas não alteram estado.
 
 Evidência planejada: test_maintenance_transitions.
 
 ### [#14](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/14) — Reabastecer reservatórios
+- [ ] Fora de MANUTENCAO → 409 `ESTADO_INVALIDO` (D-4f); acima da capacidade → 422 `CAPACIDADE_EXCEDIDA`.
 - [ ] Exige manutenção e operador; quantidades/unidades válidas.
 - [ ] Limite máximo aceito; excesso rejeitado sem modificação parcial.
 
 Evidência planejada: test_refill_capacity_and_state.
 
 ### [#15](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/15) — Registrar limpeza obrigatória
+- [ ] Fora de MANUTENCAO → 409 `ESTADO_INVALIDO` (D-4f).
 - [ ] Somente em manutenção; zera contador e pendência.
 - [ ] Permanece em manutenção até saída explícita; bloqueia pedido após 30 conclusões.
 
 Evidência planejada: test_cleaning_cycle.
 
 ### [#16](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/16) — Alterar preço de bebida
+- [ ] Preço em reais com até duas casas e maior que zero (D-4e); sem restrição de estado (D-4f).
 - [ ] Operador altera para valor positivo, com precisão monetária documentada.
 - [ ] Pedidos anteriores preservam preço cobrado para cancelamentos e relatórios.
 
 Evidência planejada: test_price_update_and_snapshot.
 
 ### [#17](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/17) — Consultar relatório por período
+- [ ] Parâmetros `from` e `to` obrigatórios, ISO 8601, ambos inclusivos; ausente ou inválido → 400; documentados no OpenAPI (D-4c). Detalhes da questão Q6 de requisitos resolvidos antes do código.
 - [ ] Totais e quantidades geral e por bebida; cancelados excluídos.
 - [ ] Limites do período, fuso e tratamento de pedidos em preparo documentados e testados.
 
 Evidência planejada: test_sales_report_period_and_cancellations.
 
 ### [#18](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/18) — Padronizar validação e erros da API
+- [ ] Envelope `erro`/`mensagem` e mapeamento do [ADR 0003](adr/0003-modelo-de-erros.md); validação do FastAPI convertida de 422 para 400.
+- [ ] Dinheiro conforme [ADR 0005](adr/0005-representacao-monetaria.md): reais com duas casas no JSON, centavos internamente.
 - [ ] Contrato de erro consistente, com casos 400, 401, 402, 404, 409, 422 e 503 documentados.
 - [ ] Validação de açúcar, identificadores e dinheiro cobre entradas inválidas sem mutação.
 
@@ -201,6 +226,7 @@ Evidência planejada: test_restart_recovery.
 Evidência planejada: suite completa e relatório de cobertura.
 
 ### [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) — Documentar API, arquitetura e padrões
+- [ ] OpenAPI declara as respostas de erro do ADR 0003 por rota, o formato monetário do ADR 0005 e os parâmetros `from`/`to`.
 - [ ] OpenAPI e fluxo completo reproduzíveis; README atualizado.
 - [ ] Documento justifica padrão ou solução simples; diagrama de até uma página fiel ao código.
 
@@ -237,13 +263,18 @@ Evidência planejada: ensaio final em ambiente limpo.
 - PR somente documental: links, consistência e revisão substituem testes de aplicação que ainda não existem; não declarar cobertura fictícia.
 
 ## Branches, commits e PRs
-main mantém a versão revisada para demonstração. develop integra funcionalidades. feature/<issue>-<resumo>, docs/<resumo>, fix/<issue>-<resumo> partem de develop; hotfix/* parte de main e é reincorporado a develop. O PR inicial de documentação vai para main; após integração, sincronizar develop por PR, sem reset forçado.
+Decisão do responsável em 25/11/2026 (decisão 2): `develop` foi abandonada.
+
+- `main` é a única branch de longa duração e contém a versão revisada.
+- Branches de trabalho partem de `main`: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>`, `test/<issue>-<resumo>`.
+- Todo PR mira `main`, segue o [template](../.github/PULL_REQUEST_TEMPLATE.md) e precisa de aprovação de outro integrante.
+- Proteção de `main` aplicada em 25/11/2026: PR obrigatório com 1 aprovação, aprovações descartadas após novo push, conversas resolvidas, regras valendo também para administradores, sem force push e sem exclusão. Detalhes e verificação em [configuração do GitHub](configuracao-github.md).
+- CI verde obrigatória: o check será exigido assim que o workflow da #3 existir e passar uma vez. Antes disso não há nome de check para cadastrar.
+- `develop` estava atrás de `main` (seu único commit, ce5eca4, já está em `main`). Foi arquivada como a tag `archive/develop` e a branch remota foi removida. Para consultar: `git checkout archive/develop`.
 
 Usar Conventional Commits: feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validar denominacoes aceitas; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
 
-PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir uma issue por PR. Exigir uma aprovação de outro integrante e checks verdes; evitar push direto em main/develop. Bloquear force push e exclusão. Os checks obrigatórios só serão nomeados na proteção depois que o workflow real existir e passar (#3).
-
-Situação em 25/11/2026: `develop` não foi sincronizada após o PR #25 e não contém a documentação. Até a decisão do responsável, branches partem de `main` e os PRs miram `main`, como no PR #25. Decisão pendente: sincronizar `develop` e manter o fluxo acima, ou usar apenas `feature/*` → `main` até a entrega.
+PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir uma issue por PR.
 
 ## Testes e rastreabilidade
 [Matriz requisito → issue → teste](rastreabilidade.md). Usar partição de equivalência, valores-limite e transições de estado. Ex.: crédito 49,50 + 0,50 aceito versus 50 + 0,50 rejeitado; alerta exatamente no limite não aciona; açúcar -1/0/3/4; conclusões 29/30; reposição no limite e acima. Testar falha de transação, cancelamento repetido, corrida pedido/troco e reinício. Relógio controlado evita sleeps. Testes previstos ainda não existem.
@@ -254,7 +285,9 @@ Situação em 25/11/2026: `develop` não foi sincronizada após o PR #25 e não 
 | Prazo e aprendizado da stack | Fluxo vertical primeiro; ambiente reproduzível; revisão do plano no checkpoint |
 | Débito duplicado / estoque negativo | Transações, serialização e testes concorrentes reais |
 | Divergência de estado após reinício | Persistir término previsto e testar recuperação idempotente |
-| Requisitos ambíguos | Resolver questões de requisitos.md na issue antes da implementação |
+| Requisitos ambíguos | Resolver questões de requisitos.md na issue antes da implementação; decisões de 25/11 registradas em requisitos.md e ADRs 0003–0005 |
+| Persistência indefinida (ADR 0002) | Escolha do responsável até 26/11; sem ela, #4 e M1 (27/11) atrasam |
+| Proteção de `main` exige revisão de outro integrante | Revisores definidos por issue; PRs pequenos para revisão rápida |
 | SQLite e concorrência | Configurar transações explicitamente, testar conexões independentes; reavaliar PostgreSQL se necessário |
 | Cobertura apenas numérica | Caixa-preta, limites e transições; revisar qualidade das asserções |
 | Participação concentrada | Distribuir issues e revisões; preservar histórico e declarações individuais |
@@ -273,4 +306,4 @@ Situação em 25/11/2026: `develop` não foi sincronizada após o PR #25 e não 
 | E07 | Vídeo de demonstração; 10–15 minutos sugeridos | #23 |
 
 ## Próximas ações
-Atualizado em 25/11/2026. Revisar o PR de governança (#1); confirmar o replanejamento e criar os milestones M1–M5; decidir o fluxo de branches e a persistência; responder às questões de [requisitos](requisitos.md#questões-a-resolver-antes-das-respectivas-implementações); distribuir responsáveis; iniciar #2, #3 e #4. Confirmar licença antes de adicionar LICENSE. Criar a aplicação e fixar dependências antes de prometer comandos funcionais.
+Atualizado em 25/11/2026. Obter revisão de outro integrante e mesclar o PR #26 (#1). Escolher a opção de persistência do ADR 0002. Confirmar contas GitHub e a situação do checkpoint (#22). Distribuir responsáveis. Iniciar #2, #3 e #4 (M1, 27/11). Quando o workflow da #3 passar, exigir o check na proteção de `main`. Responder às questões Q3, Q6, Q7 e Q8 de [requisitos](requisitos.md#questões-a-resolver-antes-das-respectivas-implementações) antes das issues correspondentes.
