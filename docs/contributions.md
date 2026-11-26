@@ -25,6 +25,7 @@ Uma linha por PR ou mudança relevante. Manter em ordem cronológica.
 | 25/11/2026 | [#26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | #1 | Relatório de estado, replanejamento proposto, steering/hooks do Kiro, CHANGELOG, índice de ADR, relatórios de qualidade e contribuições | Kiro Agent | romulorjr | Pendente |
 | 25/11/2026 | [#26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | #1, #27 | Registro das decisões de 25/11 (requisitos D-4a a D-4f, ADRs 0002–0005, LICENSE MIT, branching); no GitHub: milestones M1–M5, vínculos, arquivamento de `develop`, issue #27 e comentários nas issues afetadas | Kiro Agent | romulorjr (decisões) | Pendente |
 | 26/11/2026 | [#26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | #1, #4, #22, #27 | Segunda rodada de decisões: ADR 0002 aceito (opção A), D-Q3/D-Q6/D-Q7/D-Q8, contrato OpenAPI parcial, registro do checkpoint, contas confirmadas, instruções de execução da configuração do GitHub; no GitHub: #22 fechada, #27 e comentários atualizados | Kiro Agent | romulorjr (decisões) | Pendente |
+| 26/11/2026 | [#28](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/28) | #2, #3 | Specs da aplicação base e da CI (requisitos, design, tarefas) e ADR 0006 proposto; sem código | Kiro Agent | romulorjr | Pendente |
 
 ## Declarações individuais (E06)
 Cada integrante preenche a própria seção com poucas linhas: módulos, testes e revisões, com links para PRs.
