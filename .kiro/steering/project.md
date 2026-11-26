@@ -62,3 +62,5 @@ Cada funcionalidade ou refatoração tem spec em `.kiro/specs/<issue>-<resumo>/`
 
 ## Hooks do Kiro
 `.kiro/hooks/` executa `scripts/kiro/quality_check.py` (lint, formatação e testes) e `scripts/kiro/docs_guard.py` (exige CHANGELOG e CONTEXT quando `src/` ou `tests/` mudam). Os comandos supõem a raiz do repositório como diretório de trabalho.
+
+A ativação dos hooks não foi verificada (ver `docs/CONTEXT.md`, Bloqueios). Até lá, antes de encerrar uma mudança, executar à mão `python scripts/kiro/docs_guard.py` e `python scripts/kiro/quality_check.py` na raiz do repositório, e tratar a CI como verificação obrigatória.

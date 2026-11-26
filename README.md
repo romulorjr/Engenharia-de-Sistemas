@@ -5,7 +5,7 @@ Back-end de uma máquina de café automática para a disciplina Engenharia de Si
 **Status em 25/11/2026: planejamento, governança e estrutura inicial. A API ainda não está implementada.** Situação detalhada em [CONTEXT](docs/CONTEXT.md#estado-atual-25112026) e mudanças no [CHANGELOG](CHANGELOG.md). A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
 
 ## Equipe
-| Integrante (ordem alfabética) | Papel | GitHub (a confirmar) |
+| Integrante (ordem alfabética) | Papel | GitHub |
 |---|---|---|
 | Bruno de Andrade Gama Kraker | A definir | BrunoKraker |
 | Pedro Henryk Bezerra Souza | A definir | pedro-henryk |
@@ -13,13 +13,13 @@ Back-end de uma máquina de café automática para a disciplina Engenharia de Si
 | Rômulo Maurício Fonseca Júnior | A definir | romulorjr |
 | Thales Iamamura | A definir | t-iamamura |
 
-As contas são as colaboradoras do repositório; a correspondência com os nomes foi inferida e cada integrante deve confirmá-la em [contribuições](docs/contributions.md).
+Contas confirmadas em 25/11/2026. Histórico e declarações individuais em [contribuições](docs/contributions.md).
 
 ## Escopo
 Cinco bebidas com receitas, preços e preparo simulado; estoque e alertas; crédito e troco; pedidos e cancelamento; operador autenticado, limpeza, reposição e relatórios. Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO. Banco preserva estoque, crédito, estado e pedidos após reiniciar.
 
 ## Stack e arquitetura
-Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). A forma de acesso ao SQLite (manter SQLAlchemy + Alembic ou usar `sqlite3`) aguarda decisão no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md).
+Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). SQLAlchemy + Alembic confirmados em 25/11/2026 no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md), com transações `BEGIN IMMEDIATE` abertas e fechadas pelos serviços.
 
 Convenções da API, decididas em 25/11/2026:
 - Dinheiro: reais com duas casas no JSON (`4.50`), centavos inteiros internamente ([ADR 0005](docs/adr/0005-representacao-monetaria.md)).
@@ -47,6 +47,8 @@ docs/
   quality-report.md     cobertura, análise estática, code smells
   contributions.md      histórico de contribuições e declarações
   configuracao-github.md
+  checkpoint-18-11.md   registro do checkpoint com o docente
+  api/openapi.yaml      contrato OpenAPI parcial planejado (até a #21)
   adr/                  README (índice), 0000-modelo, 0001–0005
 .kiro/
   steering/project.md   regras do projeto para o Kiro e para a equipe
@@ -72,11 +74,11 @@ Ainda não existem testes executáveis. A #3 configurará a execução; a meta �
 Configurada na #3, consolidada na #20. Comandos **planejados, ainda não disponíveis**: `ruff check .`, `ruff format --check .` e `radon cc src -s -a`. O relatório final de 1–2 páginas reunirá cobertura, resultados da análise e métricas reais.
 
 ## Endpoints principais planejados
-Rotas sugeridas pelo PDF; nenhuma está implementada. Operações `/operador/*` exigem `Authorization: Bearer <token>`, exceto login, que recebe as credenciais e devolve um JWT válido por 1 hora. Valores monetários em reais com duas casas. OpenAPI será publicado com a aplicação.
+Rotas sugeridas pelo PDF; nenhuma está implementada. O contrato parcial de `GET /produtos` e `GET /operador/relatorio`, com descrições e exemplos, está em [docs/api/openapi.yaml](docs/api/openapi.yaml). Operações `/operador/*` exigem `Authorization: Bearer <token>`, exceto login, que recebe as credenciais e devolve um JWT válido por 1 hora. Valores monetários em reais com duas casas. OpenAPI será publicado com a aplicação.
 
 | Método | Rota | Finalidade |
 |---|---|---|
-| GET | `/produtos` | Cardápio, preço, tempo e disponibilidade |
+| GET | `/produtos` | Cardápio, preço, tempo e disponibilidade (estoque para uma unidade e 1 copo; crédito e estado não contam) |
 | GET | `/status` | Estado e crédito |
 | POST | `/credito` | Inserir crédito |
 | POST | `/troco` | Devolver saldo |
@@ -89,7 +91,7 @@ Rotas sugeridas pelo PDF; nenhuma está implementada. Operações `/operador/*` 
 | PUT | `/operador/produtos/{id}/preco` | Alterar preço |
 | POST | `/operador/manutencao` | Entrar/sair da manutenção |
 | POST | `/operador/limpeza` | Registrar limpeza |
-| GET | `/operador/relatorio?from=...&to=...` | Vendas e faturamento por período; `from` e `to` obrigatórios, ISO 8601 (`2026-11-01T00:00:00`), inclusivos |
+| GET | `/operador/relatorio?from=...&to=...` | Vendas e faturamento por período; `from` e `to` obrigatórios, ISO 8601 (`2026-11-01T00:00:00`), inclusivos; sem fuso = UTC−03:00, `Z` e deslocamentos aceitos |
 
 ## Regras de negócio
 | Regra | Resumo |
@@ -115,7 +117,7 @@ Contrato planejado ([ADR 0003](docs/adr/0003-modelo-de-erros.md)); será impleme
 | HTTP | `erro` | Quando |
 |---|---|---|
 | 400 | `DADOS_INVALIDOS` | Açúcar fora de 0–3, valor de crédito não aceito, mais de duas casas decimais, preço ≤ 0, campo ausente, `from`/`to` ausente ou inválido |
-| 400 | `LIMITE_CREDITO_EXCEDIDO` (proposto) | Inserção levaria o crédito acima de R$ 50,00 |
+| 400 | `LIMITE_CREDITO_EXCEDIDO` | Inserção levaria o crédito acima de R$ 50,00; rejeitada inteira, saldo inalterado |
 | 401 | `NAO_AUTORIZADO` | Token do operador ausente, inválido ou expirado |
 | 401 | `CREDENCIAIS_INVALIDAS` | Login com usuário ou senha errados |
 | 402 | `CREDITO_INSUFICIENTE` | Crédito não cobre o preço |
@@ -123,7 +125,7 @@ Contrato planejado ([ADR 0003](docs/adr/0003-modelo-de-erros.md)); será impleme
 | 409 | `MAQUINA_OCUPADA` | Pedido ou crédito com a máquina PREPARANDO |
 | 409 | `ESTOQUE_INSUFICIENTE` | Falta ingrediente, açúcar ou copo |
 | 409 | `ESTADO_INVALIDO` | Operador: reabastecer ou limpar fora de MANUTENCAO; entrar em manutenção fora de PRONTA/AGUARDANDO_LIMPEZA; sair sem estar em MANUTENCAO |
-| 409 | `PEDIDO_NAO_CANCELAVEL` (proposto) | Cancelar pedido que não está EM_PREPARO |
+| 409 | `PEDIDO_NAO_CANCELAVEL` | Cancelar pedido CONCLUIDO ou CANCELADO |
 | 422 | `CAPACIDADE_EXCEDIDA` | Reabastecimento acima da capacidade |
 | 503 | `MAQUINA_EM_MANUTENCAO` / `LIMPEZA_PENDENTE` | Pedido ou crédito com a máquina em MANUTENCAO ou AGUARDANDO_LIMPEZA |
 
@@ -138,7 +140,7 @@ Replanejamento aprovado em 25/11/2026; milestones no GitHub. As Fases 1–6 de o
 | M4 – Qualidade e documentação | 06/12/2026 | #20, #21 | Relatório de qualidade, documento de projeto, OpenAPI e Postman |
 | M5 – Entrega | 09/12/2026 | #23, #24 | Declarações, vídeo, ensaio em ambiente limpo e release |
 
-**Checkpoint: 18/11/2026 (situação a confirmar, #22). Entrega final: 09/12/2026.** O [plano](docs/plano-de-projeto.md) detalha backlog, critérios de aceite, linha de corte, riscos e as sete entregas: repositório, API, relatório de qualidade, documento de projeto, histórico de contribuições, declarações individuais e vídeo. Re-escopo de milestone exige uma issue nova.
+**Checkpoint: realizado em 18/11/2026 ([registro](docs/checkpoint-18-11.md)). Entrega final: 09/12/2026.** O [plano](docs/plano-de-projeto.md) detalha backlog, critérios de aceite, linha de corte, riscos e as sete entregas: repositório, API, relatório de qualidade, documento de projeto, histórico de contribuições, declarações individuais e vídeo. Re-escopo de milestone exige uma issue nova.
 
 ## Contribuir
 Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe em branch vinculada à issue, com Conventional Commits e PR revisado por outro integrante. Vincule requisito → issue → teste. Testes, cobertura e análise estática serão executados a cada PR de código após configuração da CI (#3).
@@ -164,6 +166,8 @@ Versionados em `.kiro/hooks/` e ativados ao abrir a pasta do repositório como r
 | quality-on-stop | fim do turno do agente (Stop) | `python scripts/kiro/quality_check.py --if-changed` | Ruff e pytest se houver código alterado |
 
 Enquanto não houver `pyproject.toml` (#2), `quality_check.py` não executa nada. Gatilhos de arquivo não rodam no Kiro Web; os gatilhos Stop rodam no IDE, CLI e Web.
+
+**Ativação não verificada (25/11/2026).** Não há evidência de que algum desses hooks tenha sido carregado: o Kiro lê os hooks ao iniciar a sessão e eles foram criados durante uma sessão já aberta. No Kiro Web o repositório fica em uma subpasta do workspace; executados a partir da raiz do workspace, os comandos acima não encontram os scripts e terminam com código 2, que não tem efeito em gatilhos Stop. Até a verificação ([CONTEXT, Bloqueios](docs/CONTEXT.md#bloqueios)), execute testes, lint e análise estática à mão e confie na CI (#3).
 
 ## Licença
 [MIT](LICENSE), © 2026 os cinco integrantes do grupo. A licença cobre o código e a documentação produzidos pelo grupo. O arquivo `ESI - projeto maquina-cafe.pdf` é material da disciplina, de autoria dos docentes, e não é licenciado pelo grupo.

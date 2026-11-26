@@ -21,6 +21,10 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 - README: seções "Códigos de erro" e "Branching"; tabela de milestones M1–M5 (#1).
 - Configuração de proteção de `main` em `.github/branch-protection-main.json`, a aplicar por administrador (#27).
 - Milestones M1–M5 no GitHub com as issues vinculadas; issue #27 para a proteção de `main` (#1).
+- Contrato OpenAPI parcial e planejado em `docs/api/openapi.yaml`: `GET /produtos` (definição de disponibilidade D-Q3) e `GET /operador/relatorio` (`from`/`to` com e sem fuso, exemplos), envelope de erro, dinheiro e JWT (#5, #17, #21).
+- Decisões D-Q3 (disponibilidade), D-Q6 (fuso e validação do período), D-Q7 (`LIMITE_CREDITO_EXCEDIDO`) e D-Q8 (`PEDIDO_NAO_CANCELAVEL`) em `docs/requisitos.md` (#5, #7, #11, #17).
+- Registro do checkpoint de 18/11 em `docs/checkpoint-18-11.md` (#22).
+- Seção "Como executar" em `docs/configuracao-github.md`, com pré-requisitos (GitHub CLI com papel Admin, PowerShell 7) e comandos (#27).
 
 ### Changed
 - `docs/CONTEXT.md` reorganizado nas seções Estado atual, Próximos passos, Decisões e Bloqueios (#1).
@@ -33,6 +37,12 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 - `.github/repository-setup.json` e `scripts/configure-github.ps1` passam a usar M1–M5 e a proteger só `main` (#1).
 - `docs/configuracao-github.md` reescrito com o estado aplicado em 25/11 e o comando de proteção (#27).
 - Matriz de rastreabilidade liga requisitos às decisões e ADRs e inclui os testes de rollback de #9 e #11 (#1).
+- ADR 0002 aceito com a opção A (SQLAlchemy 2.x + Alembic); opção B (`sqlite3`) registrada como rejeitada (#4).
+- ADR 0003 totalmente aceito: `LIMITE_CREDITO_EXCEDIDO` (400) e `PEDIDO_NAO_CANCELAVEL` (409) confirmados; códigos de crédito por estado (D-4a) confirmados (#7, #11, #18).
+- Questões de requisitos Q1–Q8 todas resolvidas (#1).
+- Contas GitHub dos integrantes confirmadas no README e em `docs/contributions.md` (#23).
+- README, steering e CONTEXT informam que a ativação dos hooks do Kiro não foi verificada e que testes e análise estática devem ser executados à mão até a verificação (#1).
+- Critérios de aceite de #4, #5, #7, #11, #17, #21 e #22 atualizados no plano (#1).
 
 ### Removed
 - Branch `develop`, abandonada; preservada como a tag `archive/develop` (ce5eca4, já contida em `main`) (#1).

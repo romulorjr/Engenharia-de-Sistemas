@@ -39,12 +39,12 @@ Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estad
 - #1 (governança) entra em M1 e fecha com o PR #26.
 - #18 entra em M1 porque o envelope e o mapeamento de erros ([ADR 0003](adr/0003-modelo-de-erros.md)) são base para todas as rotas. A validação de cada rota é feita na issue da rota e verificada por `test_error_contract` ao longo de M2–M3.
 - #23 entra em M5 (vídeo). As declarações individuais de #23 têm meta interna de 06/12.
-- #22 fica sem milestone até se saber se o checkpoint de 18/11 aconteceu.
+- #22 ficou sem milestone e foi fechada em 25/11: o checkpoint aconteceu em 18/11 ([registro](checkpoint-18-11.md)).
 - #27 foi criada em 25/11 para a proteção de `main`, que o agente não conseguiu aplicar (HTTP 403), e entrou em M1.
 
 **Regra de re-escopo.** Depois de criados os milestones, nenhuma issue muda de milestone silenciosamente. Se um milestone precisar de re-escopo, abrir uma issue nova descrevendo o que sai, o que entra e o motivo, e registrá-la aqui e no [CONTEXT](CONTEXT.md).
 
-**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). #4 depende da escolha de persistência ([ADR 0002](adr/0002-persistencia-e-atomicidade.md), pendente). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
+**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). #4 segue o [ADR 0002](adr/0002-persistencia-e-atomicidade.md), aceito em 25/11 (opção A: SQLAlchemy + Alembic). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
 
 **Linha de corte.** O PDF permite selecionar as regras viáveis no prazo. Se M2 atrasar, a prioridade é:
 1. Obrigatório: RN01–RN06, RN11, persistência, contrato de erros, Swagger e testes com cobertura ≥75%.
@@ -53,7 +53,7 @@ Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estad
 
 Qualquer corte será registrado no README, no relatório de qualidade e no vídeo, sem apresentar regra não implementada como entregue.
 
-**Issue fora do novo cronograma.** #22 (checkpoint de 18/11) aguarda informação sobre o que foi apresentado para ser fechada com registro em `docs/checkpoint-18-11.md`, ou mantida aberta com nota se não aconteceu.
+**Issue fora do novo cronograma.** #22 (checkpoint de 18/11) foi fechada em 25/11 com o registro em [checkpoint-18-11.md](checkpoint-18-11.md); o que foi apresentado e o retorno do docente ainda precisam ser preenchidos pelo grupo.
 
 **Distribuição.** Cada integrante deve assumir ao menos uma issue de código e revisar ao menos um PR de outra pessoa, para que E05 e E06 reflitam a participação real. A distribuição será registrada nas issues e em [contribuições](contributions.md).
 
@@ -83,7 +83,7 @@ Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda 
 | P19 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) Validar persistência e recuperação | ENG-PERSIST; RN03; RN04 | M3 – Operador e manutenção | alta | P10, P11, P15 |
 | P20 | [#20](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/20) Consolidar testes de caixa-preta e relatório de qualidade | ENG-QUAL; E03 | M4 – Qualidade e documentação | alta | P03, P17, P18, P19 |
 | P21 | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) Documentar API, arquitetura e padrões | ENG-DOC; E02; E04 | M4 – Qualidade e documentação | alta | P17, P18 |
-| P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | — (sem milestone) | alta | P08, P10, P11 |
+| P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | — (sem milestone; fechada em 25/11) | alta | P08, P10, P11 |
 | P23 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) Reunir contribuições, declarações e vídeo | E05; E06; E07 | M5 – Entrega | alta | P20, P21 |
 | P24 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) Auditar e entregar os sete artefatos | E01; E02; E03; E04; E05; E06; E07 | M5 – Entrega | alta | P20, P21, P23 |
 | P25 | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) Aplicar proteção da branch main | ENG-QUAL | M1 – Base técnica | alta | — (passo 2 depende de P03) |
@@ -109,7 +109,8 @@ Evidência planejada: test_app_startup.
 Evidência planejada: validação do workflow em PR.
 
 ### [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) — Criar banco, migrações e inicialização idempotente
-- [ ] Opção de persistência do [ADR 0002](adr/0002-persistencia-e-atomicidade.md) escolhida e ADR aceito antes do código.
+- [x] Opção de persistência do [ADR 0002](adr/0002-persistencia-e-atomicidade.md) escolhida e ADR aceito antes do código (25/11: opção A).
+- [ ] Migrações Alembic com `render_as_batch=True`; só `persistence/` importa `sqlalchemy` e `alembic`.
 - [ ] Transações de escrita com `BEGIN IMMEDIATE`; repositories não fazem commit.
 - [ ] Estoque inicial cheio apenas na primeira inicialização.
 - [ ] Migrações reproduzíveis; reiniciar não restaura crédito, estoque ou estado indevidamente.
@@ -119,8 +120,9 @@ Evidência planejada: test_initialization_idempotent.
 ### [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) — Implementar cardápio e disponibilidade
 - [ ] Cinco receitas, preços e tempos exatamente como no PDF.
 - [ ] Disponibilidade considera ingredientes da receita e copo; açúcar escolhido é validado no pedido.
+- [ ] D-Q3: `disponivel: true` quando há estoque para uma unidade (água, café, leite, chocolate e açúcar da receita, açúcar da receita = 0 g) e ao menos 1 copo; crédito e estado da máquina não entram no cálculo. Descrição igual à de `GET /produtos` em `docs/api/openapi.yaml`.
 
-Evidência planejada: test_menu_recipes_and_availability.
+Evidência planejada: test_menu_recipes_and_availability; test_menu_availability_boundaries (limite exato de cada ingrediente, uma unidade a menos, 0 copo, açúcar zerado, máquina em MANUTENCAO, crédito zero).
 
 ### [#6](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/6) — Consultar estoque e alertas
 - [ ] Seis reservatórios com capacidades e unidades do PDF.
@@ -132,10 +134,11 @@ Evidência planejada: test_stock_alert_boundaries.
 - [ ] Crédito só em PRONTA: PREPARANDO → 409 `MAQUINA_OCUPADA`; MANUTENCAO/AGUARDANDO_LIMPEZA → 503 (D-4a).
 - [ ] Inserção que excederia R$ 50,00 é rejeitada inteira, sem aceitação parcial (D-4b).
 - [ ] Valores em reais com até duas casas; mais casas → 400 (D-4e).
+- [ ] D-Q7: inserção que excederia R$ 50,00 → 400 `LIMITE_CREDITO_EXCEDIDO`, saldo inalterado.
 - [ ] Aceita apenas 50, 100, 200, 500, 1000 e 2000 centavos.
 - [ ] Acúmulo máximo de 5000 centavos; entrada rejeitada não altera saldo.
 
-Evidência planejada: test_credit_denominations_and_limit.
+Evidência planejada: test_credit_denominations_and_limit; test_credit_limit_exceeded_rejects_whole_insertion (49,50 + 0,50 aceito; 50,00 + 0,50 e 45,00 + 10,00 rejeitados com 400 `LIMITE_CREDITO_EXCEDIDO` e saldo inalterado); test_credit_rejected_outside_pronta.
 
 ### [#8](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/8) — Devolver troco
 - [ ] Devolve todo saldo e zera crédito em uma transação, em qualquer estado.
@@ -159,10 +162,11 @@ Evidência planejada: test_preparation_deadline_and_30th_completion.
 ### [#11](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/11) — Cancelar pedido sem repor ingredientes
 - [ ] `test_cancel_rollback_on_midway_failure`: falha injetada após a restituição deixa pedido EM_PREPARO e saldo inalterado (ADR 0002).
 - [ ] Restituição usa o preço cobrado no pedido; saldo nunca passa de R$ 50,00 (D-4b).
+- [ ] D-Q8: cancelar pedido CONCLUIDO ou CANCELADO → 409 `PEDIDO_NAO_CANCELAVEL`; saldo, estoque e estado inalterados.
 - [ ] Só EM_PREPARO cancela; preço cobrado retorna uma única vez ao saldo.
 - [ ] Ingredientes não retornam; cancelamento não conta como conclusão; corrida com término é testada.
 
-Evidência planejada: test_cancel_refund_and_consumption.
+Evidência planejada: test_cancel_refund_and_consumption; test_cancel_rollback_on_midway_failure; test_cancel_non_cancellable_order (CONCLUIDO, CANCELADO e cancelamento repetido → 409; inexistente → 404).
 
 ### [#12](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/12) — Autenticar e autorizar operador
 - [ ] JWT HS256 com validade de 1 hora; `OPERADOR_USUARIO`, `OPERADOR_SENHA` e `JWT_SECRET` por ambiente (D-4d, [ADR 0004](adr/0004-autenticacao-operador-jwt.md)).
@@ -201,11 +205,12 @@ Evidência planejada: test_cleaning_cycle.
 Evidência planejada: test_price_update_and_snapshot.
 
 ### [#17](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/17) — Consultar relatório por período
-- [ ] Parâmetros `from` e `to` obrigatórios, ISO 8601, ambos inclusivos; ausente ou inválido → 400; documentados no OpenAPI (D-4c). Detalhes da questão Q6 de requisitos resolvidos antes do código.
+- [ ] Parâmetros `from` e `to` obrigatórios, ISO 8601, ambos inclusivos; ausente ou inválido → 400; documentados no OpenAPI (D-4c).
+- [ ] D-Q6: com ou sem fuso; sem fuso = America/Sao_Paulo (UTC−03:00); `Z` e deslocamentos aceitos; data sem hora → 400; `from` > `to` → 400; só CONCLUIDO, pelo instante de conclusão. Descrição e exemplos iguais aos de `docs/api/openapi.yaml`.
 - [ ] Totais e quantidades geral e por bebida; cancelados excluídos.
 - [ ] Limites do período, fuso e tratamento de pedidos em preparo documentados e testados.
 
-Evidência planejada: test_sales_report_period_and_cancellations.
+Evidência planejada: test_sales_report_period_and_cancellations; test_report_period_timezones_and_invalid_input (mesmo instante com e sem fuso dá o mesmo relatório; limites `from` e `to` exatos incluídos; data sem hora, valor inválido, ausente e `from` > `to` → 400).
 
 ### [#18](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/18) — Padronizar validação e erros da API
 - [ ] Envelope `erro`/`mensagem` e mapeamento do [ADR 0003](adr/0003-modelo-de-erros.md); validação do FastAPI convertida de 422 para 400.
@@ -229,16 +234,18 @@ Evidência planejada: suite completa e relatório de cobertura.
 
 ### [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) — Documentar API, arquitetura e padrões
 - [ ] OpenAPI declara as respostas de erro do ADR 0003 por rota, o formato monetário do ADR 0005 e os parâmetros `from`/`to`.
+- [ ] OpenAPI gerado exportado em `docs/api/openapi.yaml`, substituindo o contrato parcial de 25/11; test_openapi_contract confirma que as descrições de D-Q3 e D-Q6 e os exemplos de `from`/`to` estão presentes.
 - [ ] OpenAPI e fluxo completo reproduzíveis; README atualizado.
 - [ ] Documento justifica padrão ou solução simples; diagrama de até uma página fiel ao código.
 
 Evidência planejada: test_openapi_contract e revisão do diagrama.
 
 ### [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) — Preparar checkpoint de 18/11
-- [ ] Demonstração de cardápio → crédito → pedido → conclusão → troco.
-- [ ] Estado do backlog, riscos, cobertura atual e limitações apresentados ao docente.
+Fechada em 25/11/2026. Checkpoint realizado em 18/11; registro em [checkpoint-18-11.md](checkpoint-18-11.md).
+- [ ] Demonstração de cardápio → crédito → pedido → conclusão → troco. Não atendido: não havia código em 18/11; coberto por M2 e pelo vídeo.
+- [ ] Estado do backlog, riscos, cobertura atual e limitações apresentados ao docente. A confirmar pelo grupo no registro.
 
-Evidência planejada: ensaio do checkpoint.
+Evidência: [checkpoint-18-11.md](checkpoint-18-11.md).
 
 ### [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) — Reunir contribuições, declarações e vídeo
 - [ ] Histórico real dos cinco integrantes e declarações individuais sem autoria fictícia.
@@ -294,7 +301,7 @@ PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir
 | Débito duplicado / estoque negativo | Transações, serialização e testes concorrentes reais |
 | Divergência de estado após reinício | Persistir término previsto e testar recuperação idempotente |
 | Requisitos ambíguos | Resolver questões de requisitos.md na issue antes da implementação; decisões de 25/11 registradas em requisitos.md e ADRs 0003–0005 |
-| Persistência indefinida (ADR 0002) | Escolha do responsável até 26/11; sem ela, #4 e M1 (27/11) atrasam |
+| Hooks do Kiro não verificados como ativos | Executar testes e análise estática à mão (README) até a verificação; CI da #3 é a garantia que vale |
 | Proteção de `main` exige revisão de outro integrante | Revisores definidos por issue; PRs pequenos para revisão rápida |
 | SQLite e concorrência | Configurar transações explicitamente, testar conexões independentes; reavaliar PostgreSQL se necessário |
 | Cobertura apenas numérica | Caixa-preta, limites e transições; revisar qualidade das asserções |
@@ -314,4 +321,4 @@ PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir
 | E07 | Vídeo de demonstração; 10–15 minutos sugeridos | #23 |
 
 ## Próximas ações
-Atualizado em 25/11/2026. Obter revisão de outro integrante e mesclar o PR #26 (#1). Escolher a opção de persistência do ADR 0002. Confirmar contas GitHub e a situação do checkpoint (#22). Distribuir responsáveis. Iniciar #2, #3 e #4 (M1, 27/11). Quando o workflow da #3 passar, exigir o check na proteção de `main`. Responder às questões Q3, Q6, Q7 e Q8 de [requisitos](requisitos.md#questões-a-resolver-antes-das-respectivas-implementações) antes das issues correspondentes.
+Atualizado em 25/11/2026 (segunda rodada de decisões). Revisar as specs de #2 e #3 e autorizar a implementação. Aplicar a proteção de `main` (#27, passo a). Obter revisão de outro integrante e mesclar o PR #26 (#1). Executar `scripts/configure-github.ps1 -Apply` e registrar o resultado. Preencher o registro do checkpoint (#22). Distribuir responsáveis pelas issues de M2. Quando o workflow da #3 passar, exigir o check na proteção de `main` (#27, passo b).
