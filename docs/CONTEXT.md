@@ -1,6 +1,6 @@
 # Contexto do projeto
 
-Arquivo vivo. Atualizar "Estado atual", "Próximos passos", "Decisões" e "Bloqueios" ao fim de cada sessão de trabalho. Última atualização: 25/11/2026.
+Arquivo vivo. Atualizar "Estado atual", "Próximos passos", "Decisões" e "Bloqueios" ao fim de cada sessão de trabalho. Última atualização: 26/11/2026.
 
 Fonte normativa: [ESI - projeto maquina-cafe.pdf](../ESI%20-%20projeto%20maquina-cafe.pdf). Este documento registra estado e decisões; não substitui a especificação. Regras de trabalho do agente e da equipe: [.kiro/steering/project.md](../.kiro/steering/project.md).
 
@@ -10,8 +10,8 @@ Back-end de uma máquina de café, preferencialmente API REST; sem interface gr�
 ## Equipe (ordem alfabética)
 Bruno de Andrade Gama Kraker, Pedro Henryk Bezerra Souza, Rodrigo Franco de Moraes, Rômulo Maurício Fonseca Júnior, Thales Iamamura. Contas GitHub confirmadas em 25/11/2026 em [contribuições](contributions.md); papéis a definir.
 
-## Estado atual (25/11/2026)
-Relatório de estado produzido nesta data e atualizado depois de duas rodadas de decisões do responsável.
+## Estado atual
+Relatório de estado produzido em 25/11/2026 e atualizado em 26/11/2026, depois das duas rodadas de decisões do responsável (25/11 e 26/11).
 
 **Feito**
 - Documentação de planejamento de 14/10 (PR #25): README, requisitos, plano, rastreabilidade, arquitetura planejada, ADR 0001, configuração GitHub, templates, `.gitignore` e pastas vazias em `src/` e `tests/`.
@@ -21,7 +21,7 @@ Relatório de estado produzido nesta data e atualizado depois de duas rodadas de
   - contrato OpenAPI parcial em `docs/api/openapi.yaml` (`GET /produtos`, `GET /operador/relatorio`);
   - registro do checkpoint em `docs/checkpoint-18-11.md`;
   - licença MIT; configuração de proteção de `main` em `.github/branch-protection-main.json`; seção "Como executar" em `docs/configuracao-github.md`.
-- No GitHub, em 25/11:
+- No GitHub, em 25 e 26/11:
   - milestones M1–M5 criados e issues vinculadas;
   - `develop` arquivada como tag `archive/develop` e removida;
   - [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) aberta para a proteção de `main` (aguardando execução pelo administrador);
@@ -54,7 +54,7 @@ Relatório de estado produzido nesta data e atualizado depois de duas rodadas de
 | E06 declarações | Esqueleto em [contributions.md](contributions.md) |
 | E07 vídeo | Ausente |
 
-**Prazos:** faltam 14 dias para 09/12. M1 vence em 27/11; a implementação de #2 e #3 depende da aprovação das specs.
+**Prazos:** em 26/11 faltam 13 dias para 09/12. M1 vence amanhã, 27/11; a implementação de #2 e #3 depende da aprovação das specs.
 
 ## Próximos passos
 1. Responsável: revisar as specs de #2 e #3 e autorizar a implementação.
@@ -75,21 +75,21 @@ Relatório de estado produzido nesta data e atualizado depois de duas rodadas de
 | 25/11/2026 | Commits gerados pelo agente aparecem com autor `Kiro Agent` e são registrados com quem os solicitou | [contribuições](contributions.md) |
 | 25/11/2026 | Replanejamento M1–M5 aprovado; re-escopo de milestone exige issue nova; #1, #18, #27 em M1, #23 em M5, #22 sem milestone | [plano](plano-de-projeto.md#replanejamento-aprovado-em-25112026) |
 | 25/11/2026 | `develop` abandonada (tag `archive/develop`); branches `feature/`, `fix/`, `docs/`, `test/` a partir de `main`; PR revisado para `main`; `main` protegida com CI obrigatória | [plano](plano-de-projeto.md#branches-commits-e-prs), README "Branching", #27 |
-| 25/11/2026 | Persistência: opção A, SQLAlchemy 2.x + Alembic; opção B (`sqlite3`) rejeitada; transações `BEGIN IMMEDIATE` na camada de serviços | [ADR 0002](adr/0002-persistencia-e-atomicidade.md) |
-| 25/11/2026 | D-4a: crédito só em PRONTA (409 `MAQUINA_OCUPADA` em PREPARANDO, 503 em MANUTENCAO/AGUARDANDO_LIMPEZA); troco em qualquer estado. Códigos confirmados na segunda rodada | [requisitos](requisitos.md#decisões-de-interpretação-25112026), [ADR 0003](adr/0003-modelo-de-erros.md) |
+| 26/11/2026 | Persistência: opção A, SQLAlchemy 2.x + Alembic; opção B (`sqlite3`) rejeitada; transações `BEGIN IMMEDIATE` na camada de serviços | [ADR 0002](adr/0002-persistencia-e-atomicidade.md) |
+| 25/11/2026 | D-4a: crédito só em PRONTA (409 `MAQUINA_OCUPADA` em PREPARANDO, 503 em MANUTENCAO/AGUARDANDO_LIMPEZA); troco em qualquer estado. Códigos confirmados em 26/11 | [requisitos](requisitos.md#decisões-de-interpretação-25112026), [ADR 0003](adr/0003-modelo-de-erros.md) |
 | 25/11/2026 | D-4b: saldo nunca passa de R$ 50; inserção excedente rejeitada inteira | requisitos, ADR 0003 |
 | 25/11/2026 | D-4c: relatório com `from`/`to` ISO 8601, obrigatórios e inclusivos; 400 se ausente ou inválido | requisitos |
 | 25/11/2026 | D-4d: JWT HS256 de 1 hora; credenciais e segredo por ambiente; 401 sem token válido | [ADR 0004](adr/0004-autenticacao-operador-jwt.md) |
 | 25/11/2026 | D-4e: reais com duas casas no JSON; centavos internamente | [ADR 0005](adr/0005-representacao-monetaria.md) |
 | 25/11/2026 | D-4f: 409 `ESTADO_INVALIDO` para operador no estado errado; 503 só para o cliente | ADR 0003 |
-| 25/11/2026 | D-Q3: `disponivel` = estoque para uma unidade (receita, açúcar da receita = 0 g) e 1 copo; crédito e estado fora do cálculo | requisitos, [openapi.yaml](api/openapi.yaml) |
-| 25/11/2026 | D-Q6: `from`/`to` com ou sem fuso; sem fuso = UTC−03:00; `Z` e deslocamentos aceitos; data sem hora e `from` > `to` → 400; só CONCLUIDO pelo instante de conclusão | requisitos, openapi.yaml |
-| 25/11/2026 | D-Q7: 400 `LIMITE_CREDITO_EXCEDIDO`, inserção inteira rejeitada | requisitos, ADR 0003 |
-| 25/11/2026 | D-Q8: 409 `PEDIDO_NAO_CANCELAVEL` para pedido CONCLUIDO ou CANCELADO | requisitos, ADR 0003 |
-| 25/11/2026 | Licença MIT para os cinco integrantes; PDF da disciplina não coberto | [LICENSE](../LICENSE) |
-| 25/11/2026 | Contas GitHub confirmadas; arquivo mantém o nome `docs/contributions.md` | [contribuições](contributions.md) |
-| 25/11/2026 | Checkpoint de 18/11 realizado; #22 fechada com registro | [checkpoint-18-11.md](checkpoint-18-11.md) |
-| 25/11/2026 | Contrato OpenAPI parcial escrito à mão em `docs/api/openapi.yaml` até a #21, que o substitui pelo OpenAPI gerado | openapi.yaml |
+| 26/11/2026 | D-Q3: `disponivel` = estoque para uma unidade (receita, açúcar da receita = 0 g) e 1 copo; crédito e estado fora do cálculo | requisitos, [openapi.yaml](api/openapi.yaml) |
+| 26/11/2026 | D-Q6: `from`/`to` com ou sem fuso; sem fuso = UTC−03:00; `Z` e deslocamentos aceitos; data sem hora e `from` > `to` → 400; só CONCLUIDO pelo instante de conclusão | requisitos, openapi.yaml |
+| 26/11/2026 | D-Q7: 400 `LIMITE_CREDITO_EXCEDIDO`, inserção inteira rejeitada | requisitos, ADR 0003 |
+| 26/11/2026 | D-Q8: 409 `PEDIDO_NAO_CANCELAVEL` para pedido CONCLUIDO ou CANCELADO | requisitos, ADR 0003 |
+| 25/11/2026 | Licença MIT para os cinco integrantes; PDF da disciplina não coberto (confirmado em 26/11) | [LICENSE](../LICENSE) |
+| 26/11/2026 | Contas GitHub confirmadas; arquivo mantém o nome `docs/contributions.md` | [contribuições](contributions.md) |
+| 26/11/2026 | Checkpoint de 18/11 realizado; #22 fechada com registro | [checkpoint-18-11.md](checkpoint-18-11.md) |
+| 26/11/2026 | Contrato OpenAPI parcial escrito à mão em `docs/api/openapi.yaml` até a #21, que o substitui pelo OpenAPI gerado | openapi.yaml |
 
 **Decisões pendentes (aguardando o responsável)**
 1. Aprovação das specs de #2 e #3 (inclui ADR 0006, estratégia de testes, proposto na spec de #3).
@@ -99,11 +99,11 @@ Relatório de estado produzido nesta data e atualizado depois de duas rodadas de
 ## Bloqueios
 | Bloqueio | Efeito | Mitigação |
 |---|---|---|
-| **Hooks do Kiro não estão ativos (não verificados)** | Nenhuma evidência de carregamento: o Kiro lê os hooks ao iniciar a sessão, e os de `.kiro/hooks/` foram criados durante uma sessão aberta; nenhuma saída de hook apareceu nos turnos seguintes. No Kiro Web o workspace é `/projects/sandbox` e o repositório fica na subpasta `Engenharia-de-Sistemas/`: executados a partir da raiz do workspace, `python scripts/kiro/docs_guard.py` e `python scripts/kiro/quality_check.py` não encontram os arquivos e terminam com código 2, sem efeito em gatilhos Stop (testado em 25/11). | **Até corrigir, testes e análise estática devem ser executados à mão** na raiz do repositório (`python scripts/kiro/docs_guard.py`, `python scripts/kiro/quality_check.py`, e os comandos do README) e a CI da #3 é a verificação obrigatória. Verificar em sessão nova: no Kiro IDE, abrir a pasta do repositório como raiz e conferir os hooks no painel do Kiro; no Kiro Web, conferir se uma alteração em `src/` sem CHANGELOG faz o `docs-guard` manter o agente trabalhando. Se não carregarem, ajustar o diretório dos comandos e registrar aqui |
+| **Hooks do Kiro não estão ativos (não verificados)** | Nenhuma evidência de carregamento: o Kiro lê os hooks ao iniciar a sessão, e os de `.kiro/hooks/` foram criados durante uma sessão aberta; nenhuma saída de hook apareceu nos turnos seguintes. No Kiro Web o workspace é `/projects/sandbox` e o repositório fica na subpasta `Engenharia-de-Sistemas/`: executados a partir da raiz do workspace, `python scripts/kiro/docs_guard.py` e `python scripts/kiro/quality_check.py` não encontram os arquivos e terminam com código 2, sem efeito em gatilhos Stop (testado em 26/11). | **Até corrigir, testes e análise estática devem ser executados à mão** na raiz do repositório (`python scripts/kiro/docs_guard.py`, `python scripts/kiro/quality_check.py`, e os comandos do README) e a CI da #3 é a verificação obrigatória. Verificar em sessão nova: no Kiro IDE, abrir a pasta do repositório como raiz e conferir os hooks no painel do Kiro; no Kiro Web, conferir se uma alteração em `src/` sem CHANGELOG faz o `docs-guard` manter o agente trabalhando. Se não carregarem, ajustar o diretório dos comandos e registrar aqui |
 | Proteção de `main` exige administrador | Integração do agente recebe HTTP 403 | Responsável executa o comando da #27 (aguardando) |
 | Ambiente do agente (Kiro Web) sem acesso ao PyPI | O agente não consegue instalar FastAPI, SQLAlchemy, pytest-cov nem Radon; só `pytest` e `ruff` estão disponíveis localmente | Validar pela CI do GitHub Actions (#3), cujos logs o agente lê; os integrantes executam localmente. A stack não muda por causa disso (ADR 0002) |
 | PowerShell indisponível no ambiente do agente | `scripts/configure-github.ps1` alterado e não executado | Responsável executa localmente (ver `docs/configuracao-github.md`, "Como executar") |
-| Prazo de 14 dias sem código | Risco de não cobrir RN01–RN12 com testes | Fluxo vertical primeiro; linha de corte no plano |
+| Prazo de 13 dias sem código | Risco de não cobrir RN01–RN12 com testes | Fluxo vertical primeiro; linha de corte no plano |
 | Participação concentrada em uma conta | Risco para E05/E06; com a proteção, cada PR precisa de outro integrante | Distribuir issues e revisões imediatamente |
 
 ## Trabalho contínuo

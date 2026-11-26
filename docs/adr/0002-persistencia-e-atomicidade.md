@@ -1,6 +1,6 @@
 # ADR 0002 — Persistência e atomicidade das operações
 
-Data: 25/11/2026. Status: **Aceito** em 25/11/2026 pelo responsável (opção A).
+Data: 25/11/2026 (proposto). Status: **Aceito** em 26/11/2026 pelo responsável (opção A).
 Requisitos: ENG-PERSIST, RN02, RN03, RN04, RN05, RN06. Issues: #4, #9, #10, #11, #19.
 
 ## Contexto
@@ -53,7 +53,7 @@ Se cada repository fizesse commit por conta própria, o débito persistiria depo
 | Alternativa | Benefícios | Custos no contexto | Motivo da rejeição |
 |---|---|---|---|
 | A — SQLAlchemy + Alembic (escolhida) | ORM, migrações versionadas, documentação ampla, portabilidade para outro banco | Mais dependências; `BEGIN IMMEDIATE` exige configurar eventos do driver | — |
-| B — `sqlite3` da biblioteca padrão + Repository, `BEGIN IMMEDIATE`/`COMMIT` explícitos | Nenhuma dependência de persistência; transação visível no código; testes executáveis no ambiente do agente | Mapeamento manual de linhas; migrador próprio com scripts SQL numerados | Rejeitada em 25/11/2026: o grupo mantém ORM e migrações para evoluir o esquema e manter portabilidade. O controle explícito de transação, principal ganho de B, já existe na opção A pela unidade de trabalho nos serviços. A limitação do ambiente do agente não justifica trocar a stack |
+| B — `sqlite3` da biblioteca padrão + Repository, `BEGIN IMMEDIATE`/`COMMIT` explícitos | Nenhuma dependência de persistência; transação visível no código; testes executáveis no ambiente do agente | Mapeamento manual de linhas; migrador próprio com scripts SQL numerados | Rejeitada em 26/11/2026: o grupo mantém ORM e migrações para evoluir o esquema e manter portabilidade. O controle explícito de transação, principal ganho de B, já existe na opção A pela unidade de trabalho nos serviços. A limitação do ambiente do agente não justifica trocar a stack |
 
 ## Referências
 - [SQLAlchemy: SQLite, transações e `BEGIN IMMEDIATE`](https://docs.sqlalchemy.org/en/20/dialects/sqlite.html)

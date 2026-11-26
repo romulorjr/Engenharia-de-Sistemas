@@ -44,11 +44,11 @@ Reservatórios cheios apenas na primeira inicialização.
 Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA, MANUTENCAO. Apenas pedidos concluídos incrementam contador de limpeza.
 
 ## Decisões de interpretação (25/11/2026)
-Decididas pelo responsável (romulorjr) em 25/11/2026, em duas rodadas: D-4a a D-4f e, depois, D-Q3, D-Q6, D-Q7 e D-Q8, que resolvem as questões abertas. Complementam o PDF onde ele é omisso; não o substituem. Mapeamento HTTP completo no [ADR 0003](adr/0003-modelo-de-erros.md); contrato parcial em [docs/api/openapi.yaml](api/openapi.yaml).
+Decididas pelo responsável (romulorjr) em duas rodadas: D-4a a D-4f em 25/11/2026; D-Q3, D-Q6, D-Q7 e D-Q8 em 26/11/2026, que resolvem as questões abertas. Os códigos da D-4a foram confirmados em 26/11. Complementam o PDF onde ele é omisso; não o substituem. Mapeamento HTTP completo no [ADR 0003](adr/0003-modelo-de-erros.md); contrato parcial em [docs/api/openapi.yaml](api/openapi.yaml).
 
 | Id | Tema | Decisão | Justificativa | Registro | Issues |
 |---|---|---|---|---|---|
-| D-4a | Crédito fora de PRONTA | Crédito só é aceito em PRONTA. Em PREPARANDO: 409 `MAQUINA_OCUPADA`. Em MANUTENCAO ou AGUARDANDO_LIMPEZA: 503 (`MAQUINA_EM_MANUTENCAO` / `LIMPEZA_PENDENTE`), os mesmos códigos de `POST /pedidos` no mesmo estado. O troco (RN06) continua permitido em qualquer estado. Códigos confirmados pelo responsável na segunda rodada. | "PRONTA: aceita crédito e pedidos" é o único estado que aceita crédito explicitamente; os demais recusam ou bloqueiam pedidos, e receber dinheiro sem poder servir prejudica o cliente. | ADR 0003 | #7 |
+| D-4a | Crédito fora de PRONTA | Crédito só é aceito em PRONTA. Em PREPARANDO: 409 `MAQUINA_OCUPADA`. Em MANUTENCAO ou AGUARDANDO_LIMPEZA: 503 (`MAQUINA_EM_MANUTENCAO` / `LIMPEZA_PENDENTE`), os mesmos códigos de `POST /pedidos` no mesmo estado. O troco (RN06) continua permitido em qualquer estado. Códigos confirmados pelo responsável em 26/11/2026. | "PRONTA: aceita crédito e pedidos" é o único estado que aceita crédito explicitamente; os demais recusam ou bloqueiam pedidos, e receber dinheiro sem poder servir prejudica o cliente. | ADR 0003 | #7 |
 | D-4b | Restituição acima de R$ 50 | Não ocorre. Uma inserção que levaria o saldo acima de R$ 50,00 é rejeitada inteira, sem aceitação parcial, e o saldo não muda. | Pela D-4a, o saldo só cresce em PRONTA e sempre ≤ R$ 50. Entre a aceitação e o cancelamento a máquina está PREPARANDO, então o saldo só pode diminuir (troco). A restituição (RN05) devolve o preço cobrado no pedido, que saiu desse mesmo saldo: saldo final ≤ (saldo anterior − preço) + preço ≤ R$ 50. A restituição usa o preço gravado no pedido, não o preço atual. | ADR 0003 | #7, #11 |
 | D-4c | Período do relatório | `GET /operador/relatorio?from=...&to=...`. Os dois parâmetros são obrigatórios, em ISO 8601 (ex.: `2026-11-01T00:00:00`), ambos inclusivos. Ausente ou inválido: 400 `DADOS_INVALIDOS`. Documentado no OpenAPI e na descrição do endpoint. Detalhes na D-Q6. | Decisão do responsável. | ADR 0003 | #17, #21 |
 | D-4d | Token do operador | JWT HS256 com validade de 1 hora; segredo e credenciais em variáveis de ambiente. Token ausente, inválido ou expirado: 401 `NAO_AUTORIZADO`. | Atende RN11 sem estado no servidor. | [ADR 0004](adr/0004-autenticacao-operador-jwt.md) | #12 |
@@ -73,7 +73,7 @@ Notas para as specs:
 ## Questões a resolver antes das respectivas implementações
 Não são requisitos adicionais confirmados. Respostas são registradas na seção anterior e em [CONTEXT](CONTEXT.md#decisões).
 
-**Todas resolvidas em 25/11/2026.** Novas questões entram aqui com identificador Q9 em diante.
+**Todas resolvidas até 26/11/2026.** Novas questões entram aqui com identificador Q9 em diante.
 - **Q1** Crédito fora de PRONTA e restituição acima de R$ 50 → D-4a e D-4b.
 - **Q2** Período do relatório → D-4c.
 - **Q3** Disponibilidade no cardápio → D-Q3.

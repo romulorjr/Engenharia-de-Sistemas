@@ -2,7 +2,7 @@
 
 Back-end de uma máquina de café automática para a disciplina Engenharia de Sistemas de Informação. O objetivo é entregar software funcional, testado e documentado, com evidências de participação de todos os integrantes.
 
-**Status em 25/11/2026: planejamento, governança e estrutura inicial. A API ainda não está implementada.** Situação detalhada em [CONTEXT](docs/CONTEXT.md#estado-atual-25112026) e mudanças no [CHANGELOG](CHANGELOG.md). A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
+**Status em 26/11/2026: planejamento, governança e estrutura inicial. A API ainda não está implementada.** Situação detalhada em [CONTEXT](docs/CONTEXT.md#estado-atual) e mudanças no [CHANGELOG](CHANGELOG.md). A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
 
 ## Equipe
 | Integrante (ordem alfabética) | Papel | GitHub |
@@ -13,15 +13,15 @@ Back-end de uma máquina de café automática para a disciplina Engenharia de Si
 | Rômulo Maurício Fonseca Júnior | A definir | romulorjr |
 | Thales Iamamura | A definir | t-iamamura |
 
-Contas confirmadas em 25/11/2026. Histórico e declarações individuais em [contribuições](docs/contributions.md).
+Contas confirmadas em 26/11/2026. Histórico e declarações individuais em [contribuições](docs/contributions.md).
 
 ## Escopo
 Cinco bebidas com receitas, preços e preparo simulado; estoque e alertas; crédito e troco; pedidos e cancelamento; operador autenticado, limpeza, reposição e relatórios. Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO. Banco preserva estoque, crédito, estado e pedidos após reiniciar.
 
 ## Stack e arquitetura
-Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). SQLAlchemy + Alembic confirmados em 25/11/2026 no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md), com transações `BEGIN IMMEDIATE` abertas e fechadas pelos serviços.
+Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). SQLAlchemy + Alembic confirmados em 26/11/2026 no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md), com transações `BEGIN IMMEDIATE` abertas e fechadas pelos serviços.
 
-Convenções da API, decididas em 25/11/2026:
+Convenções da API, decididas em 25 e 26/11/2026:
 - Dinheiro: reais com duas casas no JSON (`4.50`), centavos inteiros internamente ([ADR 0005](docs/adr/0005-representacao-monetaria.md)).
 - Erros: `{"erro": "CODIGO", "mensagem": "..."}` com o mapeamento HTTP da seção [Códigos de erro](#códigos-de-erro) ([ADR 0003](docs/adr/0003-modelo-de-erros.md)).
 - Operações que alteram crédito, estoque, pedido e estado são atômicas, com as fronteiras de transação do [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md).
@@ -167,7 +167,7 @@ Versionados em `.kiro/hooks/` e ativados ao abrir a pasta do repositório como r
 
 Enquanto não houver `pyproject.toml` (#2), `quality_check.py` não executa nada. Gatilhos de arquivo não rodam no Kiro Web; os gatilhos Stop rodam no IDE, CLI e Web.
 
-**Ativação não verificada (25/11/2026).** Não há evidência de que algum desses hooks tenha sido carregado: o Kiro lê os hooks ao iniciar a sessão e eles foram criados durante uma sessão já aberta. No Kiro Web o repositório fica em uma subpasta do workspace; executados a partir da raiz do workspace, os comandos acima não encontram os scripts e terminam com código 2, que não tem efeito em gatilhos Stop. Até a verificação ([CONTEXT, Bloqueios](docs/CONTEXT.md#bloqueios)), execute testes, lint e análise estática à mão e confie na CI (#3).
+**Ativação não verificada (26/11/2026).** Não há evidência de que algum desses hooks tenha sido carregado: o Kiro lê os hooks ao iniciar a sessão e eles foram criados durante uma sessão já aberta. No Kiro Web o repositório fica em uma subpasta do workspace; executados a partir da raiz do workspace, os comandos acima não encontram os scripts e terminam com código 2, que não tem efeito em gatilhos Stop. Até a verificação ([CONTEXT, Bloqueios](docs/CONTEXT.md#bloqueios)), execute testes, lint e análise estática à mão e confie na CI (#3).
 
 ## Licença
 [MIT](LICENSE), © 2026 os cinco integrantes do grupo. A licença cobre o código e a documentação produzidos pelo grupo. O arquivo `ESI - projeto maquina-cafe.pdf` é material da disciplina, de autoria dos docentes, e não é licenciado pelo grupo.

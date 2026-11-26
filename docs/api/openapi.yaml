@@ -1,4 +1,4 @@
-# Contrato OpenAPI PARCIAL e PLANEJADO, escrito à mão em 25/11/2026.
+# Contrato OpenAPI PARCIAL e PLANEJADO, escrito à mão em 26/11/2026.
 # Cobre só as rotas com decisões já registradas: GET /produtos (D-Q3) e
 # GET /operador/relatorio (D-4c, D-Q6), mais os componentes comuns
 # (erro, dinheiro, autenticação). Nenhuma rota está implementada.

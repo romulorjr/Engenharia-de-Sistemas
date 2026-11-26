@@ -13,7 +13,7 @@ Um ADR por decisão significativa: stack, banco, autenticação, modelo de erros
 | ADR | Título | Status | Data |
 |---|---|---|---|
 | [0001](0001-escolha-da-stack.md) | Stack do MVP | Aceito (decisão inicial, revisável) | 14/10/2026 |
-| [0002](0002-persistencia-e-atomicidade.md) | Persistência e atomicidade das operações (SQLAlchemy + Alembic) | Aceito (opção A) | 25/11/2026 |
+| [0002](0002-persistencia-e-atomicidade.md) | Persistência e atomicidade das operações (SQLAlchemy + Alembic) | Aceito (opção A) em 26/11/2026 | 25/11/2026 |
 | [0003](0003-modelo-de-erros.md) | Modelo de erros e mapeamento HTTP | Aceito | 25/11/2026 |
 | [0004](0004-autenticacao-operador-jwt.md) | Autenticação do operador por JWT | Aceito | 25/11/2026 |
 | [0005](0005-representacao-monetaria.md) | Representação monetária | Aceito | 25/11/2026 |

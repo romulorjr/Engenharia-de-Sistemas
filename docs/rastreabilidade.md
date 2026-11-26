@@ -1,6 +1,6 @@
 # Rastreabilidade requisito → issue → implementação → teste → documentação
 
-Fonte: [requisitos](requisitos.md). Atualizado em 25/11/2026. Todos os testes abaixo são **planejados, ainda não implementados ou executados**. Ao implementar, preencher: módulo/classe em "Implementação", caminho e nome real do teste, documento afetado (README, OpenAPI, ADR, diagrama) e link do PR. Pxx não substitui o número real da issue.
+Fonte: [requisitos](requisitos.md). Atualizado em 26/11/2026. Todos os testes abaixo são **planejados, ainda não implementados ou executados**. Ao implementar, preencher: módulo/classe em "Implementação", caminho e nome real do teste, documento afetado (README, OpenAPI, ADR, diagrama) e link do PR. Pxx não substitui o número real da issue.
 
 Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado, teste passando na CI).
 
@@ -36,7 +36,7 @@ Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado,
 | ENG-DOC | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) | `docs/api/openapi.yaml` (contrato parcial planejado) | test_openapi_contract e revisão do diagrama | `docs/api/openapi.yaml` | Planejado |
 | E02 | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) | — | test_openapi_contract e revisão do diagrama | — | Planejado |
 | E04 | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) | — | test_openapi_contract e revisão do diagrama | — | Planejado |
-| CHECKPOINT | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) | — | checkpoint realizado em 18/11; sem demonstração do fluxo (não havia código) | [checkpoint-18-11.md](checkpoint-18-11.md) | Concluído (fechada em 25/11; conteúdo a preencher pelo grupo) |
+| CHECKPOINT | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) | — | checkpoint realizado em 18/11; sem demonstração do fluxo (não havia código) | [checkpoint-18-11.md](checkpoint-18-11.md) | Concluído (fechada em 26/11; conteúdo a preencher pelo grupo) |
 | E05 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) | — | checklist de evidências | — | Planejado |
 | E06 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) | — | checklist de evidências | — | Planejado |
 | E07 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) | — | checklist de evidências | — | Planejado |

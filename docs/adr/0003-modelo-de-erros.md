@@ -1,7 +1,7 @@
 # ADR 0003 — Modelo de erros e mapeamento HTTP
 
-Data: 25/11/2026. Status: **Aceito** (todas as linhas confirmadas pelo responsável em 25/11/2026).
-Requisitos: ENG-API, RN01, RN02, RN05, RN08, RN09, RN11, RN12. Issues: #18, #7, #9, #11, #12, #13, #14, #15, #17. Decisões do responsável de 25/11/2026: D-4a, D-4b, D-4c, D-4f, D-Q6, D-Q7 e D-Q8, registradas em [requisitos](../requisitos.md#decisões-de-interpretação-25112026).
+Data: 25/11/2026. Status: **Aceito** (todas as linhas confirmadas pelo responsável em 26/11/2026).
+Requisitos: ENG-API, RN01, RN02, RN05, RN08, RN09, RN11, RN12. Issues: #18, #7, #9, #11, #12, #13, #14, #15, #17. Decisões do responsável de 25 e 26/11/2026: D-4a, D-4b, D-4c, D-4f, D-Q6, D-Q7 e D-Q8, registradas em [requisitos](../requisitos.md#decisões-de-interpretação-25112026).
 
 ## Contexto
 O PDF sugere códigos HTTP (página 4) e mostra erros no formato `{"erro": "...", "mensagem": "..."}` (páginas 6–7). O FastAPI, por padrão, responde erros de validação com 422 e `{"detail": [...]}`, o que contradiz o 400 do PDF e o 422 reservado para reabastecimento acima da capacidade.
@@ -47,4 +47,4 @@ O PDF sugere códigos HTTP (página 4) e mostra erros no formato `{"erro": "..."
 | Padrão do FastAPI (422 e `detail`) | Contradiz o 400 do PDF e o formato `erro`/`mensagem` dos exemplos |
 | RFC 9457 (`application/problem+json`) | Acrescenta campos sem ganho para o escopo; diverge dos exemplos do PDF |
 | 503 também para o operador no estado errado | Rejeitado pela D-4f: o operador controla o estado; 503 fica para indisponibilidade ao cliente |
-| 409 para crédito em qualquer estado diferente de PRONTA | Permitido pela D-4a, mas a resposta diferiria de `POST /pedidos` no mesmo estado. O responsável confirmou em 25/11/2026 os códigos de `POST /pedidos` |
+| 409 para crédito em qualquer estado diferente de PRONTA | Permitido pela D-4a, mas a resposta diferiria de `POST /pedidos` no mesmo estado. O responsável confirmou em 26/11/2026 os códigos de `POST /pedidos` |

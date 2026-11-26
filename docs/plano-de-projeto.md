@@ -39,12 +39,12 @@ Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estad
 - #1 (governança) entra em M1 e fecha com o PR #26.
 - #18 entra em M1 porque o envelope e o mapeamento de erros ([ADR 0003](adr/0003-modelo-de-erros.md)) são base para todas as rotas. A validação de cada rota é feita na issue da rota e verificada por `test_error_contract` ao longo de M2–M3.
 - #23 entra em M5 (vídeo). As declarações individuais de #23 têm meta interna de 06/12.
-- #22 ficou sem milestone e foi fechada em 25/11: o checkpoint aconteceu em 18/11 ([registro](checkpoint-18-11.md)).
+- #22 ficou sem milestone e foi fechada em 26/11: o checkpoint aconteceu em 18/11 ([registro](checkpoint-18-11.md)).
 - #27 foi criada em 25/11 para a proteção de `main`, que o agente não conseguiu aplicar (HTTP 403), e entrou em M1.
 
 **Regra de re-escopo.** Depois de criados os milestones, nenhuma issue muda de milestone silenciosamente. Se um milestone precisar de re-escopo, abrir uma issue nova descrevendo o que sai, o que entra e o motivo, e registrá-la aqui e no [CONTEXT](CONTEXT.md).
 
-**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). #4 segue o [ADR 0002](adr/0002-persistencia-e-atomicidade.md), aceito em 25/11 (opção A: SQLAlchemy + Alembic). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
+**Ordem e paralelismo.** M1 é sequencial (#2 → #3 e #4). #4 segue o [ADR 0002](adr/0002-persistencia-e-atomicidade.md), aceito em 26/11 (opção A: SQLAlchemy + Alembic). Em M2, #5, #7 e #8 podem andar em paralelo; #9 depende de #5 e #7; #10 de #9; #11 de #10. Em M3, #12 libera as rotas do operador; #13 antecede #14 e #15.
 
 **Linha de corte.** O PDF permite selecionar as regras viáveis no prazo. Se M2 atrasar, a prioridade é:
 1. Obrigatório: RN01–RN06, RN11, persistência, contrato de erros, Swagger e testes com cobertura ≥75%.
@@ -53,7 +53,7 @@ Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estad
 
 Qualquer corte será registrado no README, no relatório de qualidade e no vídeo, sem apresentar regra não implementada como entregue.
 
-**Issue fora do novo cronograma.** #22 (checkpoint de 18/11) foi fechada em 25/11 com o registro em [checkpoint-18-11.md](checkpoint-18-11.md); o que foi apresentado e o retorno do docente ainda precisam ser preenchidos pelo grupo.
+**Issue fora do novo cronograma.** #22 (checkpoint de 18/11) foi fechada em 26/11 com o registro em [checkpoint-18-11.md](checkpoint-18-11.md); o que foi apresentado e o retorno do docente ainda precisam ser preenchidos pelo grupo.
 
 **Distribuição.** Cada integrante deve assumir ao menos uma issue de código e revisar ao menos um PR de outra pessoa, para que E05 e E06 reflitam a participação real. A distribuição será registrada nas issues e em [contribuições](contributions.md).
 
@@ -83,7 +83,7 @@ Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda 
 | P19 | [#19](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/19) Validar persistência e recuperação | ENG-PERSIST; RN03; RN04 | M3 – Operador e manutenção | alta | P10, P11, P15 |
 | P20 | [#20](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/20) Consolidar testes de caixa-preta e relatório de qualidade | ENG-QUAL; E03 | M4 – Qualidade e documentação | alta | P03, P17, P18, P19 |
 | P21 | [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) Documentar API, arquitetura e padrões | ENG-DOC; E02; E04 | M4 – Qualidade e documentação | alta | P17, P18 |
-| P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | — (sem milestone; fechada em 25/11) | alta | P08, P10, P11 |
+| P22 | [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) Preparar checkpoint de 18/11 | CHECKPOINT | — (sem milestone; fechada em 26/11) | alta | P08, P10, P11 |
 | P23 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) Reunir contribuições, declarações e vídeo | E05; E06; E07 | M5 – Entrega | alta | P20, P21 |
 | P24 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) Auditar e entregar os sete artefatos | E01; E02; E03; E04; E05; E06; E07 | M5 – Entrega | alta | P20, P21, P23 |
 | P25 | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) Aplicar proteção da branch main | ENG-QUAL | M1 – Base técnica | alta | — (passo 2 depende de P03) |
@@ -109,7 +109,7 @@ Evidência planejada: test_app_startup.
 Evidência planejada: validação do workflow em PR.
 
 ### [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) — Criar banco, migrações e inicialização idempotente
-- [x] Opção de persistência do [ADR 0002](adr/0002-persistencia-e-atomicidade.md) escolhida e ADR aceito antes do código (25/11: opção A).
+- [x] Opção de persistência do [ADR 0002](adr/0002-persistencia-e-atomicidade.md) escolhida e ADR aceito antes do código (26/11: opção A).
 - [ ] Migrações Alembic com `render_as_batch=True`; só `persistence/` importa `sqlalchemy` e `alembic`.
 - [ ] Transações de escrita com `BEGIN IMMEDIATE`; repositories não fazem commit.
 - [ ] Estoque inicial cheio apenas na primeira inicialização.
@@ -234,14 +234,14 @@ Evidência planejada: suite completa e relatório de cobertura.
 
 ### [#21](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/21) — Documentar API, arquitetura e padrões
 - [ ] OpenAPI declara as respostas de erro do ADR 0003 por rota, o formato monetário do ADR 0005 e os parâmetros `from`/`to`.
-- [ ] OpenAPI gerado exportado em `docs/api/openapi.yaml`, substituindo o contrato parcial de 25/11; test_openapi_contract confirma que as descrições de D-Q3 e D-Q6 e os exemplos de `from`/`to` estão presentes.
+- [ ] OpenAPI gerado exportado em `docs/api/openapi.yaml`, substituindo o contrato parcial de 26/11; test_openapi_contract confirma que as descrições de D-Q3 e D-Q6 e os exemplos de `from`/`to` estão presentes.
 - [ ] OpenAPI e fluxo completo reproduzíveis; README atualizado.
 - [ ] Documento justifica padrão ou solução simples; diagrama de até uma página fiel ao código.
 
 Evidência planejada: test_openapi_contract e revisão do diagrama.
 
 ### [#22](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/22) — Preparar checkpoint de 18/11
-Fechada em 25/11/2026. Checkpoint realizado em 18/11; registro em [checkpoint-18-11.md](checkpoint-18-11.md).
+Fechada em 26/11/2026. Checkpoint realizado em 18/11; registro em [checkpoint-18-11.md](checkpoint-18-11.md).
 - [ ] Demonstração de cardápio → crédito → pedido → conclusão → troco. Não atendido: não havia código em 18/11; coberto por M2 e pelo vídeo.
 - [ ] Estado do backlog, riscos, cobertura atual e limitações apresentados ao docente. A confirmar pelo grupo no registro.
 
@@ -300,7 +300,7 @@ PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir
 | Prazo e aprendizado da stack | Fluxo vertical primeiro; ambiente reproduzível; revisão do plano no checkpoint |
 | Débito duplicado / estoque negativo | Transações, serialização e testes concorrentes reais |
 | Divergência de estado após reinício | Persistir término previsto e testar recuperação idempotente |
-| Requisitos ambíguos | Resolver questões de requisitos.md na issue antes da implementação; decisões de 25/11 registradas em requisitos.md e ADRs 0003–0005 |
+| Requisitos ambíguos | Resolver questões de requisitos.md na issue antes da implementação; decisões de 25 e 26/11 registradas em requisitos.md e ADRs 0003–0005 |
 | Hooks do Kiro não verificados como ativos | Executar testes e análise estática à mão (README) até a verificação; CI da #3 é a garantia que vale |
 | Proteção de `main` exige revisão de outro integrante | Revisores definidos por issue; PRs pequenos para revisão rápida |
 | SQLite e concorrência | Configurar transações explicitamente, testar conexões independentes; reavaliar PostgreSQL se necessário |
@@ -321,4 +321,4 @@ PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir
 | E07 | Vídeo de demonstração; 10–15 minutos sugeridos | #23 |
 
 ## Próximas ações
-Atualizado em 25/11/2026 (segunda rodada de decisões). Revisar as specs de #2 e #3 e autorizar a implementação. Aplicar a proteção de `main` (#27, passo a). Obter revisão de outro integrante e mesclar o PR #26 (#1). Executar `scripts/configure-github.ps1 -Apply` e registrar o resultado. Preencher o registro do checkpoint (#22). Distribuir responsáveis pelas issues de M2. Quando o workflow da #3 passar, exigir o check na proteção de `main` (#27, passo b).
+Atualizado em 26/11/2026 (segunda rodada de decisões). Revisar as specs de #2 e #3 e autorizar a implementação. Aplicar a proteção de `main` (#27, passo a). Obter revisão de outro integrante e mesclar o PR #26 (#1). Executar `scripts/configure-github.ps1 -Apply` e registrar o resultado. Preencher o registro do checkpoint (#22). Distribuir responsáveis pelas issues de M2. Quando o workflow da #3 passar, exigir o check na proteção de `main` (#27, passo b).

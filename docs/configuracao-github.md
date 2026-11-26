@@ -61,4 +61,4 @@ O script pode ser retomado: preserva labels e milestones existentes, adiciona la
 ## Histórico
 - 14/10/2026: issues criadas; labels, milestones (Fases 1–6) e proteção de `main`/`develop` planejados, não aplicados.
 - 25/11/2026: Fases 1–6 substituídas por M1–M5; `develop` abandonada; milestones e vínculos aplicados; proteção pendente na #27.
-- 25/11/2026: o responsável assumiu a execução da proteção (#27) e do script; seção "Como executar" adicionada.
+- 26/11/2026: o responsável assumiu a execução da proteção (#27) e do script; seção "Como executar" adicionada.
