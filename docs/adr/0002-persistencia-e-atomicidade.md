@@ -1,19 +1,22 @@
 # ADR 0002 — Persistência e atomicidade das operações
 
-Data: 25/11/2026. Status: **Proposto. Aguarda a escolha do responsável entre as opções A e B.** A parte "Atomicidade" vale para as duas opções.
+Data: 25/11/2026. Status: **Aceito** em 25/11/2026 pelo responsável (opção A).
 Requisitos: ENG-PERSIST, RN02, RN03, RN04, RN05, RN06. Issues: #4, #9, #10, #11, #19.
 
 ## Contexto
 O PDF exige que estoque, crédito, estado da máquina e pedidos sobrevivam a uma reinicialização. RN02/RN03 exigem que a aceitação do pedido debite crédito e estoque e crie o pedido; RN05 exige que o cancelamento devolva o valor e mude o pedido. Uma falha no meio de qualquer dessas operações não pode deixar estado parcial. O [ADR 0001](0001-escolha-da-stack.md) escolheu SQLAlchemy 2.x + Alembic + SQLite.
 
-Em 25/11/2026 o responsável recebeu duas opções e ainda não escolheu:
+Em 25/11/2026 foram avaliadas duas opções de acesso ao banco: manter o ADR 0001 (opção A) ou usar o módulo `sqlite3` da biblioteca padrão (opção B). O ambiente do agente não acessa o PyPI; essa limitação de ferramenta não é motivo para mudar a stack. Testes que não rodam nesse ambiente rodam na CI (#3) e nas máquinas dos integrantes.
 
-| Opção | Resumo | Ganha | Perde |
-|---|---|---|---|
-| A — manter ADR 0001 | SQLAlchemy 2.x + Alembic + SQLite. Testes que não rodam no ambiente do agente rodam na CI; a stack não muda por limitação de ferramenta. | ORM, migrações versionadas pelo Alembic, documentação ampla | Mais dependências; `BEGIN IMMEDIATE` exige configurar eventos do driver pysqlite |
-| B — substituir ADR 0001 na persistência | `sqlite3` da biblioteca padrão, padrão Repository, `BEGIN IMMEDIATE`/`COMMIT` explícitos | Nenhuma dependência de persistência; controle de transação visível no código; testes executáveis em qualquer ambiente com Python | Sem ORM (mapeamento manual de linhas) e sem Alembic; mudanças de esquema por scripts SQL numerados aplicados por um migrador próprio com tabela de versão |
+## Decisão
+**Opção A: manter SQLAlchemy 2.x (ORM, modo síncrono) + Alembic + SQLite em arquivo**, conforme o ADR 0001.
 
-## Atomicidade (independente da opção)
+- Modelos e repositories ficam em `persistence/`. Só essa camada importa `sqlalchemy` e `alembic`.
+- O esquema evolui por migrações Alembic versionadas. A configuração usa `render_as_batch=True`, necessário para alterar tabelas no SQLite.
+- A inicialização aplica as migrações pendentes e grava o estoque cheio apenas na primeira execução (#4).
+- O controle explícito de transação (`BEGIN IMMEDIATE` / `COMMIT` / `ROLLBACK`) fica na camada de serviços, pela unidade de trabalho descrita abaixo.
+
+## Atomicidade
 Fronteiras de transação. Cada linha é uma única transação: tudo é gravado ou nada é gravado.
 
 | Operação | Regras | Pré-condições verificadas dentro da transação | Escritas |
@@ -25,11 +28,13 @@ Fronteiras de transação. Cada linha é uma única transação: tudo é gravado
 | Devolver troco | RN06 | — | saldo = 0 |
 
 Mecanismo:
-- O serviço abre e fecha a transação (unidade de trabalho). Repositories recebem a conexão ou sessão e **nunca** fazem commit.
+- O serviço abre e fecha a transação por uma unidade de trabalho (`with unidade_de_trabalho() as uow:`), que envolve `Session.begin()` do SQLAlchemy. Ao sair do bloco sem exceção, faz `COMMIT`; com exceção, `ROLLBACK`.
+- Repositories recebem a sessão da unidade de trabalho e **nunca** fazem commit.
 - Toda transação de escrita começa com `BEGIN IMMEDIATE`, que obtém o bloqueio de escrita do SQLite antes das leituras. Assim, dois pedidos simultâneos não leem PRONTA ao mesmo tempo.
-- `COMMIT` ao final; qualquer exceção provoca `ROLLBACK`.
-- `busy_timeout` configurado para que um segundo escritor espere em vez de falhar imediatamente.
-- Na opção A, o driver pysqlite é configurado conforme a documentação do SQLAlchemy para SQLite (eventos `connect` e `begin`). Na opção B, a conexão usa controle manual de transação (`isolation_level=None` ou `autocommit=True` do Python 3.12) e emite `BEGIN IMMEDIATE` explicitamente.
+- Configuração do driver pysqlite conforme a documentação do SQLAlchemy para SQLite:
+  - evento `connect`: desativa o `BEGIN` automático do pysqlite (`isolation_level = None`);
+  - evento `begin`: emite `BEGIN IMMEDIATE`;
+  - `timeout` da conexão (busy timeout), para que um segundo escritor espere em vez de falhar imediatamente.
 
 Testes de integração obrigatórios (falham se a operação não for atômica):
 - `test_order_rollback_on_midway_failure` (#9): substitui o repository de pedidos por um que lança exceção depois do débito de crédito e estoque. Por uma conexão nova, verifica que saldo, estoque, estado e quantidade de pedidos não mudaram.
@@ -38,13 +43,19 @@ Testes de integração obrigatórios (falham se a operação não for atômica):
 
 Se cada repository fizesse commit por conta própria, o débito persistiria depois da falha injetada e os dois primeiros testes falhariam.
 
-## Decisão
-Pendente. Ao escolher: mudar o status para Aceito, registrar a opção aqui e atualizar o [índice](README.md). Na opção B, marcar o ADR 0001 como "Substituído parcialmente por 0002 (persistência)" e documentar o formato dos scripts de migração.
-
 ## Consequências
-Comuns: serviços passam a depender de uma abstração de unidade de trabalho; testes de integração usam banco SQLite em arquivo temporário (não `:memory:`), para permitir conexões independentes.
+- Serviços dependem da unidade de trabalho, não de `Session` diretamente; os testes de serviço podem usar banco real em arquivo temporário.
+- Testes de integração usam SQLite em arquivo temporário (não `:memory:`), para permitir conexões independentes.
+- Dependências de execução incluem SQLAlchemy e Alembic (#4). A instalação delas e os testes de persistência são verificados na CI; o agente não os executa localmente.
+- Mudanças de esquema exigem uma migração Alembic no mesmo PR, revisada como código.
+
+## Alternativas consideradas
+| Alternativa | Benefícios | Custos no contexto | Motivo da rejeição |
+|---|---|---|---|
+| A — SQLAlchemy + Alembic (escolhida) | ORM, migrações versionadas, documentação ampla, portabilidade para outro banco | Mais dependências; `BEGIN IMMEDIATE` exige configurar eventos do driver | — |
+| B — `sqlite3` da biblioteca padrão + Repository, `BEGIN IMMEDIATE`/`COMMIT` explícitos | Nenhuma dependência de persistência; transação visível no código; testes executáveis no ambiente do agente | Mapeamento manual de linhas; migrador próprio com scripts SQL numerados | Rejeitada em 25/11/2026: o grupo mantém ORM e migrações para evoluir o esquema e manter portabilidade. O controle explícito de transação, principal ganho de B, já existe na opção A pela unidade de trabalho nos serviços. A limitação do ambiente do agente não justifica trocar a stack |
 
 ## Referências
 - [SQLAlchemy: SQLite, transações e `BEGIN IMMEDIATE`](https://docs.sqlalchemy.org/en/20/dialects/sqlite.html)
-- [Python: `sqlite3`, controle de transações](https://docs.python.org/3.12/library/sqlite3.html#transaction-control)
+- [Alembic: batch migrations para SQLite](https://alembic.sqlalchemy.org/en/latest/batch.html)
 - [SQLite: `BEGIN IMMEDIATE`](https://www.sqlite.org/lang_transaction.html)

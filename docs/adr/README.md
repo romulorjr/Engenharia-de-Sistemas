@@ -13,8 +13,8 @@ Um ADR por decisão significativa: stack, banco, autenticação, modelo de erros
 | ADR | Título | Status | Data |
 |---|---|---|---|
 | [0001](0001-escolha-da-stack.md) | Stack do MVP | Aceito (decisão inicial, revisável) | 14/10/2026 |
-| [0002](0002-persistencia-e-atomicidade.md) | Persistência e atomicidade das operações | Proposto: aguarda escolha entre A (manter ADR 0001) e B (`sqlite3`) | 25/11/2026 |
-| [0003](0003-modelo-de-erros.md) | Modelo de erros e mapeamento HTTP | Aceito; duas linhas propostas | 25/11/2026 |
+| [0002](0002-persistencia-e-atomicidade.md) | Persistência e atomicidade das operações (SQLAlchemy + Alembic) | Aceito (opção A) | 25/11/2026 |
+| [0003](0003-modelo-de-erros.md) | Modelo de erros e mapeamento HTTP | Aceito | 25/11/2026 |
 | [0004](0004-autenticacao-operador-jwt.md) | Autenticação do operador por JWT | Aceito | 25/11/2026 |
 | [0005](0005-representacao-monetaria.md) | Representação monetária | Aceito | 25/11/2026 |
 
@@ -23,6 +23,5 @@ Lista mantida até cada decisão ser tomada; ver issue indicada.
 
 | Tema | Issue | Situação |
 |---|---|---|
-| Persistência: opção A ou B do ADR 0002 | #4 | Aguardando o responsável; bloqueia #4 (M1, 27/11) |
 | Controle de estados: padrão State ou enum + tabela de transições | #10 | A propor na spec de #10 |
 | Estratégia de testes e medição de cobertura | #3, #20 | A propor na spec de #3 |
