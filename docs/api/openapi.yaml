@@ -1,0 +1,246 @@
+# Contrato OpenAPI PARCIAL e PLANEJADO, escrito à mão em 26/11/2026.
+# Cobre só as rotas com decisões já registradas: GET /produtos (D-Q3) e
+# GET /operador/relatorio (D-4c, D-Q6), mais os componentes comuns
+# (erro, dinheiro, autenticação). Nenhuma rota está implementada.
+# Na #21, este arquivo é substituído pelo OpenAPI gerado pelo FastAPI e
+# exportado aqui. O teste test_openapi_contract (#21) verifica que as
+# descrições e os exemplos abaixo continuam presentes no contrato gerado.
+openapi: 3.1.0
+info:
+  title: Máquina de Café ESI
+  version: 0.0.0-contrato
+  description: >-
+    Contrato planejado da API da máquina de café (disciplina ESI).
+    Parcial: só GET /produtos e GET /operador/relatorio. Decisões em
+    docs/requisitos.md (seção "Decisões de interpretação") e docs/adr/.
+    Valores monetários em reais com duas casas decimais (ADR 0005).
+    Erros no envelope {"erro", "mensagem"} (ADR 0003).
+  license:
+    name: MIT
+tags:
+  - name: cliente
+    description: Operações do painel da máquina.
+  - name: operador
+    description: Operações que exigem token JWT do operador (RN11, ADR 0004).
+paths:
+  /produtos:
+    get:
+      tags: [cliente]
+      operationId: listarProdutos
+      summary: Cardápio com preço, tempo de preparo e disponibilidade
+      description: >-
+        Lista as cinco bebidas do cardápio (CAT01), em ordem de id.
+        Uma bebida tem `disponivel: true` quando há estoque para preparar
+        ao menos uma unidade: água, café, leite, chocolate e açúcar exigidos
+        pela receita de uma unidade e ao menos 1 copo (D-Q3, RN10). Nenhuma
+        receita contém açúcar, então o açúcar exigido é 0 g; a quantidade
+        escolhida pelo cliente é verificada no pedido (RN02). Crédito e
+        estado da máquina não entram no cálculo; são verificados em
+        POST /pedidos.
+      responses:
+        "200":
+          description: Cardápio.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Produto"
+              example:
+                - {id: 1, nome: Café expresso, preco: 4.00, tempoPreparoSegundos: 5, disponivel: true}
+                - {id: 2, nome: Café longo, preco: 4.50, tempoPreparoSegundos: 8, disponivel: true}
+                - {id: 3, nome: Café com leite, preco: 6.00, tempoPreparoSegundos: 10, disponivel: true}
+                - {id: 4, nome: Cappuccino, preco: 6.50, tempoPreparoSegundos: 12, disponivel: true}
+                - {id: 5, nome: Chocolate quente, preco: 7.00, tempoPreparoSegundos: 12, disponivel: true}
+  /operador/relatorio:
+    get:
+      tags: [operador]
+      operationId: relatorioVendas
+      summary: Vendas e faturamento por período
+      description: >-
+        Quantidade vendida e faturamento, total e por bebida, no período
+        [from, to], com os dois limites inclusivos (RN12, D-4c, D-Q6).
+        Contam apenas pedidos CONCLUIDO, pelo instante de conclusão e pelo
+        preço cobrado no pedido; pedidos EM_PREPARO e CANCELADO ficam de
+        fora. `from` e `to` são obrigatórios e aceitam ISO 8601 com ou sem
+        fuso: sem fuso, o valor é interpretado em America/Sao_Paulo
+        (UTC-03:00); com fuso, aceitam `Z` e deslocamentos explícitos.
+        Data sem hora, valor inválido, parâmetro ausente ou `from`
+        posterior a `to` retornam 400 DADOS_INVALIDOS. Exemplo:
+        `GET /operador/relatorio?from=2026-11-01T00:00:00&to=2026-11-30T23:59:59`
+        cobre novembro de 2026 no horário de Brasília, e é equivalente a
+        `?from=2026-11-01T03:00:00Z&to=2026-12-01T02:59:59Z`.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/From"
+        - $ref: "#/components/parameters/To"
+      responses:
+        "200":
+          description: >-
+            Relatório do período. Formato do corpo proposto; será
+            confirmado na spec da #17.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Relatorio"
+              example:
+                from: "2026-11-01T00:00:00-03:00"
+                to: "2026-11-30T23:59:59-03:00"
+                quantidadeTotal: 3
+                faturamentoTotal: 17.00
+                porBebida:
+                  - {produtoId: 1, produto: Café expresso, quantidade: 1, faturamento: 4.00}
+                  - {produtoId: 4, produto: Cappuccino, quantidade: 2, faturamento: 13.00}
+        "400":
+          $ref: "#/components/responses/DadosInvalidos"
+        "401":
+          $ref: "#/components/responses/NaoAutorizado"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        Token obtido em POST /operador/login. JWT HS256 válido por 1 hora
+        (ADR 0004). Ausente, inválido ou expirado: 401 NAO_AUTORIZADO.
+  parameters:
+    From:
+      name: from
+      in: query
+      required: true
+      description: >-
+        Início do período, inclusivo. ISO 8601 com data e hora; fuso
+        opcional (`Z` ou `±HH:MM`). Sem fuso: America/Sao_Paulo (UTC-03:00).
+      schema:
+        $ref: "#/components/schemas/InstanteIso8601"
+      examples:
+        semFuso:
+          summary: Sem fuso (interpretado como UTC-03:00)
+          value: "2026-11-01T00:00:00"
+        utc:
+          summary: UTC com Z (mesmo instante)
+          value: "2026-11-01T03:00:00Z"
+        deslocamento:
+          summary: Deslocamento explícito (mesmo instante)
+          value: "2026-11-01T00:00:00-03:00"
+    To:
+      name: to
+      in: query
+      required: true
+      description: >-
+        Fim do período, inclusivo. Mesmo formato de `from`; deve ser igual
+        ou posterior a `from`.
+      schema:
+        $ref: "#/components/schemas/InstanteIso8601"
+      examples:
+        semFuso:
+          summary: Sem fuso (interpretado como UTC-03:00)
+          value: "2026-11-30T23:59:59"
+        utc:
+          summary: UTC com Z (mesmo instante)
+          value: "2026-12-01T02:59:59Z"
+  responses:
+    DadosInvalidos:
+      description: Dados inválidos (400).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Erro"
+          examples:
+            semHora:
+              summary: Data sem hora
+              value:
+                erro: DADOS_INVALIDOS
+                mensagem: "O parâmetro 'from' deve conter data e hora (ex.: 2026-11-01T00:00:00)."
+            periodoInvertido:
+              summary: from posterior a to
+              value:
+                erro: DADOS_INVALIDOS
+                mensagem: "O parâmetro 'from' deve ser anterior ou igual a 'to'."
+    NaoAutorizado:
+      description: Token ausente, inválido ou expirado (401).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Erro"
+          example:
+            erro: NAO_AUTORIZADO
+            mensagem: Token ausente ou inválido.
+  schemas:
+    Dinheiro:
+      type: number
+      multipleOf: 0.01
+      minimum: 0
+      description: Valor em reais com duas casas decimais (ADR 0005). Internamente, centavos inteiros.
+      examples: [4.50]
+    InstanteIso8601:
+      type: string
+      description: >-
+        Data e hora ISO 8601 (`AAAA-MM-DDTHH:MM:SS`, fração de segundo
+        opcional) com fuso opcional. Não usa `format: date-time` porque o
+        RFC 3339 exige fuso, e aqui o fuso é opcional.
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?(Z|[+-]\d{2}:\d{2})?$'
+    Erro:
+      type: object
+      description: Envelope único de erro (ADR 0003).
+      required: [erro, mensagem]
+      properties:
+        erro:
+          type: string
+          description: "Código estável do erro (ex.: DADOS_INVALIDOS)."
+        mensagem:
+          type: string
+          description: Texto para pessoas.
+        detalhes:
+          type: array
+          description: Erros por campo, quando houver.
+          items:
+            type: object
+            properties:
+              campo: {type: string}
+              mensagem: {type: string}
+    Produto:
+      type: object
+      required: [id, nome, preco, tempoPreparoSegundos, disponivel]
+      properties:
+        id:
+          type: integer
+          description: 1 a 5, na ordem da tabela do PDF.
+        nome:
+          type: string
+        preco:
+          $ref: "#/components/schemas/Dinheiro"
+        tempoPreparoSegundos:
+          type: integer
+          description: Tempo de preparo simulado, em segundos.
+        disponivel:
+          type: boolean
+          description: Há estoque para preparar ao menos uma unidade (D-Q3).
+    Relatorio:
+      type: object
+      description: Formato proposto; confirmado na spec da #17.
+      required: [from, to, quantidadeTotal, faturamentoTotal, porBebida]
+      properties:
+        from:
+          type: string
+          description: Início efetivo, com o fuso aplicado.
+        to:
+          type: string
+          description: Fim efetivo, com o fuso aplicado.
+        quantidadeTotal:
+          type: integer
+        faturamentoTotal:
+          $ref: "#/components/schemas/Dinheiro"
+        porBebida:
+          type: array
+          items:
+            type: object
+            required: [produtoId, produto, quantidade, faturamento]
+            properties:
+              produtoId: {type: integer}
+              produto: {type: string}
+              quantidade: {type: integer}
+              faturamento:
+                $ref: "#/components/schemas/Dinheiro"

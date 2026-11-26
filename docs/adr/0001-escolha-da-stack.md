@@ -1,6 +1,6 @@
 # ADR 0001 — Stack do MVP
 
-Data: 14/10/2026. Status: decisão inicial para implementação, revisável pelo grupo. A escolha foi delegada sem restrições tecnológicas; a experiência dos integrantes ainda não foi informada.
+Data: 14/10/2026. Status: decisão inicial para implementação, revisável pelo grupo. Complementado em 25/11/2026 pelo [ADR 0002](0002-persistencia-e-atomicidade.md) (acesso ao banco e transações) e pelo [ADR 0004](0004-autenticacao-operador-jwt.md) (PyJWT). A escolha foi delegada sem restrições tecnológicas; a experiência dos integrantes ainda não foi informada.
 
 ## Contexto e critérios
 Entrega em 09/12/2026 com checkpoint em 18/11. Priorizar execução local simples, documentação HTTP, testes, persistência transacional, legibilidade e baixo custo de configuração. Não supor experiência prévia do grupo.

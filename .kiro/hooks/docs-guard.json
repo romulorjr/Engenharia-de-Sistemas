@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "docs-guard",
+      "description": "Ao fim de cada turno do agente, exige CHANGELOG.md e docs/CONTEXT.md atualizados quando src/ ou tests/ mudaram na branch.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "python scripts/kiro/docs_guard.py"
+      },
+      "timeout": 30
+    }
+  ]
+}

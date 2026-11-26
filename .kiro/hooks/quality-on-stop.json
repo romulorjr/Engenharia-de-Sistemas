@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "quality-on-stop",
+      "description": "Ao fim de cada turno do agente, executa Ruff e pytest se houver alteração não commitada em src/, tests/ ou pyproject.toml. Funciona no Kiro IDE, CLI e Web.",
+      "trigger": "Stop",
+      "action": {
+        "type": "command",
+        "command": "python scripts/kiro/quality_check.py --if-changed"
+      },
+      "timeout": 300
+    }
+  ]
+}

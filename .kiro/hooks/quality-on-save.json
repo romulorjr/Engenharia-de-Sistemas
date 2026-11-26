@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "quality-on-save",
+      "description": "Executa Ruff (lint e formatação) quando o agente salva um arquivo Python em src/ ou tests/. Gatilho de arquivo: Kiro IDE e CLI; não roda no Kiro Web.",
+      "trigger": "PostFileSave",
+      "matcher": "(^|/)(src|tests)/.+\\.py$",
+      "action": {
+        "type": "command",
+        "command": "python scripts/kiro/quality_check.py --lint-only"
+      },
+      "timeout": 60
+    }
+  ]
+}

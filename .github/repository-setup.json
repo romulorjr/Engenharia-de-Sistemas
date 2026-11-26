@@ -54,45 +54,35 @@
   ],
   "milestones": [
     {
-      "title": "Fase 1 – Infra",
-      "due_on": "2026-10-25T23:59:59-03:00",
-      "description": "Documentação, ambiente, CI e persistência inicial."
+      "title": "M1 – Base técnica",
+      "due_on": "2026-11-27T23:59:59-03:00",
+      "description": "26–27/11. Aplicação inicia; CI com pytest, cobertura ≥75%, Ruff e Radon; banco inicializado uma única vez; contrato de erro (ADR 0003). Plano: docs/plano-de-projeto.md"
     },
     {
-      "title": "Fase 2 – Cardápio/Estoque/Crédito",
-      "due_on": "2026-11-01T23:59:59-03:00",
-      "description": "Cardápio, estoque, crédito, troco e autenticação básica."
+      "title": "M2 – Fluxo do cliente",
+      "due_on": "2026-12-01T23:59:59-03:00",
+      "description": "28/11–01/12. Exemplo do PDF (cappuccino, R$ 10,00, troco R$ 3,50) em teste de integração e no Swagger: cardápio, crédito, troco, pedido atômico, preparo, cancelamento."
     },
     {
-      "title": "Fase 3 – Pedidos/Transações",
-      "due_on": "2026-11-18T23:59:59-03:00",
-      "description": "Pedidos atômicos, preparo, cancelamento e checkpoint em 18/11."
+      "title": "M3 – Operador e manutenção",
+      "due_on": "2026-12-03T23:59:59-03:00",
+      "description": "02–03/12. Rotas /operador/* com JWT; manutenção, limpeza após 30 preparos, reposição, preço, relatório; reinício preserva estado. Congelamento de funcionalidades em 03/12."
     },
     {
-      "title": "Fase 4 – Operador/Manutenção",
-      "due_on": "2026-11-29T23:59:59-03:00",
-      "description": "Limpeza, reposição, manutenção, preços e relatórios."
+      "title": "M4 – Qualidade e documentação",
+      "due_on": "2026-12-06T23:59:59-03:00",
+      "description": "04–06/12. Relatório de qualidade, documento de projeto com diagrama, OpenAPI exportado e coleção Postman."
     },
     {
-      "title": "Fase 5 – Testes/Qualidade",
-      "due_on": "2026-12-02T23:59:59-03:00",
-      "description": "Consolidação; testes são desenvolvidos desde a infraestrutura."
-    },
-    {
-      "title": "Fase 6 – Documentação/Vídeo",
-      "due_on": "2026-12-08T23:59:59-03:00",
-      "description": "Documentação contínua, relatórios, declarações e vídeo."
-    },
-    {
-      "title": "Entrega Final",
+      "title": "M5 – Entrega",
       "due_on": "2026-12-09T23:59:59-03:00",
-      "description": "Entrega dos sete artefatos revisados."
+      "description": "07–09/12. Declarações individuais (meta 06/12), vídeo de 10–15 min, ensaio em ambiente limpo, tag de release. Entrega final 09/12."
     }
   ],
   "issues": [
     {
       "number": 1,
-      "milestone": "Fase 1 – Infra",
+      "milestone": "M1 – Base técnica",
       "labels": [
         "tipo:docs",
         "prioridade:alta"
@@ -100,7 +90,7 @@
     },
     {
       "number": 2,
-      "milestone": "Fase 1 – Infra",
+      "milestone": "M1 – Base técnica",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -108,7 +98,7 @@
     },
     {
       "number": 3,
-      "milestone": "Fase 1 – Infra",
+      "milestone": "M1 – Base técnica",
       "labels": [
         "tipo:test",
         "prioridade:alta"
@@ -116,7 +106,7 @@
     },
     {
       "number": 4,
-      "milestone": "Fase 1 – Infra",
+      "milestone": "M1 – Base técnica",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -124,7 +114,7 @@
     },
     {
       "number": 5,
-      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "milestone": "M2 – Fluxo do cliente",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -132,7 +122,7 @@
     },
     {
       "number": 6,
-      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -140,7 +130,7 @@
     },
     {
       "number": 7,
-      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "milestone": "M2 – Fluxo do cliente",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -148,7 +138,7 @@
     },
     {
       "number": 8,
-      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "milestone": "M2 – Fluxo do cliente",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -156,7 +146,7 @@
     },
     {
       "number": 9,
-      "milestone": "Fase 3 – Pedidos/Transações",
+      "milestone": "M2 – Fluxo do cliente",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -164,7 +154,7 @@
     },
     {
       "number": 10,
-      "milestone": "Fase 3 – Pedidos/Transações",
+      "milestone": "M2 – Fluxo do cliente",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -172,7 +162,7 @@
     },
     {
       "number": 11,
-      "milestone": "Fase 3 – Pedidos/Transações",
+      "milestone": "M2 – Fluxo do cliente",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -180,7 +170,7 @@
     },
     {
       "number": 12,
-      "milestone": "Fase 2 – Cardápio/Estoque/Crédito",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -188,7 +178,7 @@
     },
     {
       "number": 13,
-      "milestone": "Fase 4 – Operador/Manutenção",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -196,7 +186,7 @@
     },
     {
       "number": 14,
-      "milestone": "Fase 4 – Operador/Manutenção",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -204,7 +194,7 @@
     },
     {
       "number": 15,
-      "milestone": "Fase 4 – Operador/Manutenção",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -212,7 +202,7 @@
     },
     {
       "number": 16,
-      "milestone": "Fase 4 – Operador/Manutenção",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:média"
@@ -220,7 +210,7 @@
     },
     {
       "number": 17,
-      "milestone": "Fase 4 – Operador/Manutenção",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:feature",
         "prioridade:média"
@@ -228,7 +218,7 @@
     },
     {
       "number": 18,
-      "milestone": "Fase 3 – Pedidos/Transações",
+      "milestone": "M1 – Base técnica",
       "labels": [
         "tipo:feature",
         "prioridade:alta"
@@ -236,7 +226,7 @@
     },
     {
       "number": 19,
-      "milestone": "Fase 5 – Testes/Qualidade",
+      "milestone": "M3 – Operador e manutenção",
       "labels": [
         "tipo:test",
         "prioridade:alta"
@@ -244,7 +234,7 @@
     },
     {
       "number": 20,
-      "milestone": "Fase 5 – Testes/Qualidade",
+      "milestone": "M4 – Qualidade e documentação",
       "labels": [
         "tipo:test",
         "prioridade:alta"
@@ -252,7 +242,7 @@
     },
     {
       "number": 21,
-      "milestone": "Fase 6 – Documentação/Vídeo",
+      "milestone": "M4 – Qualidade e documentação",
       "labels": [
         "tipo:docs",
         "prioridade:alta"
@@ -260,7 +250,6 @@
     },
     {
       "number": 22,
-      "milestone": "Fase 3 – Pedidos/Transações",
       "labels": [
         "tipo:docs",
         "prioridade:alta"
@@ -268,7 +257,7 @@
     },
     {
       "number": 23,
-      "milestone": "Fase 6 – Documentação/Vídeo",
+      "milestone": "M5 – Entrega",
       "labels": [
         "tipo:docs",
         "prioridade:alta"
@@ -276,7 +265,15 @@
     },
     {
       "number": 24,
-      "milestone": "Entrega Final",
+      "milestone": "M5 – Entrega",
+      "labels": [
+        "tipo:docs",
+        "prioridade:alta"
+      ]
+    },
+    {
+      "number": 27,
+      "milestone": "M1 – Base técnica",
       "labels": [
         "tipo:docs",
         "prioridade:alta"
