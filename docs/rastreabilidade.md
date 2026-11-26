@@ -7,8 +7,8 @@ Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado,
 | Requisito | Issue | Implementação | Teste/evidência planejado | Documentação | Estado |
 |---|---|---|---|---|---|
 | ENG-DOC | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) | PR #25; [PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | revisão documental; `scripts/kiro/docs_guard.py` | README, CONTEXT, CHANGELOG, steering, ADR README | Em revisão |
-| ENG-INFRA | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) | — | test_app_startup | — | Planejado |
-| ENG-QUAL | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) | — | validação do workflow em PR | — | Planejado |
+| ENG-INFRA | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) | spec `.kiro/specs/2-aplicacao-base/` | test_app_startup; test_create_app_uses_given_settings; test_create_app_rejects_invalid_environment; test_settings_*; fumaça na CI | spec | Spec em revisão |
+| ENG-QUAL | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) | spec `.kiro/specs/3-ci-qualidade/` | run verde e run vermelho provocado do workflow `testes-e-analise`; test_architecture; test_ci_scripts | spec; ADR 0006 (proposto) | Spec em revisão |
 | ENG-PERSIST | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) | — | test_initialization_idempotent | ADR 0002 (aceito, opção A) | Planejado |
 | RN10 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) | — | test_menu_recipes_and_availability; test_menu_availability_boundaries | requisitos D-Q3; `docs/api/openapi.yaml` (GET /produtos) | Planejado |
 | CAT01 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) | — | test_menu_recipes_and_availability | `docs/api/openapi.yaml` (GET /produtos) | Planejado |
