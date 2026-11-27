@@ -7,6 +7,8 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 ## [Unreleased]
 
 ### Added
+- Specs da #2 (`.kiro/specs/2-aplicacao-base/`) e da #3 (`.kiro/specs/3-ci-qualidade/`) com requisitos, design e tarefas, aguardando aprovação; nenhum código implementado (#2, #3).
+- ADR 0006 (estratégia de testes e medição de cobertura), proposto na spec da #3 (#3, #20).
 - Steering do Kiro em `.kiro/steering/project.md` com propósito, fontes da verdade, arquitetura, regras de documentação, convenções de branch/commit, specs e Definition of Done (#1).
 - Hooks do Kiro em `.kiro/hooks/`: `docs-guard` (Stop) exige `CHANGELOG.md` e `docs/CONTEXT.md` quando `src/` ou `tests/` mudam; `quality-on-save` (PostFileSave) executa Ruff; `quality-on-stop` (Stop) executa Ruff e pytest quando há código alterado (#1).
 - Scripts multiplataforma `scripts/kiro/docs_guard.py` e `scripts/kiro/quality_check.py`, usados pelos hooks e executáveis manualmente (#1).

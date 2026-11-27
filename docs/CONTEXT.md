@@ -27,7 +27,7 @@ Relatório de estado produzido em 25/11/2026 e atualizado em 26/11/2026, depois 
   - [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) aberta para a proteção de `main` (aguardando execução pelo administrador);
   - #22 fechada com referência ao registro do checkpoint;
   - comentários com critérios de aceite em #3, #4 (atualizado: ADR 0002 aceito), #5, #7, #9, #11–#18 e #21.
-- Specs de #2 e #3 em `.kiro/specs/2-aplicacao-base/` e `.kiro/specs/3-ci-qualidade/`, na branch `feature/2-3-base-tecnica`, aguardando aprovação.
+- Specs de #2 e #3 em `.kiro/specs/2-aplicacao-base/` e `.kiro/specs/3-ci-qualidade/`, com o ADR 0006 (proposto), no [PR #28](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/28) (rascunho, base: branch do PR #26), aguardando aprovação.
 
 **Não existe ainda**
 - Código de aplicação, `pyproject.toml`/dependências, banco e migrações, testes, CI, configuração de Ruff/Radon, OpenAPI gerado ou coleção Postman.
@@ -57,7 +57,7 @@ Relatório de estado produzido em 25/11/2026 e atualizado em 26/11/2026, depois 
 **Prazos:** em 26/11 faltam 13 dias para 09/12. M1 vence amanhã, 27/11; a implementação de #2 e #3 depende da aprovação das specs.
 
 ## Próximos passos
-1. Responsável: revisar as specs de #2 e #3 e autorizar a implementação.
+1. Responsável: revisar as specs de #2 e #3 no [PR #28](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/28), responder às cinco questões do PR e autorizar a implementação.
 2. Responsável: aplicar a proteção de `main` ([#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27), passo a) e executar `scripts/configure-github.ps1 -Apply`; registrar o resultado em `docs/configuracao-github.md`.
 3. Outro integrante: revisar e aprovar o [PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26).
 4. Grupo: preencher "Apresentado" e "Retorno do docente" em [checkpoint-18-11.md](checkpoint-18-11.md).
