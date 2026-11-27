@@ -7,6 +7,16 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 ## [Unreleased]
 
 ### Added
+- Aplicação base instalável: `pyproject.toml` (Python ≥ 3.12, dependências diretas fixadas), pacote `maquina_cafe` com as camadas `api`, `services`, `domain` e `persistence`, `config.Settings` lido de `MAQUINA_CAFE_DATABASE_URL` (valor vazio rejeitado com `InvalidSettingsError`), fábrica `api.app.create_app` sem efeito na importação, Swagger em `/docs`, `.env.example` (#2).
+- Testes unitários da configuração e testes de integração da inicialização (`test_app_startup` e outros 4) (#2).
+- CI no GitHub Actions (`.github/workflows/ci.yml`, job `testes-e-analise`, Python 3.12): Ruff lint e formatação, pytest com cobertura de linhas e ramos ≥ 75%, Radon (falha em CC classe D+ e MI abaixo de A, aviso em CC classe C), teste de fumaça com uvicorn, resumo do job e artefato `relatorios-qualidade` (#3).
+- `scripts/ci/radon_gate.py`, `scripts/ci/smoke.py`, `scripts/ci/summary.py` e seus testes; teste de camadas `tests/unit/test_architecture.py` (#3).
+- Primeira medição real no relatório de qualidade: 46 testes, cobertura 100% do código atual, Radon CC média A (2,2) (#3, #20).
+- `.github/ruleset-main.json` com a proteção recomendada de `main` (PR obrigatório, check `testes-e-analise` do GitHub Actions, sem bypass), a aplicar pelo administrador (#27).
+- Diagrama do código implementado em `docs/arquitetura.md` (#2).
+- Seção "Nomenclatura (Naming)" no steering e no CONTEXT: domínio em português; termos técnicos, módulos, testes e commits em inglês (#2).
+- Specs da #2 (`.kiro/specs/2-aplicacao-base/`) e da #3 (`.kiro/specs/3-ci-qualidade/`) com requisitos, design e tarefas, aguardando aprovação; nenhum código implementado (#2, #3).
+- ADR 0006 (estratégia de testes e medição de cobertura), proposto na spec da #3 e aceito em 27/11/2026 com fixação só das dependências diretas, teste de camadas obrigatório e limites do Radon com aviso em classe C (#3, #20).
 - Steering do Kiro em `.kiro/steering/project.md` com propósito, fontes da verdade, arquitetura, regras de documentação, convenções de branch/commit, specs e Definition of Done (#1).
 - Hooks do Kiro em `.kiro/hooks/`: `docs-guard` (Stop) exige `CHANGELOG.md` e `docs/CONTEXT.md` quando `src/` ou `tests/` mudam; `quality-on-save` (PostFileSave) executa Ruff; `quality-on-stop` (Stop) executa Ruff e pytest quando há código alterado (#1).
 - Scripts multiplataforma `scripts/kiro/docs_guard.py` e `scripts/kiro/quality_check.py`, usados pelos hooks e executáveis manualmente (#1).
@@ -27,6 +37,12 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 - Seção "Como executar" em `docs/configuracao-github.md`, com pré-requisitos (GitHub CLI com papel Admin, PowerShell 7) e comandos (#27).
 
 ### Changed
+- README: seções Executar localmente (Linux/macOS e PowerShell), Testes e Análise estática com os comandos da CI; estrutura de pastas e status de 27/11 (#2, #3).
+- `.github/branch-protection-main.json` passa a exigir o check `testes-e-analise` do app GitHub Actions (alternativa ao ruleset) (#27).
+- `docs/configuracao-github.md` registra o ruleset criado pelo responsável e como completá-lo (#27).
+- `.gitignore` inclui os relatórios gerados pela CI (#3).
+- Mensagens de commit passam a ser em inglês a partir de 27/11/2026 (steering, plano, README) (#2).
+- Specs de #2 e #3 aprovadas; exceção de configuração renomeada de `ConfiguracaoInvalida` para `InvalidSettingsError` na spec da #2, pela convenção de nomes e pela regra N818 do Ruff (#2).
 - `docs/CONTEXT.md` reorganizado nas seções Estado atual, Próximos passos, Decisões e Bloqueios (#1).
 - `docs/rastreabilidade.md` passa a ter as colunas Implementação e Documentação (#1).
 - `docs/requisitos.md` recebe opções e propostas para as questões em aberto, incluindo a nova questão 5 sobre códigos HTTP de operações do operador no estado errado (#1).
@@ -45,6 +61,7 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 - Critérios de aceite de #4, #5, #7, #11, #17, #21 e #22 atualizados no plano (#1).
 
 ### Removed
+- Arquivos `.gitkeep` de `src/maquina_cafe/*` e `tests/*`, substituídos por código (#2).
 - Branch `develop`, abandonada; preservada como a tag `archive/develop` (ce5eca4, já contida em `main`) (#1).
 
 ## [0.0.0] - 2026-10-14

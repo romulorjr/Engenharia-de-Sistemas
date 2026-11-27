@@ -27,6 +27,13 @@ Se o PDF for ambíguo, registrar a dúvida em `docs/requisitos.md` e perguntar a
 - Padrões de projeto só com problema real, justificados em ADR e no documento de projeto.
 - Mudança de stack, banco ou arquitetura exige ADR com status Proposto e confirmação do responsável antes de implementar.
 
+## Nomenclatura (Naming)
+Decidida pelo responsável em 27/11/2026.
+- **Português:** nomes do domínio do PDF: bebida, pedido, credito, estoque, estado, receita, reservatorio e derivados (ex.: `Pedido`, `Receita`, `StatusPedido.EM_PREPARO`).
+- **Inglês:** termos técnicos (Repository, Service, Controller, Settings, app factory, `create_app`), nomes de arquivos e módulos em `src/`, `tests/` e `scripts/`, nomes de testes e mensagens de commit.
+- Sem mudança: documentação, docstrings, comentários e mensagens exibidas ao usuário (ex.: `mensagem` dos erros) continuam em português. Arquivos de documentação já existentes mantêm o nome.
+- Exceções técnicas seguem o inglês com sufixo `Error` (ex.: `InvalidSettingsError`), como exige a regra N818 do Ruff. O nome das exceções de domínio (ex.: crédito insuficiente) será decidido na #18.
+
 ## Regras de documentação (obrigatórias em toda mudança)
 1. `README.md`: setup, execução, testes, análise estática, tabela de endpoints, regras resumidas, stack, status, como contribuir.
 2. `docs/CONTEXT.md`: atualizar "Estado atual", "Próximos passos", "Decisões" e "Bloqueios" ao fim de cada sessão.
@@ -45,7 +52,7 @@ Sempre atualizar a documentação junto com a mudança, no mesmo PR. Não declar
 - `main` é a única branch de longa duração; nunca commitar direto nela (proteção no GitHub: issue #27). Não existe `develop` (arquivada como tag `archive/develop`).
 - Branches partem de `main`: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>`, `test/<issue>-<resumo>`. PR sempre para `main`.
 - Milestones M1–M5 são fixos: re-escopo exige issue nova, nunca mover issues de milestone silenciosamente.
-- Conventional Commits em português, sem acentos no assunto: `feat(credito): validar denominacoes aceitas`, rodapé `Refs #7`. Tipos: feat, fix, docs, test, refactor, chore, ci.
+- Conventional Commits **em inglês** (desde 27/11/2026; commits anteriores estão em português): `feat(credito): validate accepted denominations`, rodapé `Refs #7`. O escopo pode ser um nome do domínio. Tipos: feat, fix, docs, test, refactor, chore, ci.
 - Commits pequenos e atômicos. Um PR por issue quando possível, usando `.github/PULL_REQUEST_TEMPLATE.md`.
 - PR revisado por outro integrante e com CI verde antes do merge.
 

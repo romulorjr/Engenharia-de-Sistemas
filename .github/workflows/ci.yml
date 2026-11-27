@@ -1,0 +1,93 @@
+# CI da #3: lint, formatação, testes com cobertura >= 75%, Radon e fumaça.
+# O nome do job, testes-e-analise, é o check exigido na proteção de main (#27).
+# Spec: .kiro/specs/3-ci-qualidade/design.md. Estratégia: docs/adr/0006-estrategia-de-testes.md.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes-e-analise:
+    name: testes-e-analise
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Instalar
+        id: instalar
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+          python --version
+          python -m pip freeze | tee pip-freeze.txt
+
+      - name: Ruff (lint)
+        id: lint
+        if: ${{ !cancelled() && steps.instalar.outcome == 'success' }}
+        run: ruff check --output-format=github .
+
+      - name: Ruff (formatação)
+        id: format
+        if: ${{ !cancelled() && steps.instalar.outcome == 'success' }}
+        run: ruff format --check .
+
+      - name: Testes e cobertura
+        id: tests
+        if: ${{ !cancelled() && steps.instalar.outcome == 'success' }}
+        run: >-
+          python -m pytest
+          --cov=maquina_cafe --cov-branch
+          --cov-report=term-missing --cov-report=xml
+          --cov-fail-under=75
+          --junitxml=pytest-junit.xml
+
+      - name: Radon
+        id: radon
+        if: ${{ !cancelled() && steps.instalar.outcome == 'success' }}
+        run: python scripts/ci/radon_gate.py src
+
+      - name: Fumaça (uvicorn)
+        id: smoke
+        if: ${{ !cancelled() && steps.instalar.outcome == 'success' }}
+        run: python scripts/ci/smoke.py
+
+      - name: Resumo
+        if: ${{ !cancelled() && steps.instalar.outcome == 'success' }}
+        env:
+          RESULT_LINT: ${{ steps.lint.outcome }}
+          RESULT_FORMAT: ${{ steps.format.outcome }}
+          RESULT_TESTS: ${{ steps.tests.outcome }}
+          RESULT_RADON: ${{ steps.radon.outcome }}
+          RESULT_SMOKE: ${{ steps.smoke.outcome }}
+        run: python scripts/ci/summary.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Publicar relatórios
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: relatorios-qualidade
+          path: |
+            pip-freeze.txt
+            coverage.xml
+            pytest-junit.xml
+            radon-cc.txt
+            radon-mi.txt
+            radon-gate.json
+          if-no-files-found: warn

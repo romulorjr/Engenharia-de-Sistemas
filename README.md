@@ -2,7 +2,7 @@
 
 Back-end de uma máquina de café automática para a disciplina Engenharia de Sistemas de Informação. O objetivo é entregar software funcional, testado e documentado, com evidências de participação de todos os integrantes.
 
-**Status em 26/11/2026: planejamento, governança e estrutura inicial. A API ainda não está implementada.** Situação detalhada em [CONTEXT](docs/CONTEXT.md#estado-atual) e mudanças no [CHANGELOG](CHANGELOG.md). A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
+**Status em 27/11/2026: aplicação base e CI implementadas (#2, #3, [PR #29](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/29), em revisão). A API inicia e publica o Swagger, mas nenhuma regra RN01–RN12 nem endpoint do PDF está implementado.** Situação detalhada em [CONTEXT](docs/CONTEXT.md#estado-atual) e mudanças no [CHANGELOG](CHANGELOG.md). A especificação oficial é [ESI - projeto maquina-cafe.pdf](ESI%20-%20projeto%20maquina-cafe.pdf). Sem interface gráfica ou hardware no escopo.
 
 ## Equipe
 | Integrante (ordem alfabética) | Papel | GitHub |
@@ -19,7 +19,7 @@ Contas confirmadas em 26/11/2026. Histórico e declarações individuais em [con
 Cinco bebidas com receitas, preços e preparo simulado; estoque e alertas; crédito e troco; pedidos e cancelamento; operador autenticado, limpeza, reposição e relatórios. Estados: PRONTA, PREPARANDO, AGUARDANDO_LIMPEZA e MANUTENCAO. Banco preserva estoque, crédito, estado e pedidos após reiniciar.
 
 ## Stack e arquitetura
-Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). As versões exatas serão fixadas e verificadas na infraestrutura; a escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). SQLAlchemy + Alembic confirmados em 26/11/2026 no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md), com transações `BEGIN IMMEDIATE` abertas e fechadas pelos serviços.
+Stack de referência: Python 3.12, FastAPI, Pydantic, Uvicorn, SQLAlchemy 2.x, Alembic e SQLite. Testes: pytest/pytest-cov e HTTPX. Qualidade: Ruff e Radon. Versões fixadas no `pyproject.toml` (só as dependências diretas, [ADR 0006](docs/adr/0006-estrategia-de-testes.md)); SQLAlchemy e Alembic entram na #4. Autenticação do operador: JWT com PyJWT ([ADR 0004](docs/adr/0004-autenticacao-operador-jwt.md)). A escolha está no [ADR 0001](docs/adr/0001-escolha-da-stack.md). SQLAlchemy + Alembic confirmados em 26/11/2026 no [ADR 0002](docs/adr/0002-persistencia-e-atomicidade.md), com transações `BEGIN IMMEDIATE` abertas e fechadas pelos serviços.
 
 Convenções da API, decididas em 25 e 26/11/2026:
 - Dinheiro: reais com duas casas no JSON (`4.50`), centavos inteiros internamente ([ADR 0005](docs/adr/0005-representacao-monetaria.md)).
@@ -30,51 +30,101 @@ Controllers recebem entradas e produzem respostas; serviços/domínio coordenam 
 
 ## Estrutura
 ```text
+pyproject.toml          pacote, dependências fixadas, pytest, coverage, Ruff
+.env.example            variáveis de ambiente documentadas
 src/maquina_cafe/
-  api/                  controllers HTTP (vazio)
+  __init__.py           __version__ (lida do pyproject)
+  config.py             Settings, InvalidSettingsError
+  api/app.py            create_app (fábrica da aplicação FastAPI)
   services/             regras de negócio e transações (vazio)
   domain/               entidades, receitas, estados (vazio)
-  persistence/          repositories e banco (vazio)
+  persistence/          modelos, repositories e migrações (vazio; #4)
 tests/
-  unit/
-  integration/
+  conftest.py           fixture settings
+  unit/                 config, camadas (test_architecture), scripts de CI
+  integration/          inicialização da aplicação (test_app_startup)
 docs/
-  CONTEXT.md            estado atual, próximos passos, decisões, bloqueios
+  CONTEXT.md            estado atual, nomenclatura, próximos passos, decisões, bloqueios
   plano-de-projeto.md   milestones, backlog, Definition of Done
-  requisitos.md         transcrição do PDF e questões em aberto
+  requisitos.md         transcrição do PDF e decisões de interpretação
   rastreabilidade.md    requisito → issue → implementação → teste → documentação
-  arquitetura.md        diagrama de componentes (planejado)
+  arquitetura.md        diagrama de componentes
   quality-report.md     cobertura, análise estática, code smells
   contributions.md      histórico de contribuições e declarações
   configuracao-github.md
   checkpoint-18-11.md   registro do checkpoint com o docente
   api/openapi.yaml      contrato OpenAPI parcial planejado (até a #21)
-  adr/                  README (índice), 0000-modelo, 0001–0005
+  adr/                  README (índice), 0000-modelo, 0001–0006
 .kiro/
   steering/project.md   regras do projeto para o Kiro e para a equipe
+  specs/                specs por issue (requirements, design, tasks)
   hooks/                docs-guard, quality-on-save, quality-on-stop
 .github/
-  ISSUE_TEMPLATE/
-  PULL_REQUEST_TEMPLATE.md
-  repository-setup.json
+  workflows/ci.yml      CI: job testes-e-analise
+  ruleset-main.json     proteção de main (ruleset) a aplicar (#27)
+  branch-protection-main.json  alternativa com proteção clássica
+  ISSUE_TEMPLATE/, PULL_REQUEST_TEMPLATE.md, repository-setup.json
 scripts/
-  configure-github.ps1
+  ci/                   radon_gate.py, smoke.py, summary.py
   kiro/                 docs_guard.py, quality_check.py
+  configure-github.ps1
 CHANGELOG.md
 LICENSE                 MIT
 ```
 
 ## Executar localmente
-Ainda não há aplicação nem manifesto de dependências; não é possível iniciar a API nesta revisão. A [issue #2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) entregará ambiente reproduzível, instalação e comando validado de inicialização; #4 entregará migrações e inicialização do banco. Não versionar credenciais nem o banco local.
+Pré-requisito: Python 3.12. Na raiz do repositório:
+
+Linux/macOS:
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+uvicorn maquina_cafe.api.app:create_app --factory --reload
+```
+
+Windows PowerShell:
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+uvicorn maquina_cafe.api.app:create_app --factory --reload
+```
+
+Swagger em <http://127.0.0.1:8000/docs> e OpenAPI em <http://127.0.0.1:8000/openapi.json>. Nesta versão só existem essas rotas.
+
+Configuração por variável de ambiente ([.env.example](.env.example)); a aplicação não lê arquivos `.env`. Variável opcional `MAQUINA_CAFE_DATABASE_URL` (padrão `sqlite:///maquina_cafe.db`; vazia impede a inicialização). Para definir:
+- Linux/macOS: `export MAQUINA_CAFE_DATABASE_URL=sqlite:///maquina_cafe.db`
+- PowerShell: `$env:MAQUINA_CAFE_DATABASE_URL = "sqlite:///maquina_cafe.db"`
+
+Os comandos de Linux foram executados na CI (instalação e teste de fumaça com uvicorn). Os comandos de Windows ainda não foram executados por um integrante. Não versionar credenciais nem o banco local.
 
 ## Testes
-Ainda não existem testes executáveis. A #3 configurará a execução; a meta é cobertura mínima de 75% do código da aplicação, com testes unitários, integração e critérios de caixa-preta. Comando **planejado, não disponível nesta revisão**: `python -m pytest --cov=maquina_cafe --cov-report=term-missing --cov-report=xml --cov-fail-under=75`. Ver [matriz](docs/rastreabilidade.md).
+Comandos iguais aos da CI ([workflow](.github/workflows/ci.yml)), com o ambiente ativado:
+```bash
+python -m pytest --cov=maquina_cafe --cov-branch --cov-report=term-missing --cov-fail-under=75
+python scripts/ci/smoke.py
+```
+- `tests/unit/`: configuração, regras de camadas (`test_architecture.py`) e scripts de CI.
+- `tests/integration/`: aplicação completa via `TestClient` (`test_app_startup.py`).
+- Para rodar só um arquivo, sem o limite de cobertura: `python -m pytest tests/unit/test_config.py`.
+
+A CI falha se algum teste falhar, se nenhum teste for coletado ou se a cobertura de linhas e ramos de `maquina_cafe` ficar abaixo de 75%. Números da última medição em [relatório de qualidade](docs/quality-report.md); estratégia no [ADR 0006](docs/adr/0006-estrategia-de-testes.md); matriz em [rastreabilidade](docs/rastreabilidade.md).
 
 ## Análise estática
-Configurada na #3, consolidada na #20. Comandos **planejados, ainda não disponíveis**: `ruff check .`, `ruff format --check .` e `radon cc src -s -a`. O relatório final de 1–2 páginas reunirá cobertura, resultados da análise e métricas reais.
+```bash
+ruff check .
+ruff format --check .
+python scripts/ci/radon_gate.py src
+```
+`radon_gate.py` grava `radon-cc.txt` (`radon cc src -s -a`) e `radon-mi.txt` (`radon mi src -s`), avisa sem falhar quando uma função, método ou classe atinge complexidade de classe C (11–20) e falha com classe D ou pior (≥ 21) ou com índice de manutenibilidade abaixo da classe A. Se falhar, corrija o código apontado; os limites não são reduzidos (ADR 0006).
+
+A CI publica os relatórios (`coverage.xml`, `pytest-junit.xml`, `radon-*.txt`, `radon-gate.json`, `pip-freeze.txt`) no artefato `relatorios-qualidade` e um resumo na página do run.
 
 ## Endpoints principais planejados
-Rotas sugeridas pelo PDF; nenhuma está implementada. O contrato parcial de `GET /produtos` e `GET /operador/relatorio`, com descrições e exemplos, está em [docs/api/openapi.yaml](docs/api/openapi.yaml). Operações `/operador/*` exigem `Authorization: Bearer <token>`, exceto login, que recebe as credenciais e devolve um JWT válido por 1 hora. Valores monetários em reais com duas casas. OpenAPI será publicado com a aplicação.
+Rotas sugeridas pelo PDF; nenhuma está implementada (só `/docs` e `/openapi.json` existem). O contrato parcial de `GET /produtos` e `GET /operador/relatorio`, com descrições e exemplos, está em [docs/api/openapi.yaml](docs/api/openapi.yaml). Operações `/operador/*` exigem `Authorization: Bearer <token>`, exceto login, que recebe as credenciais e devolve um JWT válido por 1 hora. Valores monetários em reais com duas casas. OpenAPI será publicado com a aplicação.
 
 | Método | Rota | Finalidade |
 |---|---|---|
@@ -143,13 +193,13 @@ Replanejamento aprovado em 25/11/2026; milestones no GitHub. As Fases 1–6 de o
 **Checkpoint: realizado em 18/11/2026 ([registro](docs/checkpoint-18-11.md)). Entrega final: 09/12/2026.** O [plano](docs/plano-de-projeto.md) detalha backlog, critérios de aceite, linha de corte, riscos e as sete entregas: repositório, API, relatório de qualidade, documento de projeto, histórico de contribuições, declarações individuais e vídeo. Re-escopo de milestone exige uma issue nova.
 
 ## Contribuir
-Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe em branch vinculada à issue, com Conventional Commits e PR revisado por outro integrante. Vincule requisito → issue → teste. Testes, cobertura e análise estática serão executados a cada PR de código após configuração da CI (#3).
+Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe em branch vinculada à issue, com Conventional Commits e PR revisado por outro integrante. Vincule requisito → issue → teste. Testes, cobertura e análise estática rodam a cada PR e push em `main` pela CI (job `testes-e-analise`).
 
 ### Branching
 - `main` é a única branch de longa duração. Não há `develop` (arquivada em 25/11/2026 como a tag `archive/develop`).
 - Crie a branch a partir de `main` atualizada: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>` ou `test/<issue>-<resumo>`. Exemplo: `git switch main && git pull && git switch -c feature/7-inserir-credito`.
-- Abra PR para `main` usando o template. Regras de `main`: sem push direto, PR com 1 aprovação de outro integrante, conversas resolvidas, sem force push; CI verde obrigatória quando o workflow da #3 existir. A proteção no GitHub ainda precisa ser aplicada por um administrador ([#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27)); até lá, vale por acordo.
-- Commits no padrão Conventional Commits, com `Refs #n` no rodapé.
+- Abra PR para `main` usando o template. Regras de `main`: sem push direto, PR com 1 aprovação de outro integrante, conversas resolvidas, sem force push, check `testes-e-analise` verde. Em 27/11/2026 o ruleset "Proteção da Main" existe mas não se aplica a nenhuma branch; a configuração completa está em `.github/ruleset-main.json` e precisa ser aplicada por um administrador ([#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27)). Até lá, vale por acordo.
+- Commits no padrão Conventional Commits, em inglês, com `Refs #n` no rodapé. Nomes do domínio em português e termos técnicos em inglês: ver [Nomenclatura](docs/CONTEXT.md#nomenclatura-naming).
 
 [Configuração do GitHub](docs/configuracao-github.md): milestones M1–M5 aplicados em 25/11/2026; proteção de `main` pendente (#27); labels ainda não aplicadas.
 

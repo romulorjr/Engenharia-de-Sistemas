@@ -41,9 +41,7 @@ def main() -> int:
         return 0
     files = changed_files()
     code = sorted(
-        path
-        for path in files
-        if path.startswith(CODE_PREFIXES) and not path.endswith(".gitkeep")
+        path for path in files if path.startswith(CODE_PREFIXES) and not path.endswith(".gitkeep")
     )
     if not code:
         return 0

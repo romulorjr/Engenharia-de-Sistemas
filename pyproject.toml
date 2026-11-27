@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=84"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maquina-cafe"
+version = "0.1.0"
+description = "Back-end de uma máquina de café automática (API REST), disciplina ESI."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Bruno de Andrade Gama Kraker" },
+  { name = "Pedro Henryk Bezerra Souza" },
+  { name = "Rodrigo Franco de Moraes" },
+  { name = "Rômulo Maurício Fonseca Júnior" },
+  { name = "Thales Iamamura" },
+]
+# Só as dependências diretas são fixadas com "=="; as indiretas são resolvidas
+# pelo pip e registradas no artefato pip-freeze.txt de cada execução da CI.
+# Lock completo com hashes está fora do escopo (ADR 0006).
+# SQLAlchemy e Alembic entram na #4; PyJWT na #12.
+dependencies = [
+  "fastapi==0.165.0",
+  "pydantic==2.14.4",
+  "uvicorn==0.54.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==9.2.0",
+  "pytest-cov==7.1.0",
+  "httpx==0.29.0",
+  "ruff==0.17.6",
+  "radon==6.0.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+xfail_strict = true
+
+[tool.coverage.run]
+source = ["maquina_cafe"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ["if TYPE_CHECKING:"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "PT", "RUF"]

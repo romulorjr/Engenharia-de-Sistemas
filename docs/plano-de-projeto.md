@@ -35,7 +35,7 @@ Situação em 25/11/2026: nenhum milestone foi criado no GitHub e nenhuma issue 
 
 Congelamento de funcionalidades em 03/12. O período de 04 a 06/12 fica reservado para correções, documentação e ensaio.
 
-Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estado-em-25112026). Uma issue só pode ter um milestone:
+Vínculos no GitHub: ver [configuração do GitHub](configuracao-github.md#estado-atual). Uma issue só pode ter um milestone:
 - #1 (governança) entra em M1 e fecha com o PR #26.
 - #18 entra em M1 porque o envelope e o mapeamento de erros ([ADR 0003](adr/0003-modelo-de-erros.md)) são base para todas as rotas. A validação de cada rota é feita na issue da rota e verificada por `test_error_contract` ao longo de M2–M3.
 - #23 entra em M5 (vídeo). As declarações individuais de #23 têm meta interna de 06/12.
@@ -87,6 +87,7 @@ Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda 
 | P23 | [#23](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/23) Reunir contribuições, declarações e vídeo | E05; E06; E07 | M5 – Entrega | alta | P20, P21 |
 | P24 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) Auditar e entregar os sete artefatos | E01; E02; E03; E04; E05; E06; E07 | M5 – Entrega | alta | P20, P21, P23 |
 | P25 | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) Aplicar proteção da branch main | ENG-QUAL | M1 – Base técnica | alta | — (passo 2 depende de P03) |
+| P26 | [#30](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/30) Substituir httpx por httpx2 no TestClient | ENG-QUAL | — (sem milestone; decidir se entra em M4) | baixa | P03 |
 
 ## Critérios de aceite por issue
 
@@ -97,16 +98,16 @@ Pxx identifica o item do plano; #n identifica a issue real. Responsáveis ainda 
 Evidência planejada: revisão documental.
 
 ### [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) — Preparar aplicação e dependências reproduzíveis
-- [ ] Aplicação FastAPI inicializa em ambiente limpo com versões fixadas.
-- [ ] Comandos de instalação e execução comprovados; configuração via ambiente.
+- [x] Aplicação FastAPI inicializa em ambiente limpo com versões fixadas. CI em 27/11, run [46014939322](https://github.com/romulorjr/Engenharia-de-Sistemas/actions/runs/46014939322).
+- [ ] Comandos de instalação e execução comprovados; configuração via ambiente. Linux comprovado na CI; comandos de Windows aguardam execução por um integrante.
 
-Evidência planejada: test_app_startup.
+Evidência: test_app_startup e demais testes de `tests/integration/test_app_startup.py`; fumaça na CI ([PR #29](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/29)).
 
 ### [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) — Configurar CI, testes e análise estática
-- [ ] PRs executam pytest, cobertura mínima de 75%, Ruff check e format check.
-- [ ] Relatórios publicados; falhas bloqueiam aprovação, sem ignorar ausência de testes.
+- [x] PRs executam pytest, cobertura mínima de 75%, Ruff check e format check (mais Radon, camadas e fumaça).
+- [ ] Relatórios publicados; falhas bloqueiam aprovação, sem ignorar ausência de testes. Relatórios publicados e falha comprovada (run [46015179174](https://github.com/romulorjr/Engenharia-de-Sistemas/actions/runs/46015179174)); o bloqueio da aprovação depende da #27.
 
-Evidência planejada: validação do workflow em PR.
+Evidência: runs [46014939322](https://github.com/romulorjr/Engenharia-de-Sistemas/actions/runs/46014939322) (verde) e 46015179174 (vermelho provocado), [PR #29](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/29).
 
 ### [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) — Criar banco, migrações e inicialização idempotente
 - [x] Opção de persistência do [ADR 0002](adr/0002-persistencia-e-atomicidade.md) escolhida e ADR aceito antes do código (26/11: opção A).
@@ -260,8 +261,8 @@ Evidência planejada: checklist de evidências.
 Evidência planejada: ensaio final em ambiente limpo.
 
 ### [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) — Aplicar proteção da branch main
-- [ ] Proteção de `.github/branch-protection-main.json` aplicada por administrador e verificada; push direto em `main` recusado.
-- [ ] Após a #3, check da CI exigido na proteção.
+- [ ] Ruleset de `.github/ruleset-main.json` (ou proteção clássica de `.github/branch-protection-main.json`) aplicado por administrador e verificado; push direto em `main` recusado.
+- [ ] Check `testes-e-analise` exigido. O check existe desde 27/11 e já está no `ruleset-main.json`; os passos (a) e (b) podem ser aplicados juntos.
 
 Evidência planejada: saída do comando de verificação registrada em configuracao-github.md.
 
@@ -287,7 +288,7 @@ Decisão do responsável em 25/11/2026 (decisão 2): `develop` foi abandonada.
 - CI verde obrigatória: o check será exigido assim que o workflow da #3 existir e passar uma vez (passo 2 da #27). Antes disso não há nome de check para cadastrar.
 - `develop` estava atrás de `main` (seu único commit, ce5eca4, já está em `main`). Foi arquivada como a tag `archive/develop` e a branch remota foi removida. Para consultar: `git checkout archive/develop`.
 
-Usar Conventional Commits: feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validar denominacoes aceitas; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
+Usar Conventional Commits em inglês (decisão de 27/11/2026; commits anteriores em português): feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validate accepted denominations; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
 
 PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir uma issue por PR.
 
