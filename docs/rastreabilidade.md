@@ -1,14 +1,14 @@
 # Rastreabilidade requisito → issue → implementação → teste → documentação
 
-Fonte: [requisitos](requisitos.md). Atualizado em 26/11/2026. Todos os testes abaixo são **planejados, ainda não implementados ou executados**. Ao implementar, preencher: módulo/classe em "Implementação", caminho e nome real do teste, documento afetado (README, OpenAPI, ADR, diagrama) e link do PR. Pxx não substitui o número real da issue.
+Fonte: [requisitos](requisitos.md). Atualizado em 27/11/2026. Os testes de #2 e #3 existem e passam na CI (PR #29); os demais são **planejados, ainda não implementados ou executados**. Ao implementar, preencher: módulo/classe em "Implementação", caminho e nome real do teste, documento afetado (README, OpenAPI, ADR, diagrama) e link do PR. Pxx não substitui o número real da issue.
 
 Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado, teste passando na CI).
 
 | Requisito | Issue | Implementação | Teste/evidência planejado | Documentação | Estado |
 |---|---|---|---|---|---|
 | ENG-DOC | [#1](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/1) | PR #25; [PR #26](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/26) | revisão documental; `scripts/kiro/docs_guard.py` | README, CONTEXT, CHANGELOG, steering, ADR README | Em revisão |
-| ENG-INFRA | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) | spec `.kiro/specs/2-aplicacao-base/` | test_app_startup; test_create_app_uses_given_settings; test_create_app_rejects_invalid_environment; test_settings_*; fumaça na CI | spec | Spec em revisão |
-| ENG-QUAL | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) | spec `.kiro/specs/3-ci-qualidade/` | run verde e run vermelho provocado do workflow `testes-e-analise`; test_architecture; test_ci_scripts | spec; ADR 0006 (proposto) | Spec em revisão |
+| ENG-INFRA | [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2) | `pyproject.toml`; `src/maquina_cafe/__init__.py`, `config.py` (`Settings`, `InvalidSettingsError`), `api/app.py` (`create_app`); `.env.example` ([PR #29](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/29)) | `tests/integration/test_app_startup.py` (test_app_startup, test_create_app_uses_given_settings, test_create_app_reads_environment_without_settings, test_create_app_rejects_invalid_environment, test_importing_app_module_has_no_side_effects); `tests/unit/test_config.py` (test_settings_*); fumaça `scripts/ci/smoke.py`; run [46014939322](https://github.com/romulorjr/Engenharia-de-Sistemas/actions/runs/46014939322) | README (Executar localmente), spec, arquitetura.md | Em revisão (CI verde) |
+| ENG-QUAL | [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3) | `.github/workflows/ci.yml` (job `testes-e-analise`); `scripts/ci/radon_gate.py`, `smoke.py`, `summary.py`; config no `pyproject.toml` ([PR #29](https://github.com/romulorjr/Engenharia-de-Sistemas/pull/29)) | `tests/unit/test_architecture.py`; `tests/unit/test_ci_scripts.py`; run verde [46014939322](https://github.com/romulorjr/Engenharia-de-Sistemas/actions/runs/46014939322); run vermelho provocado [46015179174](https://github.com/romulorjr/Engenharia-de-Sistemas/actions/runs/46015179174) | README (Testes, Análise estática), ADR 0006 (aceito), quality-report.md | Em revisão (CI verde) |
 | ENG-PERSIST | [#4](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/4) | — | test_initialization_idempotent | ADR 0002 (aceito, opção A) | Planejado |
 | RN10 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) | — | test_menu_recipes_and_availability; test_menu_availability_boundaries | requisitos D-Q3; `docs/api/openapi.yaml` (GET /produtos) | Planejado |
 | CAT01 | [#5](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/5) | — | test_menu_recipes_and_availability | `docs/api/openapi.yaml` (GET /produtos) | Planejado |
@@ -47,6 +47,7 @@ Estados: Planejado → Em andamento → Em revisão → Concluído (PR mesclado,
 | E05 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) | — | ensaio final em ambiente limpo | — | Planejado |
 | E06 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) | — | ensaio final em ambiente limpo | — | Planejado |
 | E07 | [#24](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/24) | — | ensaio final em ambiente limpo | — | Planejado |
-| ENG-QUAL | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) | `.github/branch-protection-main.json` | verificação da proteção via `gh api` | configuracao-github.md | Aguardando execução pelo administrador |
+| ENG-QUAL | [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) | `.github/ruleset-main.json` (recomendado); `.github/branch-protection-main.json` (alternativa) | verificação `gh api .../rules/branches/main` | configuracao-github.md | Aguardando execução pelo administrador (agente: HTTP 403) |
+| ENG-QUAL | [#30](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/30) | — | CI sem `StarletteDeprecationWarning` | quality-report.md (dívida técnica) | Planejado (sem milestone) |
 
 RN01–RN12 estão cobertas no planejamento. Aprovação desta matriz não significa aprovação da implementação. ENG-* e E01–E07 foram definidos pelo plano para rastrear engenharia e entregas.
