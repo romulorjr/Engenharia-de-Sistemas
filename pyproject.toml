@@ -30,7 +30,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "pytest==9.2.0",
+  "pytest-cov==7.1.0",
   "httpx==0.29.0",
+  "ruff==0.17.6",
+  "radon==6.0.1",
 ]
 
 [tool.setuptools.packages.find]
@@ -40,3 +43,19 @@ where = ["src"]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers --strict-config"
 xfail_strict = true
+
+[tool.coverage.run]
+source = ["maquina_cafe"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ["if TYPE_CHECKING:"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "PT", "RUF"]
