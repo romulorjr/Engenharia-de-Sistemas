@@ -41,6 +41,7 @@ class Settings:
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> "Settings": ...
 
+
 class InvalidSettingsError(ValueError): ...
 ```
 - `from_env` recebe o mapeamento por parâmetro (padrão `os.environ`), o que permite testar sem alterar o ambiente do processo.
