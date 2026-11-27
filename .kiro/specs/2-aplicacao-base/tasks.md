@@ -1,6 +1,6 @@
 # Tarefas — #2 Preparar aplicação e dependências reproduzíveis
 
-Requisitos: [requirements.md](requirements.md). Design: [design.md](design.md). Status: **aguardando aprovação da spec**; nenhuma tarefa iniciada.
+Requisitos: [requirements.md](requirements.md). Design: [design.md](design.md). Status: **em andamento** desde 27/11/2026 (spec aprovada).
 
 Implementação no mesmo PR da [#3](../3-ci-qualidade/tasks.md), em commits separados com `Refs #2`.
 
@@ -15,7 +15,7 @@ Implementação no mesmo PR da [#3](../3-ci-qualidade/tasks.md), em commits sepa
   - `maquina_cafe/__init__.py` com `__version__` lida de `importlib.metadata`.
   - _Requisitos: 4.1, 4.2_
 
-- [ ] 3. Implementar `config.Settings` e `ConfiguracaoInvalida`
+- [ ] 3. Implementar `config.Settings` e `InvalidSettingsError`
   - `from_env(environ)` com padrão, leitura e rejeição de valor vazio.
   - Testes `test_settings_default_database_url`, `test_settings_reads_environment`, `test_settings_rejects_empty_value` em `tests/unit/test_config.py`.
   - _Requisitos: 3.1, 3.2_

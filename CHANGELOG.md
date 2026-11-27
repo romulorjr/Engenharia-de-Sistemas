@@ -7,8 +7,9 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 ## [Unreleased]
 
 ### Added
+- Seção "Nomenclatura (Naming)" no steering e no CONTEXT: domínio em português; termos técnicos, módulos, testes e commits em inglês (#2).
 - Specs da #2 (`.kiro/specs/2-aplicacao-base/`) e da #3 (`.kiro/specs/3-ci-qualidade/`) com requisitos, design e tarefas, aguardando aprovação; nenhum código implementado (#2, #3).
-- ADR 0006 (estratégia de testes e medição de cobertura), proposto na spec da #3 (#3, #20).
+- ADR 0006 (estratégia de testes e medição de cobertura), proposto na spec da #3 e aceito em 27/11/2026 com fixação só das dependências diretas, teste de camadas obrigatório e limites do Radon com aviso em classe C (#3, #20).
 - Steering do Kiro em `.kiro/steering/project.md` com propósito, fontes da verdade, arquitetura, regras de documentação, convenções de branch/commit, specs e Definition of Done (#1).
 - Hooks do Kiro em `.kiro/hooks/`: `docs-guard` (Stop) exige `CHANGELOG.md` e `docs/CONTEXT.md` quando `src/` ou `tests/` mudam; `quality-on-save` (PostFileSave) executa Ruff; `quality-on-stop` (Stop) executa Ruff e pytest quando há código alterado (#1).
 - Scripts multiplataforma `scripts/kiro/docs_guard.py` e `scripts/kiro/quality_check.py`, usados pelos hooks e executáveis manualmente (#1).
@@ -29,6 +30,8 @@ O formato segue [Keep a Changelog 1.1.0](https://keepachangelog.com/pt-BR/1.1.0/
 - Seção "Como executar" em `docs/configuracao-github.md`, com pré-requisitos (GitHub CLI com papel Admin, PowerShell 7) e comandos (#27).
 
 ### Changed
+- Mensagens de commit passam a ser em inglês a partir de 27/11/2026 (steering, plano, README) (#2).
+- Specs de #2 e #3 aprovadas; exceção de configuração renomeada de `ConfiguracaoInvalida` para `InvalidSettingsError` na spec da #2, pela convenção de nomes e pela regra N818 do Ruff (#2).
 - `docs/CONTEXT.md` reorganizado nas seções Estado atual, Próximos passos, Decisões e Bloqueios (#1).
 - `docs/rastreabilidade.md` passa a ter as colunas Implementação e Documentação (#1).
 - `docs/requisitos.md` recebe opções e propostas para as questões em aberto, incluindo a nova questão 5 sobre códigos HTTP de operações do operador no estado errado (#1).

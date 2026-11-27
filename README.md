@@ -149,7 +149,7 @@ Leia [contexto](docs/CONTEXT.md) e [plano](docs/plano-de-projeto.md). Trabalhe e
 - `main` é a única branch de longa duração. Não há `develop` (arquivada em 25/11/2026 como a tag `archive/develop`).
 - Crie a branch a partir de `main` atualizada: `feature/<issue>-<resumo>`, `fix/<issue>-<resumo>`, `docs/<resumo>` ou `test/<issue>-<resumo>`. Exemplo: `git switch main && git pull && git switch -c feature/7-inserir-credito`.
 - Abra PR para `main` usando o template. Regras de `main`: sem push direto, PR com 1 aprovação de outro integrante, conversas resolvidas, sem force push; CI verde obrigatória quando o workflow da #3 existir. A proteção no GitHub ainda precisa ser aplicada por um administrador ([#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27)); até lá, vale por acordo.
-- Commits no padrão Conventional Commits, com `Refs #n` no rodapé.
+- Commits no padrão Conventional Commits, em inglês, com `Refs #n` no rodapé. Nomes do domínio em português e termos técnicos em inglês: ver [Nomenclatura](docs/CONTEXT.md#nomenclatura-naming).
 
 [Configuração do GitHub](docs/configuracao-github.md): milestones M1–M5 aplicados em 25/11/2026; proteção de `main` pendente (#27); labels ainda não aplicadas.
 

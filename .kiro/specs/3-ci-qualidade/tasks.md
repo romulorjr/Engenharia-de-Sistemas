@@ -1,6 +1,6 @@
 # Tarefas — #3 Configurar CI, testes e análise estática
 
-Requisitos: [requirements.md](requirements.md). Design: [design.md](design.md). Status: **aguardando aprovação da spec**; nenhuma tarefa iniciada.
+Requisitos: [requirements.md](requirements.md). Design: [design.md](design.md). Status: **em andamento** desde 27/11/2026 (spec aprovada).
 
 Implementação no mesmo PR da [#2](../2-aplicacao-base/tasks.md), depois das tarefas 1–5 da #2, em commits separados com `Refs #3`.
 
@@ -15,7 +15,7 @@ Implementação no mesmo PR da [#2](../2-aplicacao-base/tasks.md), depois das ta
   - _Requisitos: 3.3_
 
 - [ ] 3. Criar os scripts de CI
-  - `scripts/ci/radon_gate.py`, `scripts/ci/smoke.py`, `scripts/ci/summary.py`, sem dependências além das do extra `dev`.
+  - `scripts/ci/radon_gate.py` (falha em CC D+ e MI abaixo de A; aviso em CC C), `scripts/ci/smoke.py`, `scripts/ci/summary.py`, sem dependências além das do extra `dev`.
   - Testes em `tests/unit/test_ci_scripts.py` para o gate do Radon.
   - _Requisitos: 4.1, 4.2, 4.3, 5.1, 5.2, 2.4_
 

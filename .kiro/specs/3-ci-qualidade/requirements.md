@@ -2,7 +2,7 @@
 
 Issue: [#3](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/3). Requisito de rastreabilidade: ENG-QUAL. Milestone: M1 – Base técnica (27/11/2026). Relacionadas: [#2](../2-aplicacao-base/requirements.md) (aplicação base), [#27](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/27) passo (b) (CI obrigatória na proteção de `main`), #20 (relatório final de qualidade).
 
-Status: **rascunho para revisão**, 26/11/2026. Nenhum código foi escrito.
+Status: **aprovada** pelo responsável em 27/11/2026, com o refinamento 4.4–4.5 (aviso de classe C). Rascunho de 26/11/2026.
 
 ## Introdução
 O PDF exige testes automatizados unitários e de integração com cobertura mínima de 75%, critérios de teste funcional ou caixa-preta e análise estática com relatório de métricas. Esta spec configura as ferramentas no `pyproject.toml`, cria o workflow do GitHub Actions e define como os resultados viram evidência no relatório de qualidade. A estratégia de testes do projeto é proposta no [ADR 0006](../../../docs/adr/0006-estrategia-de-testes.md).
@@ -35,7 +35,7 @@ Critérios de aceite:
 **História:** Como revisor, quero que estilo e erros comuns sejam verificados automaticamente, para focar a revisão no comportamento.
 
 Critérios de aceite:
-1. A CI DEVE executar `ruff check .` e `ruff format --check .` com a configuração do `pyproject.toml`.
+1. A CI DEVE executar `ruff check .` e `ruff format --check .` com a configuração do `pyproject.toml`, em Python 3.12 fixo.
 2. SE houver erro de lint ou arquivo fora da formatação, ENTÃO o job DEVE falhar, com anotações nos arquivos do PR.
 3. O SISTEMA DEVE ter um teste automático que falha se uma camada importar o que o steering proíbe: `fastapi`/`starlette` fora de `api`; `sqlalchemy`/`alembic` fora de `persistence`; `domain` importando outras camadas; `services` importando `api`.
 
@@ -46,6 +46,8 @@ Critérios de aceite:
 1. A CI DEVE gerar os relatórios `radon cc src -s -a` e `radon mi src -s` e publicá-los como artefato.
 2. SE algum bloco tiver complexidade ciclomática de classe D ou pior (CC > 20), ENTÃO o job DEVE falhar e listar os blocos.
 3. SE algum módulo tiver índice de manutenibilidade abaixo da classe A (MI < 20), ENTÃO o job DEVE falhar e listar os módulos.
+4. QUANDO algum bloco tiver complexidade de classe C (CC 11–20), A CI DEVE emitir um aviso com o bloco e a linha, sem falhar o job.
+5. SE a CI falhar só por esses limites, ENTÃO os blocos e módulos apontados DEVEM ser listados e corrigidos; os limites NÃO DEVEM ser reduzidos para a CI passar.
 
 ## Requisito 5 — Teste de fumaça da inicialização
 **História:** Como grupo, queremos provar a cada PR que a API inicia em ambiente limpo (#2).

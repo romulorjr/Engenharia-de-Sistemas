@@ -1,6 +1,6 @@
 # Design — #2 Preparar aplicação e dependências reproduzíveis
 
-Requisitos: [requirements.md](requirements.md). Status: **rascunho para revisão**, 26/11/2026.
+Requisitos: [requirements.md](requirements.md). Status: **aprovado** em 27/11/2026 (rascunho de 26/11).
 
 ## Visão geral
 Esqueleto mínimo que já respeita as camadas do steering: um pacote `maquina_cafe` instalável, uma fábrica `create_app` que é o ponto de composição da aplicação e uma configuração imutável lida do ambiente. Nada de regra de negócio.
@@ -18,7 +18,7 @@ Esta restrição não muda a stack (ADR 0002).
 pyproject.toml                         metadados, dependências fixadas, config de ferramentas (#3)
 .env.example                           variáveis documentadas
 src/maquina_cafe/__init__.py           __version__ lida dos metadados do pacote
-src/maquina_cafe/config.py             Settings, ConfiguracaoInvalida
+src/maquina_cafe/config.py             Settings, InvalidSettingsError
 src/maquina_cafe/api/__init__.py       docstring da camada
 src/maquina_cafe/api/app.py            create_app
 src/maquina_cafe/services/__init__.py  docstring da camada
@@ -41,10 +41,11 @@ class Settings:
     @classmethod
     def from_env(cls, environ: Mapping[str, str] | None = None) -> "Settings": ...
 
-class ConfiguracaoInvalida(ValueError): ...
+class InvalidSettingsError(ValueError): ...
 ```
 - `from_env` recebe o mapeamento por parâmetro (padrão `os.environ`), o que permite testar sem alterar o ambiente do processo.
-- Variável ausente usa o padrão; definida e vazia (ou só espaços) lança `ConfiguracaoInvalida("MAQUINA_CAFE_DATABASE_URL não pode ser vazia")`.
+- Variável ausente usa o padrão; definida e vazia (ou só espaços) lança `InvalidSettingsError("MAQUINA_CAFE_DATABASE_URL não pode ser vazia.")`.
+- Nome em inglês pela convenção de 27/11 (configuração é termo técnico) e pela regra N818 do Ruff (exceções terminam em `Error`). O rascunho usava `ConfiguracaoInvalida`.
 - Sem `pydantic-settings`: um `dataclass` resolve com uma variável e não acrescenta dependência. Reavaliar se a #12 tornar a validação extensa.
 - Sem leitura de arquivo `.env` pela aplicação. O README mostra como exportar as variáveis no shell (Linux/macOS e PowerShell).
 
@@ -102,17 +103,17 @@ uvicorn maquina_cafe.api.app:create_app --factory --reload
 Swagger em `http://127.0.0.1:8000/docs`.
 
 ## Convenção de nomes
-Vocabulário do domínio em português, como no PDF e nos ADRs (`Pedido`, `Estoque`, `Relogio`, `ConfiguracaoInvalida`). Nomes técnicos ditados pelo framework ou já usados na documentação ficam em inglês (`create_app`, `settings`, nomes de teste como `test_app_startup`). Decisão pequena e reversível; registrar no CONTEXT se aprovada.
+Aprovada em 27/11/2026 e registrada no [steering](../../steering/project.md#nomenclatura-naming) e no CONTEXT: nomes do domínio em português (bebida, pedido, credito, estoque, estado, receita, reservatorio); termos técnicos, arquivos e módulos, testes e mensagens de commit em inglês.
 
 ## Testes
 | Teste | Tipo | Verifica | Requisito |
 |---|---|---|---|
 | `test_settings_default_database_url` | unitário | padrão `sqlite:///maquina_cafe.db` com ambiente vazio | 3.1 |
 | `test_settings_reads_environment` | unitário | valor de `MAQUINA_CAFE_DATABASE_URL` é usado | 3.1 |
-| `test_settings_rejects_empty_value` | unitário | vazio e só espaços → `ConfiguracaoInvalida` com o nome da variável | 3.2 |
+| `test_settings_rejects_empty_value` | unitário | vazio e só espaços → `InvalidSettingsError` com o nome da variável | 3.2 |
 | `test_app_startup` | integração | `/openapi.json` 200, título, versão igual a `__version__`; `/docs` 200 | 2.5, 2.6 |
 | `test_create_app_uses_given_settings` | integração | `app.state.settings` é a configuração passada, mesmo com o ambiente diferente | 2.2 |
-| `test_create_app_rejects_invalid_environment` | integração | sem parâmetro e com variável vazia, `create_app` lança `ConfiguracaoInvalida` | 2.3, 3.2 |
+| `test_create_app_rejects_invalid_environment` | integração | sem parâmetro e com variável vazia, `create_app` lança `InvalidSettingsError` | 2.3, 3.2 |
 | Teste de fumaça na CI | sistema | `uvicorn --factory` sobe e `/openapi.json` responde 200 | 2.5, 5.2 |
 
 Cobertura esperada do código desta issue: 100% de linhas e ramos (código pequeno, todos os caminhos testados).
@@ -124,6 +125,6 @@ Cobertura esperada do código desta issue: 100% de linhas e ramos (código peque
 | Diferenças no Windows (ativação do venv, `py` launcher) | Comandos PowerShell no README; pedir a um integrante com Windows que os execute na revisão |
 | `--reload` em pastas grandes | Só para desenvolvimento; a CI usa sem `--reload` |
 
-## Questões para o responsável
-1. Aprovar a convenção de nomes acima.
-2. Aprovar `==` só nas dependências diretas, com o `pip freeze` da CI como registro das indiretas.
+## Respostas do responsável (27/11/2026)
+1. Convenção de nomes: aprovada.
+2. `==` só nas dependências diretas: aprovado; Python 3.12 fixo na CI; lock completo com hashes fora do escopo, a reavaliar só se houver divergência de ambiente (ADR 0006).

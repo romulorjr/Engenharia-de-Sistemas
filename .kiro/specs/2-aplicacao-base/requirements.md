@@ -2,7 +2,7 @@
 
 Issue: [#2](https://github.com/romulorjr/Engenharia-de-Sistemas/issues/2). Requisito de rastreabilidade: ENG-INFRA. Milestone: M1 – Base técnica (27/11/2026). Decisões aplicáveis: [ADR 0001](../../../docs/adr/0001-escolha-da-stack.md) (stack), [ADR 0002](../../../docs/adr/0002-persistencia-e-atomicidade.md) (SQLAlchemy + Alembic, usados a partir da #4).
 
-Status: **rascunho para revisão**, 26/11/2026. Nenhum código foi escrito.
+Status: **aprovada** pelo responsável em 27/11/2026 (rascunho de 26/11/2026).
 
 ## Introdução
 Hoje o repositório não tem aplicação nem manifesto de dependências. Esta spec cria o esqueleto instalável da API: pacote Python em camadas, fábrica da aplicação FastAPI, configuração por variáveis de ambiente e instruções de execução. Não implementa nenhuma regra RN01–RN12 nem endpoint do PDF. Banco e migrações são da #4; erros padronizados, da #18; CI, cobertura e análise estática, da #3.
@@ -38,7 +38,7 @@ Critérios de aceite:
 
 Critérios de aceite:
 1. O SISTEMA DEVE ler a variável `MAQUINA_CAFE_DATABASE_URL`, com valor padrão `sqlite:///maquina_cafe.db`. Nesta issue o valor só é guardado; a #4 o usa.
-2. SE uma variável de configuração estiver definida com valor vazio, ENTÃO O SISTEMA DEVE recusar a criação da aplicação com erro que nomeia a variável.
+2. SE uma variável de configuração estiver definida com valor vazio ou só com espaços, ENTÃO O SISTEMA DEVE recusar a criação da aplicação com erro (`InvalidSettingsError`) que nomeia a variável.
 3. O repositório DEVE conter `.env.example` com cada variável, seu significado e um valor de exemplo sem dado real.
 4. O repositório NÃO DEVE conter `.env` nem banco local (já ignorados pelo `.gitignore`).
 

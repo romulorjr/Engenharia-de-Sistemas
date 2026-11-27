@@ -17,7 +17,7 @@ Um ADR por decisão significativa: stack, banco, autenticação, modelo de erros
 | [0003](0003-modelo-de-erros.md) | Modelo de erros e mapeamento HTTP | Aceito | 25/11/2026 |
 | [0004](0004-autenticacao-operador-jwt.md) | Autenticação do operador por JWT | Aceito | 25/11/2026 |
 | [0005](0005-representacao-monetaria.md) | Representação monetária | Aceito | 25/11/2026 |
-| [0006](0006-estrategia-de-testes.md) | Estratégia de testes e medição de cobertura | Proposto (spec da #3) | 26/11/2026 |
+| [0006](0006-estrategia-de-testes.md) | Estratégia de testes, análise estática e medição de cobertura | Aceito em 27/11/2026 | 26/11/2026 |
 
 ## Decisões que ainda precisam de ADR
 Lista mantida até cada decisão ser tomada; ver issue indicada.

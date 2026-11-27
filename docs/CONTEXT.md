@@ -10,6 +10,12 @@ Back-end de uma máquina de café, preferencialmente API REST; sem interface gr�
 ## Equipe (ordem alfabética)
 Bruno de Andrade Gama Kraker, Pedro Henryk Bezerra Souza, Rodrigo Franco de Moraes, Rômulo Maurício Fonseca Júnior, Thales Iamamura. Contas GitHub confirmadas em 25/11/2026 em [contribuições](contributions.md); papéis a definir.
 
+## Nomenclatura (Naming)
+Decidida pelo responsável em 27/11/2026; regra completa no [steering](../.kiro/steering/project.md#nomenclatura-naming).
+- Português para nomes do domínio do PDF (bebida, pedido, credito, estoque, estado, receita, reservatorio).
+- Inglês para termos técnicos (Repository, Service, Controller, Settings, app factory), nomes de arquivos e módulos de código, nomes de testes e mensagens de commit.
+- Documentação, docstrings, comentários e mensagens ao usuário continuam em português.
+
 ## Estado atual
 Relatório de estado produzido em 25/11/2026 e atualizado em 26/11/2026, depois das duas rodadas de decisões do responsável (25/11 e 26/11).
 
@@ -90,9 +96,14 @@ Relatório de estado produzido em 25/11/2026 e atualizado em 26/11/2026, depois 
 | 26/11/2026 | Contas GitHub confirmadas; arquivo mantém o nome `docs/contributions.md` | [contribuições](contributions.md) |
 | 26/11/2026 | Checkpoint de 18/11 realizado; #22 fechada com registro | [checkpoint-18-11.md](checkpoint-18-11.md) |
 | 26/11/2026 | Contrato OpenAPI parcial escrito à mão em `docs/api/openapi.yaml` até a #21, que o substitui pelo OpenAPI gerado | openapi.yaml |
+| 27/11/2026 | Specs de #2 e #3 aprovadas; #2 e #3 implementadas juntas em um PR, por causa da limitação do ambiente do agente | [spec #2](../.kiro/specs/2-aplicacao-base/requirements.md), [spec #3](../.kiro/specs/3-ci-qualidade/requirements.md) |
+| 27/11/2026 | Nomenclatura: domínio em português; termos técnicos, arquivos e módulos de código, testes e commits em inglês | [Nomenclatura](#nomenclatura-naming), steering |
+| 27/11/2026 | Dependências diretas fixadas com `==`; indiretas pelo pip; Python 3.12 fixo na CI; lock com hashes fora do escopo | [ADR 0006](adr/0006-estrategia-de-testes.md) |
+| 27/11/2026 | Teste de camadas mantido; falha é regressão real | ADR 0006 |
+| 27/11/2026 | Radon: falha em CC classe D+ e MI abaixo de A; aviso em CC classe C; limites não são reduzidos para a CI passar | ADR 0006 |
+| 27/11/2026 | ADR 0006 (estratégia de testes) aceito | ADR 0006 |
 
 **Decisões pendentes (aguardando o responsável)**
-1. Aprovação das specs de #2 e #3 (inclui ADR 0006, estratégia de testes, proposto na spec de #3).
 2. Distribuição das issues entre os cinco integrantes.
 3. Conteúdo do registro do checkpoint: o que foi apresentado e o retorno do docente.
 

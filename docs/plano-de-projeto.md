@@ -287,7 +287,7 @@ Decisão do responsável em 25/11/2026 (decisão 2): `develop` foi abandonada.
 - CI verde obrigatória: o check será exigido assim que o workflow da #3 existir e passar uma vez (passo 2 da #27). Antes disso não há nome de check para cadastrar.
 - `develop` estava atrás de `main` (seu único commit, ce5eca4, já está em `main`). Foi arquivada como a tag `archive/develop` e a branch remota foi removida. Para consultar: `git checkout archive/develop`.
 
-Usar Conventional Commits: feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validar denominacoes aceitas; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
+Usar Conventional Commits em inglês (decisão de 27/11/2026; commits anteriores em português): feat, fix, docs, test, refactor, chore, ci. Exemplo: feat(credito): validate accepted denominations; rodapé Refs #7. Commits pequenos e coesos, sem atribuir ao grupo trabalho não realizado por ele.
 
 PR descreve problema, mudança, requisitos, testes executados e riscos. Preferir uma issue por PR.
 

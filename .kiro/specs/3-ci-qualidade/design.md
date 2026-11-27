@@ -1,6 +1,6 @@
 # Design — #3 Configurar CI, testes e análise estática
 
-Requisitos: [requirements.md](requirements.md). Status: **rascunho para revisão**, 26/11/2026. Estratégia de testes: [ADR 0006](../../../docs/adr/0006-estrategia-de-testes.md) (proposto).
+Requisitos: [requirements.md](requirements.md). Status: **aprovado** em 27/11/2026 (rascunho de 26/11). Estratégia de testes: [ADR 0006](../../../docs/adr/0006-estrategia-de-testes.md) (aceito).
 
 ## Visão geral
 Uma única fonte de configuração (`pyproject.toml`) e um único job de CI que executa, nesta ordem: instalação, Ruff, testes com cobertura, Radon e teste de fumaça. O job publica relatórios como artefato e um resumo legível na página do run. O mesmo conjunto de comandos roda localmente.
@@ -125,7 +125,7 @@ Decisões:
 - **`pull_request` sem filtro de branch.** O PR desta issue mira a branch do PR #26 até que ele seja mesclado; com filtro `branches: [main]` a CI não rodaria nele.
 - **`!cancelled() && instalar == success`.** Cada verificação roda mesmo que a anterior falhe, e o job termina vermelho se qualquer uma falhar. Se a instalação falhar, as demais não rodam, evitando erros em cascata.
 - **Scripts Python em `scripts/ci/` em vez de shell.** Os mesmos comandos rodam no Windows dos integrantes:
-  - `radon_gate.py`: grava `radon-cc.txt` e `radon-mi.txt`; usa a API do Radon (ou `radon cc -j`/`radon mi -j`) para falhar com classe D+ de CC ou MI abaixo de A, listando os itens.
+  - `radon_gate.py`: grava `radon-cc.txt` e `radon-mi.txt`; lê `radon cc -j` e `radon mi -j` para falhar com classe D+ de CC ou MI abaixo de A e **avisar** (sem falhar) com classe C de CC, listando os itens como anotações do GitHub (`::error`/`::warning`); grava `radon-gate.json` para o resumo.
   - `smoke.py`: inicia `uvicorn` como subprocesso em porta livre, consulta `/openapi.json` por até 15 s com `urllib`, encerra o processo e mostra a saída do servidor em caso de falha.
   - `summary.py`: escreve em Markdown o total de cobertura (`coverage report --format=total`), a média de CC e o resultado de cada etapa.
 - **Ações nas versões principais atuais** (`checkout@v7`, `setup-python@v7`, `upload-artifact@v7`, conferidas em 26/11/2026).
@@ -170,7 +170,7 @@ Os scripts em `scripts/ci/` ficam fora de `maquina_cafe` e não entram na cobert
 | Cobertura alta mas testes fracos | ADR 0006 exige critérios de caixa-preta e testes por linha da tabela de erros |
 | Hooks do Kiro inativos | A CI é a verificação que vale (CONTEXT, Bloqueios) |
 
-## Questões para o responsável
-1. Aprovar o teste de camadas (`test_architecture.py`) ou retirá-lo.
-2. Aprovar os limites do Radon (falhar em CC classe D+ e MI abaixo de A), iguais às metas de `docs/quality-report.md`.
-3. Aprovar o ADR 0006.
+## Respostas do responsável (27/11/2026)
+1. Teste de camadas: mantido. Falha é regressão real, não ruído.
+2. Limites do Radon: aceitos, com aviso (sem falha) para classe C. Se a primeira execução falhar só por esses limites, listar as funções e módulos em vez de reduzir os limites.
+3. ADR 0006: aceito.
