@@ -7,6 +7,11 @@ __pycache__/
 .coverage.*
 htmlcov/
 coverage.xml
+pytest-junit.xml
+pip-freeze.txt
+radon-cc.txt
+radon-mi.txt
+radon-gate.json
 *.egg-info/
 build/
 dist/
